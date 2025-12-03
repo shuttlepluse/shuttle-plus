@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earnings | Shuttle Plus Driver</title>
+    <meta name="description" content="Track your earnings and payouts on Shuttle Plus driver portal.">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/icon-96x96.png">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/driver.css">
+</head>
+<body class="driver-portal">
+    <!-- Header -->
+    <header class="driver-header">
+        <div class="driver-header-content">
+            <div class="driver-header-left">
+                <a href="dashboard.html" class="driver-header-logo">Shuttle<span>Plus</span></a>
+            </div>
+            <div class="driver-header-right">
+                <button class="driver-notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+                <img src="https://ui-avatars.com/api/?name=Abebe+Kebede&background=1a73e8&color=fff" alt="Driver" class="driver-avatar">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="driver-content">
+        <h1 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--driver-dark);">Earnings</h1>
+
+        <!-- Period Selector -->
+        <div class="trip-history-filters" style="margin-bottom: 1.5rem;">
+            <button class="filter-btn" onclick="setPeriod('today', this)">Today</button>
+            <button class="filter-btn active" onclick="setPeriod('week', this)">This Week</button>
+            <button class="filter-btn" onclick="setPeriod('month', this)">This Month</button>
+            <button class="filter-btn" onclick="setPeriod('year', this)">This Year</button>
+        </div>
+
+        <!-- Earnings Card -->
+        <div class="driver-earnings-card">
+            <div class="earnings-amount">
+                <div class="label">Total Earnings</div>
+                <div class="amount"><span class="currency">ETB</span> <span id="totalEarnings">18,320</span></div>
+            </div>
+            <div class="earnings-stats">
+                <div class="earnings-stat">
+                    <div class="value" id="tripsCount">52</div>
+                    <div class="label">Trips</div>
+                </div>
+                <div class="earnings-stat">
+                    <div class="value" id="onlineHours">42h</div>
+                    <div class="label">Online</div>
+                </div>
+                <div class="earnings-stat">
+                    <div class="value" id="avgPerTrip">352</div>
+                    <div class="label">Avg/Trip</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings Chart -->
+        <div style="background: white; border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--driver-dark);">Earnings Overview</h3>
+            <canvas id="earningsChart" height="200"></canvas>
+        </div>
+
+        <!-- Earnings Breakdown -->
+        <div class="section-header">
+            <h2>Breakdown</h2>
+        </div>
+
+        <div class="earnings-breakdown">
+            <div class="breakdown-item">
+                <span class="breakdown-label">
+                    <i class="fas fa-car" style="color: var(--driver-primary);"></i>
+                    Trip Fares
+                </span>
+                <span class="breakdown-value">ETB 16,850</span>
+            </div>
+            <div class="breakdown-item">
+                <span class="breakdown-label">
+                    <i class="fas fa-clock" style="color: var(--driver-warning);"></i>
+                    Wait Time
+                </span>
+                <span class="breakdown-value">ETB 620</span>
+            </div>
+            <div class="breakdown-item">
+                <span class="breakdown-label">
+                    <i class="fas fa-gift" style="color: var(--driver-success);"></i>
+                    Tips
+                </span>
+                <span class="breakdown-value positive">ETB 1,250</span>
+            </div>
+            <div class="breakdown-item">
+                <span class="breakdown-label">
+                    <i class="fas fa-star" style="color: #9b59b6;"></i>
+                    Bonuses
+                </span>
+                <span class="breakdown-value positive">ETB 500</span>
+            </div>
+            <div class="breakdown-item">
+                <span class="breakdown-label">
+                    <i class="fas fa-percentage" style="color: var(--driver-danger);"></i>
+                    Service Fee (15%)
+                </span>
+                <span class="breakdown-value negative">- ETB 900</span>
+            </div>
+            <div class="breakdown-item" style="font-weight: 600;">
+                <span class="breakdown-label">
+                    <i class="fas fa-wallet" style="color: var(--driver-dark);"></i>
+                    Net Earnings
+                </span>
+                <span class="breakdown-value">ETB 18,320</span>
+            </div>
+        </div>
+
+        <!-- Payout Section -->
+        <div class="section-header" style="margin-top: 1.5rem;">
+            <h2>Payout</h2>
+        </div>
+
+        <div class="payout-card">
+            <div class="payout-header">
+                <div class="payout-method">
+                    <div class="payout-method-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div class="payout-method-info">
+                        <h4>Commercial Bank of Ethiopia</h4>
+                        <p>Account ending in ****4523</p>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--driver-border);">
+                <div>
+                    <div style="font-size: 0.8rem; color: var(--driver-text-muted);">Available for payout</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--driver-dark);">ETB 15,420</div>
+                </div>
+                <button class="btn-payout" onclick="requestPayout()">
+                    <i class="fas fa-money-bill-wave" style="margin-right: 0.5rem;"></i>
+                    Cash Out
+                </button>
+            </div>
+        </div>
+
+        <!-- Next Payout Info -->
+        <div style="background: var(--driver-primary-light); border-radius: 12px; padding: 1rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+            <i class="fas fa-info-circle" style="color: var(--driver-primary); font-size: 1.25rem;"></i>
+            <div>
+                <div style="font-size: 0.9rem; font-weight: 500; color: var(--driver-dark);">Next automatic payout: Friday, Dec 6</div>
+                <div style="font-size: 0.8rem; color: var(--driver-text-muted);">Weekly payouts are processed every Friday</div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="section-header">
+            <h2>Recent Transactions</h2>
+            <a href="#">View All</a>
+        </div>
+
+        <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--driver-border);">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 40px; height: 40px; background: #e6f4ea; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-arrow-down" style="color: var(--driver-success);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500; color: var(--driver-dark);">Trip Earnings</div>
+                        <div style="font-size: 0.8rem; color: var(--driver-text-muted);">Today, 2:30 PM</div>
+                    </div>
+                </div>
+                <div style="font-weight: 600; color: var(--driver-success);">+ETB 720</div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--driver-border);">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 40px; height: 40px; background: #e6f4ea; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-arrow-down" style="color: var(--driver-success);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500; color: var(--driver-dark);">Trip Earnings + Tip</div>
+                        <div style="font-size: 0.8rem; color: var(--driver-text-muted);">Today, 11:45 AM</div>
+                    </div>
+                </div>
+                <div style="font-weight: 600; color: var(--driver-success);">+ETB 950</div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--driver-border);">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 40px; height: 40px; background: #fce8e6; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-arrow-up" style="color: var(--driver-danger);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500; color: var(--driver-dark);">Payout to Bank</div>
+                        <div style="font-size: 0.8rem; color: var(--driver-text-muted);">Nov 29, 2024</div>
+                    </div>
+                </div>
+                <div style="font-weight: 600; color: var(--driver-danger);">-ETB 12,500</div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 40px; height: 40px; background: #f3e8fd; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-gift" style="color: #9b59b6;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 500; color: var(--driver-dark);">Weekly Bonus</div>
+                        <div style="font-size: 0.8rem; color: var(--driver-text-muted);">Nov 29, 2024</div>
+                    </div>
+                </div>
+                <div style="font-weight: 600; color: var(--driver-success);">+ETB 500</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="driver-bottom-nav">
+        <a href="dashboard.html" class="driver-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="trips.html" class="driver-nav-item">
+            <i class="fas fa-car"></i>
+            <span>Trips</span>
+        </a>
+        <a href="earnings.html" class="driver-nav-item active">
+            <i class="fas fa-wallet"></i>
+            <span>Earnings</span>
+        </a>
+        <a href="profile.html" class="driver-nav-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // Check authentication
+        if (!localStorage.getItem('driver_logged_in')) {
+            window.location.href = 'login.html';
+        }
+
+        // Earnings data by period
+        const earningsData = {
+            today: {
+                total: '2,450', trips: '8', hours: '6.5h', avg: '306',
+                chart: [0, 0, 0, 0, 0, 320, 480, 520, 0, 380, 450, 300]
+            },
+            week: {
+                total: '18,320', trips: '52', hours: '42h', avg: '352',
+                chart: [2100, 2850, 3200, 2450, 3120, 2400, 2200]
+            },
+            month: {
+                total: '68,450', trips: '186', hours: '156h', avg: '368',
+                chart: [15200, 18320, 17800, 17130]
+            },
+            year: {
+                total: '524,680', trips: '1,420', hours: '1,180h', avg: '370',
+                chart: [42000, 38500, 45200, 48300, 52100, 55800, 48200, 42300, 38900, 44500, 50200, 68680]
+            }
+        };
+
+        // Initialize chart
+        let earningsChart;
+        initChart('week');
+
+        function initChart(period) {
+            const ctx = document.getElementById('earningsChart').getContext('2d');
+            const data = earningsData[period];
+
+            let labels;
+            if (period === 'today') {
+                labels = ['6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM'];
+            } else if (period === 'week') {
+                labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            } else if (period === 'month') {
+                labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+            } else {
+                labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            }
+
+            if (earningsChart) {
+                earningsChart.destroy();
+            }
+
+            earningsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Earnings (ETB)',
+                        data: data.chart,
+                        backgroundColor: 'rgba(26, 115, 232, 0.8)',
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: true,
+                                color: 'rgba(0,0,0,0.05)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'ETB ' + value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Set period
+        function setPeriod(period, btn) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update data
+            const data = earningsData[period];
+            document.getElementById('totalEarnings').textContent = data.total;
+            document.getElementById('tripsCount').textContent = data.trips;
+            document.getElementById('onlineHours').textContent = data.hours;
+            document.getElementById('avgPerTrip').textContent = data.avg;
+
+            // Update chart
+            initChart(period);
+        }
+
+        // Request payout
+        function requestPayout() {
+            if (confirm('Request payout of ETB 15,420 to your bank account?')) {
+                showToast('Payout requested! Funds will arrive in 1-2 business days.');
+            }
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--driver-dark);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                z-index: 1000;
+                max-width: 90%;
+                text-align: center;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 4000);
+        }
+    </script>
+</body>
+</html>

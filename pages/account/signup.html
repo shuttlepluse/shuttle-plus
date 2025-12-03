@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Shuttle Plus</title>
+    <meta name="description" content="Create a Shuttle Plus account to book airport transfers, save preferences, and enjoy member benefits.">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/icon-96x96.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/account.css">
+</head>
+<body class="auth-page">
+    <!-- Left Side - Branding -->
+    <div class="auth-left">
+        <div class="auth-left-content">
+            <a href="/" class="auth-logo">Shuttle<span>Plus</span></a>
+            <h1>Join Shuttle Plus</h1>
+            <p>Create an account to enjoy seamless airport transfers with exclusive member benefits.</p>
+            <div class="auth-features">
+                <div class="auth-feature">
+                    <i class="fas fa-tag"></i>
+                    <span>10% off your first booking</span>
+                </div>
+                <div class="auth-feature">
+                    <i class="fas fa-clock"></i>
+                    <span>Priority customer support</span>
+                </div>
+                <div class="auth-feature">
+                    <i class="fas fa-gift"></i>
+                    <span>Earn loyalty points</span>
+                </div>
+                <div class="auth-feature">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Manage bookings on the go</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side - Form -->
+    <div class="auth-right">
+        <div class="auth-form-container">
+            <div class="auth-form-header">
+                <h2>Create Account</h2>
+                <p>Fill in your details to get started</p>
+            </div>
+
+            <form class="auth-form" id="signupForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="firstName" placeholder="John" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="lastName" placeholder="Doe" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="you@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <div class="phone-input">
+                        <select id="countryCode">
+                            <option value="+251">+251</option>
+                            <option value="+1">+1</option>
+                            <option value="+44">+44</option>
+                            <option value="+49">+49</option>
+                            <option value="+33">+33</option>
+                            <option value="+971">+971</option>
+                            <option value="+86">+86</option>
+                            <option value="+91">+91</option>
+                        </select>
+                        <div class="input-icon" style="flex: 1;">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="phone" placeholder="91 234 5678" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Create a strong password" required minlength="8">
+                        <button type="button" class="toggle-password" onclick="togglePassword('password')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <span class="strength-text" id="strengthText">Use 8+ characters with letters, numbers & symbols</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-checkbox" style="margin-bottom: 1.5rem;">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">I agree to the <a href="/pages/doc/terms.html">Terms of Service</a> and <a href="/pages/doc/privacy.html">Privacy Policy</a></label>
+                </div>
+
+                <div class="form-checkbox" style="margin-bottom: 1.5rem;">
+                    <input type="checkbox" id="newsletter">
+                    <label for="newsletter">Send me travel tips and exclusive offers</label>
+                </div>
+
+                <button type="submit" class="btn-auth">
+                    <span>Create Account</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <div class="auth-divider">
+                    <span>or sign up with</span>
+                </div>
+
+                <div class="social-auth">
+                    <button type="button" class="btn-social">
+                        <i class="fab fa-google" style="color: #ea4335;"></i>
+                        Google
+                    </button>
+                    <button type="button" class="btn-social">
+                        <i class="fab fa-facebook-f" style="color: #1877f2;"></i>
+                        Facebook
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-footer">
+                Already have an account? <a href="login.html">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.parentElement.querySelector('.toggle-password i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Password strength checker
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const fill = document.getElementById('strengthFill');
+            const text = document.getElementById('strengthText');
+
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
+
+            fill.className = 'strength-fill';
+            if (strength <= 1) {
+                fill.classList.add('weak');
+                text.textContent = 'Weak password';
+            } else if (strength <= 2) {
+                fill.classList.add('medium');
+                text.textContent = 'Medium strength';
+            } else {
+                fill.classList.add('strong');
+                text.textContent = 'Strong password';
+            }
+        });
+
+        // Form submission
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('countryCode').value + document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            // Store user data (demo)
+            localStorage.setItem('customer_logged_in', 'true');
+            localStorage.setItem('customer_email', email);
+            localStorage.setItem('customer_name', firstName + ' ' + lastName);
+            localStorage.setItem('customer_phone', phone);
+
+            // Redirect to dashboard
+            window.location.href = 'dashboard.html';
+        });
+
+        // Check if already logged in
+        if (localStorage.getItem('customer_logged_in')) {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

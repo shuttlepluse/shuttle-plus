@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Driver App | Shuttle Plus</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#183251">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="stylesheet" href="../../css/driver.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="screen login-screen active" id="loginScreen">
+        <div class="login-container">
+            <div class="login-logo">
+                <i class="fas fa-car"></i>
+                <h1>Shuttle<span>Plus</span></h1>
+                <p>Driver App</p>
+            </div>
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="phoneInput" placeholder="Phone number" required>
+                </div>
+                <div class="input-group" id="otpGroup" style="display: none;">
+                    <i class="fas fa-lock"></i>
+                    <input type="text" id="otpInput" placeholder="Enter OTP" maxlength="6">
+                </div>
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <span>Continue</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+            <p class="demo-note">Demo: Enter any phone number</p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="screen main-screen" id="mainScreen">
+        <!-- Header -->
+        <header class="driver-header">
+            <div class="header-left">
+                <button class="menu-btn" id="menuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="driver-status" id="driverStatus">
+                    <span class="status-dot online"></span>
+                    <span>Online</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="earnings-badge" id="earningsBadge">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>$0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Map Container -->
+        <div class="map-container" id="mapContainer">
+            <div id="map"></div>
+            <button class="locate-btn" id="locateBtn">
+                <i class="fas fa-crosshairs"></i>
+            </button>
+        </div>
+
+        <!-- Status Toggle -->
+        <div class="status-toggle" id="statusToggle">
+            <div class="toggle-track">
+                <div class="toggle-thumb" id="toggleThumb"></div>
+            </div>
+            <span class="toggle-label" id="toggleLabel">Go Online</span>
+        </div>
+
+        <!-- Trip Cards Container -->
+        <div class="trip-container" id="tripContainer">
+            <!-- Waiting State -->
+            <div class="trip-state waiting active" id="waitingState">
+                <div class="waiting-animation">
+                    <div class="pulse-ring"></div>
+                    <i class="fas fa-car"></i>
+                </div>
+                <h3>Waiting for trips...</h3>
+                <p>Stay online to receive new trip requests</p>
+            </div>
+
+            <!-- New Trip Request -->
+            <div class="trip-state request" id="requestState">
+                <div class="request-timer" id="requestTimer">
+                    <svg class="timer-ring" viewBox="0 0 100 100">
+                        <circle class="timer-bg" cx="50" cy="50" r="45"/>
+                        <circle class="timer-progress" cx="50" cy="50" r="45" id="timerProgress"/>
+                    </svg>
+                    <span id="timerCount">30</span>
+                </div>
+                <div class="request-info">
+                    <div class="trip-type" id="tripType">
+                        <i class="fas fa-plane-arrival"></i>
+                        <span>Airport Pickup</span>
+                    </div>
+                    <div class="trip-route">
+                        <div class="route-point pickup">
+                            <i class="fas fa-circle"></i>
+                            <span id="pickupLocation">Bole International Airport</span>
+                        </div>
+                        <div class="route-line"></div>
+                        <div class="route-point dropoff">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="dropoffLocation">Sheraton Addis</span>
+                        </div>
+                    </div>
+                    <div class="trip-details">
+                        <div class="detail">
+                            <i class="fas fa-users"></i>
+                            <span id="passengerCount">2</span>
+                        </div>
+                        <div class="detail">
+                            <i class="fas fa-suitcase"></i>
+                            <span id="luggageCount">3</span>
+                        </div>
+                        <div class="detail">
+                            <i class="fas fa-clock"></i>
+                            <span id="pickupTime">2:30 PM</span>
+                        </div>
+                        <div class="detail fare">
+                            <span id="tripFare">$35</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="request-actions">
+                    <button class="btn-decline" id="declineBtn">
+                        <i class="fas fa-times"></i>
+                        <span>Decline</span>
+                    </button>
+                    <button class="btn-accept" id="acceptBtn">
+                        <i class="fas fa-check"></i>
+                        <span>Accept</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Trip -->
+            <div class="trip-state active-trip" id="activeTripState">
+                <div class="active-trip-header">
+                    <div class="trip-status" id="tripStatus">
+                        <span class="status-text">En Route to Pickup</span>
+                    </div>
+                    <button class="btn-navigate" id="navigateBtn">
+                        <i class="fas fa-directions"></i>
+                    </button>
+                </div>
+
+                <div class="customer-info">
+                    <div class="customer-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="customer-details">
+                        <h4 id="customerName">John Smith</h4>
+                        <p id="customerFlight">Flight ET302 • Landing 2:15 PM</p>
+                    </div>
+                    <div class="customer-actions">
+                        <button class="btn-call" id="callCustomerBtn">
+                            <i class="fas fa-phone"></i>
+                        </button>
+                        <button class="btn-message" id="messageCustomerBtn">
+                            <i class="fas fa-comment"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="trip-progress">
+                    <div class="progress-step completed" data-step="accepted">
+                        <div class="step-icon"><i class="fas fa-check"></i></div>
+                        <span>Accepted</span>
+                    </div>
+                    <div class="progress-step active" data-step="arriving">
+                        <div class="step-icon"><i class="fas fa-car"></i></div>
+                        <span>Arriving</span>
+                    </div>
+                    <div class="progress-step" data-step="picked_up">
+                        <div class="step-icon"><i class="fas fa-user-check"></i></div>
+                        <span>Picked Up</span>
+                    </div>
+                    <div class="progress-step" data-step="completed">
+                        <div class="step-icon"><i class="fas fa-flag-checkered"></i></div>
+                        <span>Completed</span>
+                    </div>
+                </div>
+
+                <div class="destination-info">
+                    <div class="dest-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="dest-details">
+                        <span class="dest-label">Destination</span>
+                        <span class="dest-address" id="destAddress">Sheraton Addis Hotel</span>
+                    </div>
+                    <div class="dest-eta">
+                        <span id="destETA">25 min</span>
+                    </div>
+                </div>
+
+                <button class="btn-update-status" id="updateStatusBtn">
+                    <span>Arrived at Pickup</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Trip Complete -->
+            <div class="trip-state complete" id="completeState">
+                <div class="complete-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Trip Completed!</h3>
+                <div class="complete-summary">
+                    <div class="summary-row">
+                        <span>Trip Fare</span>
+                        <span id="completeFare">$35.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Payment Method</span>
+                        <span id="completePayment">Cash</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Your Earnings</span>
+                        <span id="completeEarnings">$28.00</span>
+                    </div>
+                </div>
+                <button class="btn-done" id="doneBtn">
+                    <span>Done</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Side Menu -->
+        <div class="side-menu" id="sideMenu">
+            <div class="menu-overlay" id="menuOverlay"></div>
+            <div class="menu-content">
+                <div class="menu-header">
+                    <div class="driver-profile">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h4 id="driverName">Abebe Kebede</h4>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <span id="driverRating">4.9</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <nav class="menu-nav">
+                    <a href="#" class="menu-item" data-page="home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="#" class="menu-item" data-page="trips">
+                        <i class="fas fa-history"></i>
+                        <span>Trip History</span>
+                    </a>
+                    <a href="#" class="menu-item" data-page="earnings">
+                        <i class="fas fa-wallet"></i>
+                        <span>Earnings</span>
+                    </a>
+                    <a href="#" class="menu-item" data-page="vehicle">
+                        <i class="fas fa-car"></i>
+                        <span>My Vehicle</span>
+                    </a>
+                    <a href="#" class="menu-item" data-page="documents">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Documents</span>
+                    </a>
+                    <a href="#" class="menu-item" data-page="support">
+                        <i class="fas fa-headset"></i>
+                        <span>Support</span>
+                    </a>
+                    <a href="#" class="menu-item" data-page="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+                <div class="menu-footer">
+                    <button class="btn-logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings Modal -->
+    <div class="modal" id="earningsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Today's Earnings</h2>
+                <button class="modal-close" id="closeEarningsModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="earnings-summary">
+                    <div class="earnings-total">
+                        <span class="label">Total Earned</span>
+                        <span class="amount" id="totalEarned">$0.00</span>
+                    </div>
+                    <div class="earnings-stats">
+                        <div class="stat">
+                            <span class="value" id="tripsCompleted">0</span>
+                            <span class="label">Trips</span>
+                        </div>
+                        <div class="stat">
+                            <span class="value" id="hoursOnline">0h</span>
+                            <span class="label">Online</span>
+                        </div>
+                        <div class="stat">
+                            <span class="value" id="avgPerTrip">$0</span>
+                            <span class="label">Avg/Trip</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="earnings-list" id="earningsList">
+                    <!-- Trip earnings will be listed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <script src="../../js/driver.js"></script>
+</body>
+</html>

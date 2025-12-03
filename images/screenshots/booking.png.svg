@@ -1,0 +1,41 @@
+<svg width="750" height="1334" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#597B87"/>
+      <stop offset="100%" style="stop-color:#183251"/>
+    </linearGradient>
+  </defs>
+  <!-- Phone frame -->
+  <rect width="100%" height="100%" fill="#f5f5f5"/>
+  <!-- Header -->
+  <rect width="100%" height="200" fill="url(#header)"/>
+  <text x="375" y="100" font-family="Arial, sans-serif" font-size="36" fill="white" text-anchor="middle" font-weight="bold">Shuttle Plus</text>
+  <text x="375" y="150" font-family="Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.9)" text-anchor="middle">Book Your Transfer</text>
+
+  <!-- Form card -->
+  <rect x="40" y="240" width="670" height="800" rx="20" fill="white" filter="url(#shadow)"/>
+
+  <!-- Form fields -->
+  <rect x="80" y="300" width="590" height="60" rx="10" fill="#f0f0f0"/>
+  <text x="100" y="340" font-family="Arial, sans-serif" font-size="18" fill="#666">Pickup Location</text>
+
+  <rect x="80" y="400" width="590" height="60" rx="10" fill="#f0f0f0"/>
+  <text x="100" y="440" font-family="Arial, sans-serif" font-size="18" fill="#666">Drop-off Location</text>
+
+  <rect x="80" y="500" width="285" height="60" rx="10" fill="#f0f0f0"/>
+  <text x="100" y="540" font-family="Arial, sans-serif" font-size="18" fill="#666">Date</text>
+
+  <rect x="385" y="500" width="285" height="60" rx="10" fill="#f0f0f0"/>
+  <text x="405" y="540" font-family="Arial, sans-serif" font-size="18" fill="#666">Time</text>
+
+  <rect x="80" y="600" width="590" height="60" rx="10" fill="#f0f0f0"/>
+  <text x="100" y="640" font-family="Arial, sans-serif" font-size="18" fill="#666">Flight Number (Optional)</text>
+
+  <!-- Book button -->
+  <rect x="80" y="900" width="590" height="70" rx="12" fill="#597B87"/>
+  <text x="375" y="945" font-family="Arial, sans-serif" font-size="22" fill="white" text-anchor="middle" font-weight="bold">Get Quote</text>
+
+  <!-- Bottom nav -->
+  <rect x="0" y="1234" width="100%" height="100" fill="white"/>
+  <line x1="0" y1="1234" x2="750" y2="1234" stroke="#e0e0e0"/>
+</svg>

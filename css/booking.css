@@ -1,0 +1,804 @@
+/* ========================================
+   SHUTTLE PLUS - Booking Page Styles
+   ======================================== */
+
+/* Booking Container */
+.booking-container {
+    min-height: 100vh;
+    padding: 6rem 1rem 2rem;
+    background: var(--gray-50);
+}
+
+/* Progress Steps */
+.booking-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+    padding: 1.5rem;
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.4;
+    transition: var(--transition);
+}
+
+.progress-step.active,
+.progress-step.completed {
+    opacity: 1;
+}
+
+.step-number {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-200);
+    color: var(--gray-600);
+    font-weight: 600;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.progress-step.active .step-number {
+    background: var(--gradient);
+    color: var(--white);
+}
+
+.progress-step.completed .step-number {
+    background: var(--success);
+    color: var(--white);
+}
+
+.progress-step.completed .step-number::before {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+}
+
+.step-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--gray-600);
+    text-align: center;
+}
+
+.progress-line {
+    flex: 1;
+    height: 2px;
+    background: var(--gray-200);
+    margin: 0 0.5rem;
+    max-width: 60px;
+}
+
+/* Booking Form */
+.booking-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.booking-step {
+    display: none;
+    background: var(--white);
+    border-radius: var(--radius-2xl);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-lg);
+    animation: fadeIn 0.3s ease;
+}
+
+.booking-step.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.step-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.step-header h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.step-header p {
+    color: var(--gray-500);
+}
+
+/* Transfer Options */
+.transfer-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.transfer-option input {
+    display: none;
+}
+
+.option-card {
+    padding: 2rem;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-xl);
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.option-card:hover {
+    border-color: var(--primary);
+}
+
+.transfer-option input:checked + .option-card {
+    border-color: var(--primary);
+    background: rgba(89, 123, 135, 0.05);
+}
+
+.option-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-100);
+    border-radius: var(--radius-lg);
+    margin: 0 auto 1rem;
+    font-size: 1.75rem;
+    color: var(--primary);
+    transition: var(--transition);
+}
+
+.transfer-option input:checked + .option-card .option-icon {
+    background: var(--gradient);
+    color: var(--white);
+}
+
+.option-card h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.option-card p {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+}
+
+/* Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+.form-group label i {
+    color: var(--primary);
+    width: 16px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(89, 123, 135, 0.1);
+}
+
+.form-hint {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+}
+
+/* Flight Info Card */
+.flight-info-card {
+    padding: 1rem 1.25rem;
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid var(--success);
+}
+
+.flight-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.airline-name {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.flight-status {
+    padding: 0.25rem 0.75rem;
+    background: var(--success);
+    color: var(--white);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+}
+
+.flight-status.delayed {
+    background: var(--warning, #f59e0b);
+}
+
+.flight-info-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: var(--gray-600);
+}
+
+.flight-route {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flight-route i {
+    color: var(--primary);
+}
+
+.flight-time {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.flight-time i {
+    color: var(--primary);
+}
+
+/* Vehicle Options */
+.vehicle-options {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.vehicle-option input {
+    display: none;
+}
+
+.vehicle-card {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.vehicle-card:hover {
+    border-color: var(--primary);
+}
+
+.vehicle-option input:checked + .vehicle-card {
+    border-color: var(--primary);
+    background: rgba(89, 123, 135, 0.05);
+}
+
+.vehicle-card.premium {
+    border-color: #d4af37;
+}
+
+.vehicle-option input:checked + .vehicle-card.premium {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(89, 123, 135, 0.05));
+}
+
+.premium-badge {
+    position: absolute;
+    top: -8px;
+    right: 1rem;
+    padding: 0.25rem 0.75rem;
+    background: linear-gradient(135deg, #d4af37, #b8960c);
+    color: var(--white);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: var(--radius-full);
+}
+
+.vehicle-image {
+    width: 80px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-100);
+    border-radius: var(--radius-lg);
+    font-size: 2rem;
+    color: var(--primary);
+}
+
+.vehicle-info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+}
+
+.vehicle-info p {
+    font-size: 0.8125rem;
+    color: var(--gray-500);
+    margin-bottom: 0.5rem;
+}
+
+.vehicle-features {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.vehicle-features span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--gray-600);
+}
+
+.vehicle-features i {
+    color: var(--primary);
+    font-size: 0.7rem;
+}
+
+.vehicle-price {
+    text-align: right;
+}
+
+.vehicle-price .price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+/* Extras Section */
+.extras-section {
+    padding: 1.5rem;
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+}
+
+.extras-section h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 1rem;
+}
+
+.checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+
+.checkbox-option input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    color: var(--gray-700);
+}
+
+.checkbox-label i {
+    color: var(--primary);
+}
+
+.checkbox-label a {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+/* Booking Summary */
+.booking-summary {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.summary-section {
+    padding: 1.25rem;
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+}
+
+.summary-section h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.summary-section h4 i {
+    color: var(--primary);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    font-size: 0.9375rem;
+}
+
+.summary-row span:first-child {
+    color: var(--gray-600);
+}
+
+.summary-row span:last-child {
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.summary-row.total {
+    border-top: 2px solid var(--gray-200);
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+}
+
+.summary-row.total span:last-child {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.summary-row.total small {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--gray-500);
+}
+
+.summary-section.pricing {
+    background: linear-gradient(135deg, rgba(89, 123, 135, 0.1), rgba(24, 50, 81, 0.05));
+}
+
+/* Payment Section */
+.payment-section {
+    margin-bottom: 2rem;
+}
+
+.payment-section h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 1rem;
+}
+
+.payment-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.payment-option input {
+    display: none;
+}
+
+.payment-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.25rem 1rem;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.payment-card:hover {
+    border-color: var(--primary);
+}
+
+.payment-option input:checked + .payment-card {
+    border-color: var(--primary);
+    background: rgba(89, 123, 135, 0.05);
+}
+
+.payment-card i {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.payment-card span {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+/* Terms Section */
+.terms-section {
+    padding: 1.25rem;
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+}
+
+/* Step Actions */
+.step-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--gray-200);
+}
+
+.step-actions .btn {
+    min-width: 150px;
+}
+
+.step-actions .btn-next,
+.step-actions .btn-submit {
+    margin-left: auto;
+}
+
+/* Success State */
+.booking-success {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 3rem;
+    background: var(--white);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.success-icon {
+    font-size: 5rem;
+    color: var(--success);
+    margin-bottom: 1.5rem;
+    animation: successPulse 0.5s ease;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.booking-success h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.booking-reference {
+    font-size: 1.125rem;
+    color: var(--gray-600);
+    margin-bottom: 0.5rem;
+}
+
+.booking-reference strong {
+    color: var(--primary-dark);
+    font-family: monospace;
+    font-size: 1.25rem;
+}
+
+.success-details {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gray-700);
+}
+
+.detail-item i {
+    color: var(--primary);
+}
+
+.success-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    z-index: 9999;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--gray-200);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-overlay p {
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .booking-progress {
+        padding: 1rem;
+        overflow-x: auto;
+    }
+
+    .step-label {
+        display: none;
+    }
+
+    .progress-line {
+        max-width: 30px;
+    }
+
+    .booking-step {
+        padding: 1.5rem;
+    }
+
+    .transfer-options {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: span 1;
+    }
+
+    .vehicle-card {
+        grid-template-columns: 60px 1fr;
+        gap: 1rem;
+    }
+
+    .vehicle-image {
+        width: 60px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .vehicle-price {
+        grid-column: span 2;
+        text-align: left;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--gray-200);
+    }
+
+    .payment-options {
+        grid-template-columns: 1fr;
+    }
+
+    .step-actions {
+        flex-direction: column-reverse;
+    }
+
+    .step-actions .btn {
+        width: 100%;
+    }
+
+    .success-details {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .success-actions {
+        flex-direction: column;
+    }
+
+    .success-actions .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .booking-container {
+        padding: 5rem 0.75rem 1.5rem;
+    }
+
+    .step-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .option-card {
+        padding: 1.5rem;
+    }
+
+    .option-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
+    }
+}

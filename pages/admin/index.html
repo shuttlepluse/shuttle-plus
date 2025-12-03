@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Shuttle Plus</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <!-- Login Screen -->
+    <div class="admin-login" id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="fas fa-car"></i>
+                <span>Shuttle<span class="accent">Plus</span></span>
+            </div>
+            <h1>Admin Dashboard</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="admin@shuttleplus.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <span>Sign In</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+            <p class="demo-hint">Demo: admin@shuttleplus.com / admin123</p>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="admin-container" id="dashboard" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-car"></i>
+                    <span>Shuttle<span class="accent">Plus</span></span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="overview">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-page="bookings">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Bookings</span>
+                    <span class="badge" id="pendingBadge">0</span>
+                </a>
+                <a href="#" class="nav-item" data-page="drivers">
+                    <i class="fas fa-id-card"></i>
+                    <span>Drivers</span>
+                </a>
+                <a href="#" class="nav-item" data-page="customers">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="#" class="nav-item" data-page="vehicles">
+                    <i class="fas fa-car-side"></i>
+                    <span>Vehicles</span>
+                </a>
+                <a href="#" class="nav-item" data-page="reports">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="admin-profile">
+                    <div class="admin-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="admin-info">
+                        <span class="admin-name">Admin User</span>
+                        <span class="admin-role">Administrator</span>
+                    </div>
+                </div>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Top Bar -->
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <h1 class="page-title" id="pageTitle">Overview</h1>
+                </div>
+                <div class="topbar-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search bookings..." id="globalSearch">
+                    </div>
+                    <button class="btn-icon notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <button class="btn-icon refresh-btn" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="admin-content">
+                <!-- Overview Page -->
+                <section class="page-section active" id="page-overview">
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="statTodayBookings">0</span>
+                                <span class="stat-label">Today's Bookings</span>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>12%</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="statTodayRevenue">$0</span>
+                                <span class="stat-label">Today's Revenue</span>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>8%</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="statPending">0</span>
+                                <span class="stat-label">Pending Trips</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="statActiveDrivers">0</span>
+                                <span class="stat-label">Active Drivers</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Bookings & Live Map -->
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3>Recent Bookings</h3>
+                                <a href="#" class="view-all" data-page="bookings">View All</a>
+                            </div>
+                            <div class="card-body">
+                                <table class="data-table mini">
+                                    <thead>
+                                        <tr>
+                                            <th>Reference</th>
+                                            <th>Customer</th>
+                                            <th>Pickup</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentBookingsTable">
+                                        <tr>
+                                            <td colspan="4" class="loading-cell">
+                                                <i class="fas fa-spinner fa-spin"></i> Loading...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3>Today's Schedule</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="schedule-timeline" id="scheduleTimeline">
+                                    <div class="timeline-empty">
+                                        <i class="fas fa-calendar-day"></i>
+                                        <p>No scheduled trips</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <h3>Quick Actions</h3>
+                        <div class="actions-grid">
+                            <button class="action-btn" id="newBookingBtn">
+                                <i class="fas fa-plus"></i>
+                                <span>New Booking</span>
+                            </button>
+                            <button class="action-btn" id="assignDriverBtn">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Assign Driver</span>
+                            </button>
+                            <button class="action-btn" id="sendNotificationBtn">
+                                <i class="fas fa-bell"></i>
+                                <span>Send Notification</span>
+                            </button>
+                            <button class="action-btn" id="exportReportBtn">
+                                <i class="fas fa-download"></i>
+                                <span>Export Report</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bookings Page -->
+                <section class="page-section" id="page-bookings">
+                    <div class="page-header">
+                        <div class="filter-bar">
+                            <select id="statusFilter">
+                                <option value="">All Statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="driver_assigned">Driver Assigned</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            <select id="dateFilter">
+                                <option value="today">Today</option>
+                                <option value="tomorrow">Tomorrow</option>
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                                <option value="all" selected>All Time</option>
+                            </select>
+                            <input type="date" id="customDate">
+                        </div>
+                        <button class="btn-primary" id="addBookingBtn">
+                            <i class="fas fa-plus"></i>
+                            <span>New Booking</span>
+                        </button>
+                    </div>
+
+                    <div class="data-table-container">
+                        <table class="data-table" id="bookingsTable">
+                            <thead>
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Customer</th>
+                                    <th>Type</th>
+                                    <th>Pickup Time</th>
+                                    <th>Destination</th>
+                                    <th>Vehicle</th>
+                                    <th>Driver</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingsTableBody">
+                                <tr>
+                                    <td colspan="10" class="loading-cell">
+                                        <i class="fas fa-spinner fa-spin"></i> Loading bookings...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination" id="bookingsPagination">
+                        <button class="btn-page" disabled>&laquo; Prev</button>
+                        <span class="page-info">Page 1 of 1</span>
+                        <button class="btn-page" disabled>Next &raquo;</button>
+                    </div>
+                </section>
+
+                <!-- Drivers Page -->
+                <section class="page-section" id="page-drivers">
+                    <div class="page-header">
+                        <div class="filter-bar">
+                            <select id="driverStatusFilter">
+                                <option value="">All Drivers</option>
+                                <option value="available">Available</option>
+                                <option value="on_trip">On Trip</option>
+                                <option value="offline">Offline</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" id="addDriverBtn">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Driver</span>
+                        </button>
+                    </div>
+
+                    <div class="drivers-grid" id="driversGrid">
+                        <!-- Driver cards will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Customers Page -->
+                <section class="page-section" id="page-customers">
+                    <div class="page-header">
+                        <div class="search-filter">
+                            <input type="text" placeholder="Search customers..." id="customerSearch">
+                        </div>
+                        <button class="btn-primary" id="exportCustomersBtn">
+                            <i class="fas fa-download"></i>
+                            <span>Export</span>
+                        </button>
+                    </div>
+
+                    <div class="data-table-container">
+                        <table class="data-table" id="customersTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Total Trips</th>
+                                    <th>Total Spent</th>
+                                    <th>Last Trip</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody">
+                                <tr>
+                                    <td colspan="7" class="loading-cell">
+                                        <i class="fas fa-spinner fa-spin"></i> Loading customers...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Vehicles Page -->
+                <section class="page-section" id="page-vehicles">
+                    <div class="page-header">
+                        <div class="filter-bar">
+                            <select id="vehicleTypeFilter">
+                                <option value="">All Types</option>
+                                <option value="standard">Standard</option>
+                                <option value="executive">Executive</option>
+                                <option value="suv">SUV</option>
+                                <option value="luxury">Luxury</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" id="addVehicleBtn">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Vehicle</span>
+                        </button>
+                    </div>
+
+                    <div class="vehicles-grid" id="vehiclesGrid">
+                        <!-- Vehicle cards will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Reports Page -->
+                <section class="page-section" id="page-reports">
+                    <div class="reports-grid">
+                        <div class="report-card">
+                            <h3><i class="fas fa-chart-bar"></i> Revenue Report</h3>
+                            <p>Daily, weekly, and monthly revenue breakdown</p>
+                            <button class="btn-secondary" data-report="revenue">Generate</button>
+                        </div>
+                        <div class="report-card">
+                            <h3><i class="fas fa-car"></i> Trip Report</h3>
+                            <p>Completed trips, cancellations, and ratings</p>
+                            <button class="btn-secondary" data-report="trips">Generate</button>
+                        </div>
+                        <div class="report-card">
+                            <h3><i class="fas fa-users"></i> Driver Performance</h3>
+                            <p>Driver ratings, trips completed, earnings</p>
+                            <button class="btn-secondary" data-report="drivers">Generate</button>
+                        </div>
+                        <div class="report-card">
+                            <h3><i class="fas fa-plane"></i> Flight Analysis</h3>
+                            <p>Popular flights, delay patterns, peak times</p>
+                            <button class="btn-secondary" data-report="flights">Generate</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Page -->
+                <section class="page-section" id="page-settings">
+                    <div class="settings-container">
+                        <div class="settings-section">
+                            <h3>Pricing Settings</h3>
+                            <div class="settings-form">
+                                <div class="form-row">
+                                    <label>Exchange Rate (USD to ETB)</label>
+                                    <input type="number" id="exchangeRate" value="154">
+                                </div>
+                                <div class="form-row">
+                                    <label>Night Surcharge (%)</label>
+                                    <input type="number" id="nightSurcharge" value="25">
+                                </div>
+                                <div class="form-row">
+                                    <label>Peak Hours Surcharge (%)</label>
+                                    <input type="number" id="peakSurcharge" value="15">
+                                </div>
+                                <button class="btn-primary" id="savePricingBtn">Save Changes</button>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Notification Settings</h3>
+                            <div class="settings-form">
+                                <div class="form-row toggle-row">
+                                    <label>SMS Notifications</label>
+                                    <input type="checkbox" id="smsEnabled" checked>
+                                </div>
+                                <div class="form-row toggle-row">
+                                    <label>WhatsApp Notifications</label>
+                                    <input type="checkbox" id="whatsappEnabled" checked>
+                                </div>
+                                <div class="form-row toggle-row">
+                                    <label>Email Notifications</label>
+                                    <input type="checkbox" id="emailEnabled" checked>
+                                </div>
+                                <button class="btn-primary" id="saveNotificationBtn">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Booking Details -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2>Booking Details</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="bookingModalContent">
+                <!-- Content loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-close">Close</button>
+                <button class="btn-primary" id="saveBookingChanges">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Assign Driver -->
+    <div class="modal" id="assignDriverModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Assign Driver</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="assign-booking-ref">Booking: <strong id="assignBookingRef"></strong></p>
+                <div class="driver-select-list" id="availableDriversList">
+                    <!-- Available drivers loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-close">Cancel</button>
+                <button class="btn-primary" id="confirmAssignDriver">Assign Driver</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/admin.js"></script>
+</body>
+</html>

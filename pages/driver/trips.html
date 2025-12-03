@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Trips | Shuttle Plus Driver</title>
+    <meta name="description" content="View and manage your trips on Shuttle Plus driver portal.">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/icon-96x96.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/driver.css">
+</head>
+<body class="driver-portal">
+    <!-- Header -->
+    <header class="driver-header">
+        <div class="driver-header-content">
+            <div class="driver-header-left">
+                <a href="dashboard.html" class="driver-header-logo">Shuttle<span>Plus</span></a>
+            </div>
+            <div class="driver-header-right">
+                <button class="driver-notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+                <img src="https://ui-avatars.com/api/?name=Abebe+Kebede&background=1a73e8&color=fff" alt="Driver" class="driver-avatar">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="driver-content">
+        <h1 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--driver-dark);">My Trips</h1>
+
+        <!-- Trip Filters -->
+        <div class="trip-history-filters">
+            <button class="filter-btn active" onclick="filterTrips('all', this)">All</button>
+            <button class="filter-btn" onclick="filterTrips('completed', this)">Completed</button>
+            <button class="filter-btn" onclick="filterTrips('scheduled', this)">Scheduled</button>
+            <button class="filter-btn" onclick="filterTrips('cancelled', this)">Cancelled</button>
+        </div>
+
+        <!-- Active Trip (if any) -->
+        <div id="activeTrip" style="display: none;">
+            <div class="section-header">
+                <h2>Active Trip</h2>
+            </div>
+            <div class="trip-card" style="border-left-color: var(--driver-success);">
+                <div class="trip-card-header">
+                    <div class="trip-type">
+                        <i class="fas fa-car" style="background: #e6f4ea; color: var(--driver-success);"></i>
+                        <div class="trip-type-info">
+                            <h4>In Progress</h4>
+                            <span>Started 15 min ago</span>
+                        </div>
+                    </div>
+                    <div class="trip-fare">
+                        <div class="amount">ETB 850</div>
+                        <div class="distance">12.5 km</div>
+                    </div>
+                </div>
+                <div class="trip-route">
+                    <div class="route-point">
+                        <div class="route-dot pickup"></div>
+                        <div class="route-info">
+                            <h5>Bole International Airport</h5>
+                            <p>Terminal 2, Arrivals</p>
+                        </div>
+                    </div>
+                    <div class="route-point">
+                        <div class="route-dot dropoff"></div>
+                        <div class="route-info">
+                            <h5>Sheraton Addis Hotel</h5>
+                            <p>Taitu Street, Piazza</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="trip-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-user"></i>
+                        <span>Sarah M.</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>3.2 km remaining</span>
+                    </div>
+                </div>
+                <div class="trip-actions">
+                    <button class="btn-trip call">
+                        <i class="fas fa-phone"></i>
+                        Call
+                    </button>
+                    <button class="btn-trip navigate">
+                        <i class="fas fa-navigation"></i>
+                        Navigate
+                    </button>
+                    <button class="btn-trip complete" onclick="completeTrip()">
+                        <i class="fas fa-flag-checkered"></i>
+                        Complete
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trip History -->
+        <div class="section-header" style="margin-top: 1.5rem;">
+            <h2>Trip History</h2>
+        </div>
+
+        <div id="tripHistory">
+            <!-- Today -->
+            <div style="font-size: 0.8rem; color: var(--driver-text-muted); margin: 1rem 0 0.5rem; font-weight: 500;">TODAY</div>
+
+            <div class="trip-history-item" data-status="completed">
+                <div class="trip-history-header">
+                    <span class="trip-history-date">Today, 2:30 PM</span>
+                    <span class="trip-history-status completed">Completed</span>
+                </div>
+                <div class="trip-history-route">
+                    <span>Bole Airport</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Hilton Hotel</span>
+                </div>
+                <div class="trip-history-footer">
+                    <span class="trip-history-fare">ETB 720</span>
+                    <span class="trip-history-distance">10.2 km " 25 min</span>
+                </div>
+            </div>
+
+            <div class="trip-history-item" data-status="completed">
+                <div class="trip-history-header">
+                    <span class="trip-history-date">Today, 11:45 AM</span>
+                    <span class="trip-history-status completed">Completed</span>
+                </div>
+                <div class="trip-history-route">
+                    <span>Sheraton Addis</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Bole Airport</span>
+                </div>
+                <div class="trip-history-footer">
+                    <span class="trip-history-fare">ETB 850</span>
+                    <span class="trip-history-distance">12.5 km " 30 min</span>
+                </div>
+            </div>
+
+            <div class="trip-history-item" data-status="cancelled">
+                <div class="trip-history-header">
+                    <span class="trip-history-date">Today, 9:15 AM</span>
+                    <span class="trip-history-status cancelled">Cancelled</span>
+                </div>
+                <div class="trip-history-route">
+                    <span>Radisson Blu</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Bole Airport</span>
+                </div>
+                <div class="trip-history-footer">
+                    <span class="trip-history-fare">ETB 0</span>
+                    <span class="trip-history-distance">Customer cancelled</span>
+                </div>
+            </div>
+
+            <!-- Yesterday -->
+            <div style="font-size: 0.8rem; color: var(--driver-text-muted); margin: 1.5rem 0 0.5rem; font-weight: 500;">YESTERDAY</div>
+
+            <div class="trip-history-item" data-status="completed">
+                <div class="trip-history-header">
+                    <span class="trip-history-date">Yesterday, 6:00 PM</span>
+                    <span class="trip-history-status completed">Completed</span>
+                </div>
+                <div class="trip-history-route">
+                    <span>Bole Airport</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Hyatt Regency</span>
+                </div>
+                <div class="trip-history-footer">
+                    <span class="trip-history-fare">ETB 680</span>
+                    <span class="trip-history-distance">9.8 km " 22 min</span>
+                </div>
+            </div>
+
+            <div class="trip-history-item" data-status="completed">
+                <div class="trip-history-header">
+                    <span class="trip-history-date">Yesterday, 3:30 PM</span>
+                    <span class="trip-history-status completed">Completed</span>
+                </div>
+                <div class="trip-history-route">
+                    <span>Capital Hotel</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Bole Airport</span>
+                </div>
+                <div class="trip-history-footer">
+                    <span class="trip-history-fare">ETB 920</span>
+                    <span class="trip-history-distance">14.2 km " 35 min</span>
+                </div>
+            </div>
+
+            <div class="trip-history-item" data-status="completed">
+                <div class="trip-history-header">
+                    <span class="trip-history-date">Yesterday, 10:00 AM</span>
+                    <span class="trip-history-status completed">Completed</span>
+                </div>
+                <div class="trip-history-route">
+                    <span>Bole Airport</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Marriott Executive</span>
+                </div>
+                <div class="trip-history-footer">
+                    <span class="trip-history-fare">ETB 780</span>
+                    <span class="trip-history-distance">11.5 km " 28 min</span>
+                </div>
+            </div>
+
+            <!-- Scheduled -->
+            <div class="trip-history-item" data-status="scheduled" style="display: none;">
+                <div class="trip-history-header">
+                    <span class="trip-history-date">Tomorrow, 6:00 AM</span>
+                    <span class="trip-history-status" style="background: #e8f0fe; color: var(--driver-primary);">Scheduled</span>
+                </div>
+                <div class="trip-history-route">
+                    <span>Radisson Blu</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Bole Airport</span>
+                </div>
+                <div class="trip-history-footer">
+                    <span class="trip-history-fare">ETB 950</span>
+                    <span class="trip-history-distance">15.8 km</span>
+                </div>
+            </div>
+
+            <div class="trip-history-item" data-status="scheduled" style="display: none;">
+                <div class="trip-history-header">
+                    <span class="trip-history-date">Dec 5, 4:30 PM</span>
+                    <span class="trip-history-status" style="background: #e8f0fe; color: var(--driver-primary);">Scheduled</span>
+                </div>
+                <div class="trip-history-route">
+                    <span>Bole Airport</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Sheraton Addis</span>
+                </div>
+                <div class="trip-history-footer">
+                    <span class="trip-history-fare">ETB 850</span>
+                    <span class="trip-history-distance">12.5 km</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Load More -->
+        <button style="width: 100%; padding: 1rem; background: white; border: 1px solid var(--driver-border); border-radius: 10px; color: var(--driver-primary); font-weight: 500; cursor: pointer; margin-top: 1rem;">
+            Load More Trips
+        </button>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="driver-bottom-nav">
+        <a href="dashboard.html" class="driver-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="trips.html" class="driver-nav-item active">
+            <i class="fas fa-car"></i>
+            <span>Trips</span>
+        </a>
+        <a href="earnings.html" class="driver-nav-item">
+            <i class="fas fa-wallet"></i>
+            <span>Earnings</span>
+        </a>
+        <a href="profile.html" class="driver-nav-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // Check authentication
+        if (!localStorage.getItem('driver_logged_in')) {
+            window.location.href = 'login.html';
+        }
+
+        // Check for active trip parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('active') === 'true') {
+            document.getElementById('activeTrip').style.display = 'block';
+        }
+
+        // Check for tab parameter
+        if (urlParams.get('tab') === 'scheduled') {
+            filterTrips('scheduled', document.querySelector('.filter-btn:nth-child(3)'));
+        }
+
+        // Filter trips
+        function filterTrips(status, btn) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Filter items
+            const items = document.querySelectorAll('.trip-history-item');
+            items.forEach(item => {
+                const itemStatus = item.getAttribute('data-status');
+                if (status === 'all') {
+                    item.style.display = itemStatus === 'scheduled' ? 'none' : 'block';
+                } else if (status === itemStatus) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Show/hide date headers based on visible items
+            const dateHeaders = document.querySelectorAll('#tripHistory > div[style*="font-size: 0.8rem"]');
+            dateHeaders.forEach(header => {
+                const nextItems = [];
+                let sibling = header.nextElementSibling;
+                while (sibling && !sibling.style.fontSize) {
+                    nextItems.push(sibling);
+                    sibling = sibling.nextElementSibling;
+                }
+                const hasVisibleItem = nextItems.some(item => item.style.display !== 'none');
+                header.style.display = hasVisibleItem ? 'block' : 'none';
+            });
+        }
+
+        // Complete trip
+        function completeTrip() {
+            if (confirm('Mark this trip as completed?')) {
+                document.getElementById('activeTrip').style.display = 'none';
+                showToast('Trip completed! Earnings added.');
+            }
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--driver-dark);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                z-index: 1000;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

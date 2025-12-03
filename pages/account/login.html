@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | Shuttle Plus</title>
+    <meta name="description" content="Sign in to your Shuttle Plus account to manage bookings, view history, and access exclusive features.">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/icon-96x96.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/account.css">
+</head>
+<body class="auth-page">
+    <!-- Left Side - Branding -->
+    <div class="auth-left">
+        <div class="auth-left-content">
+            <a href="/" class="auth-logo">Shuttle<span>Plus</span></a>
+            <h1>Welcome Back!</h1>
+            <p>Sign in to manage your airport transfers, view booking history, and access exclusive member benefits.</p>
+            <div class="auth-features">
+                <div class="auth-feature">
+                    <i class="fas fa-history"></i>
+                    <span>View complete booking history</span>
+                </div>
+                <div class="auth-feature">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Save favorite addresses</span>
+                </div>
+                <div class="auth-feature">
+                    <i class="fas fa-bolt"></i>
+                    <span>Quick one-click rebooking</span>
+                </div>
+                <div class="auth-feature">
+                    <i class="fas fa-percent"></i>
+                    <span>Exclusive member discounts</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side - Form -->
+    <div class="auth-right">
+        <div class="auth-form-container">
+            <div class="auth-form-header">
+                <h2>Sign In</h2>
+                <p>Enter your credentials to access your account</p>
+            </div>
+
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="you@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('password')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <div class="form-link" style="margin: 0;">
+                        <a href="forgot-password.html">Forgot password?</a>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-auth">
+                    <span>Sign In</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <div class="auth-divider">
+                    <span>or continue with</span>
+                </div>
+
+                <div class="social-auth">
+                    <button type="button" class="btn-social">
+                        <i class="fab fa-google" style="color: #ea4335;"></i>
+                        Google
+                    </button>
+                    <button type="button" class="btn-social">
+                        <i class="fab fa-facebook-f" style="color: #1877f2;"></i>
+                        Facebook
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-footer">
+                Don't have an account? <a href="signup.html">Sign up for free</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.parentElement.querySelector('.toggle-password i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Demo login - accept any credentials
+            if (email && password) {
+                // Store login state
+                localStorage.setItem('customer_logged_in', 'true');
+                localStorage.setItem('customer_email', email);
+                localStorage.setItem('customer_name', email.split('@')[0]);
+
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // Check if already logged in
+        if (localStorage.getItem('customer_logged_in')) {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Shuttle Plus</title>
+    <meta name="description" content="Manage your Shuttle Plus account, view bookings, and update preferences.">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/icon-96x96.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/account.css">
+</head>
+<body class="account-page">
+    <!-- Header -->
+    <header class="account-header">
+        <div class="container">
+            <a href="/" class="account-logo">Shuttle<span>Plus</span></a>
+            <nav class="account-nav">
+                <a href="/">Home</a>
+                <a href="/pages/booking.html">Book Transfer</a>
+                <a href="/pages/tickets.html">My Tickets</a>
+                <a href="/pages/doc/faq.html">Help</a>
+            </nav>
+            <div class="account-user" id="userDropdown">
+                <div class="account-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span id="headerUserName">User</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="account-container">
+        <div class="account-layout">
+            <!-- Sidebar -->
+            <aside class="account-sidebar">
+                <div class="sidebar-profile">
+                    <div class="sidebar-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 id="sidebarUserName">User</h3>
+                    <p id="sidebarUserEmail">user@example.com</p>
+                </div>
+
+                <ul class="sidebar-menu">
+                    <li><a href="#dashboard" class="active" data-section="dashboard"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                    <li><a href="#bookings" data-section="bookings"><i class="fas fa-calendar-check"></i> My Bookings</a></li>
+                    <li><a href="#addresses" data-section="addresses"><i class="fas fa-map-marker-alt"></i> Saved Addresses</a></li>
+                    <li><a href="#profile" data-section="profile"><i class="fas fa-user-edit"></i> Profile Settings</a></li>
+                    <li><a href="#security" data-section="security"><i class="fas fa-shield-alt"></i> Security</a></li>
+                    <li class="menu-divider"></li>
+                    <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
+                </ul>
+            </aside>
+
+            <!-- Content Area -->
+            <div class="account-content">
+                <!-- Dashboard Section -->
+                <section id="section-dashboard" class="account-section-content">
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalBookings">12</h3>
+                                <p>Total Bookings</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="completedTrips">10</h3>
+                                <p>Completed Trips</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="upcomingTrips">2</h3>
+                                <p>Upcoming Trips</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>250</h3>
+                                <p>Loyalty Points</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="account-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-clock"></i> Upcoming Transfers</h2>
+                            <a href="/pages/booking.html" class="btn-outline">Book New Transfer</a>
+                        </div>
+                        <div class="booking-list" id="upcomingBookings">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+
+                    <div class="account-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-history"></i> Recent Activity</h2>
+                            <a href="#bookings" onclick="showSection('bookings')">View All</a>
+                        </div>
+                        <div class="booking-list" id="recentBookings">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bookings Section -->
+                <section id="section-bookings" class="account-section-content" style="display: none;">
+                    <div class="account-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-calendar-check"></i> My Bookings</h2>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <select id="bookingFilter" onchange="filterBookings()">
+                                    <option value="all">All Bookings</option>
+                                    <option value="upcoming">Upcoming</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="booking-list" id="allBookings">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Addresses Section -->
+                <section id="section-addresses" class="account-section-content" style="display: none;">
+                    <div class="account-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-map-marker-alt"></i> Saved Addresses</h2>
+                        </div>
+                        <div class="address-grid" id="addressGrid">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Profile Section -->
+                <section id="section-profile" class="account-section-content" style="display: none;">
+                    <div class="account-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-user-edit"></i> Profile Settings</h2>
+                        </div>
+                        <form class="profile-form" id="profileForm">
+                            <div class="profile-avatar-upload">
+                                <div class="avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div>
+                                    <button type="button" class="upload-btn">
+                                        <i class="fas fa-camera"></i> Change Photo
+                                    </button>
+                                    <p style="font-size: 0.8rem; color: var(--account-text-muted); margin-top: 0.5rem;">
+                                        JPG, PNG or GIF. Max 2MB.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="profileFirstName">First Name</label>
+                                    <input type="text" id="profileFirstName" placeholder="John">
+                                </div>
+                                <div class="form-group">
+                                    <label for="profileLastName">Last Name</label>
+                                    <input type="text" id="profileLastName" placeholder="Doe">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profileEmail">Email Address</label>
+                                <input type="email" id="profileEmail" placeholder="you@example.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profilePhone">Phone Number</label>
+                                <input type="tel" id="profilePhone" placeholder="+251 91 234 5678">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profileLanguage">Preferred Language</label>
+                                <select id="profileLanguage">
+                                    <option value="en">English</option>
+                                    <option value="am">Amharic</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profileCurrency">Preferred Currency</label>
+                                <select id="profileCurrency">
+                                    <option value="ETB">Ethiopian Birr (ETB)</option>
+                                    <option value="USD">US Dollar (USD)</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn-save">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Security Section -->
+                <section id="section-security" class="account-section-content" style="display: none;">
+                    <div class="account-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-shield-alt"></i> Security Settings</h2>
+                        </div>
+
+                        <div class="security-item">
+                            <div class="security-info">
+                                <h4>Password</h4>
+                                <p>Last changed 30 days ago</p>
+                            </div>
+                            <button class="btn-outline" onclick="showChangePassword()">Change Password</button>
+                        </div>
+
+                        <div class="security-item">
+                            <div class="security-info">
+                                <h4>Two-Factor Authentication</h4>
+                                <p>Add an extra layer of security to your account</p>
+                            </div>
+                            <button class="btn-outline">Enable 2FA</button>
+                        </div>
+
+                        <div class="security-item">
+                            <div class="security-info">
+                                <h4>Active Sessions</h4>
+                                <p>Manage devices where you're signed in</p>
+                            </div>
+                            <button class="btn-outline">View Sessions</button>
+                        </div>
+
+                        <div class="security-item">
+                            <div class="security-info">
+                                <h4>Login History</h4>
+                                <p>See recent login activity</p>
+                            </div>
+                            <button class="btn-outline">View History</button>
+                        </div>
+                    </div>
+
+                    <div class="account-section" style="border: 1px solid #ef4444;">
+                        <div class="section-header">
+                            <h2 style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> Danger Zone</h2>
+                        </div>
+
+                        <div class="security-item">
+                            <div class="security-info">
+                                <h4>Delete Account</h4>
+                                <p>Permanently delete your account and all data</p>
+                            </div>
+                            <button class="btn-outline" style="border-color: #ef4444; color: #ef4444;">Delete Account</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        if (!localStorage.getItem('customer_logged_in')) {
+            window.location.href = 'login.html';
+        }
+
+        // Load user data
+        const userName = localStorage.getItem('customer_name') || 'User';
+        const userEmail = localStorage.getItem('customer_email') || 'user@example.com';
+
+        document.getElementById('headerUserName').textContent = userName.split(' ')[0];
+        document.getElementById('sidebarUserName').textContent = userName;
+        document.getElementById('sidebarUserEmail').textContent = userEmail;
+
+        // Demo bookings data
+        const bookings = [
+            {
+                id: 'SP-2025-001234',
+                type: 'pickup',
+                from: 'Bole International Airport',
+                to: 'Sheraton Addis',
+                date: '2025-12-10',
+                time: '14:30',
+                price: '$45',
+                status: 'upcoming'
+            },
+            {
+                id: 'SP-2025-001189',
+                type: 'dropoff',
+                from: 'Radisson Blu Hotel',
+                to: 'Bole International Airport',
+                date: '2025-12-15',
+                time: '06:00',
+                price: '$42',
+                status: 'upcoming'
+            },
+            {
+                id: 'SP-2025-001102',
+                type: 'pickup',
+                from: 'Bole International Airport',
+                to: 'Hilton Addis',
+                date: '2025-11-28',
+                time: '10:15',
+                price: '$38',
+                status: 'completed'
+            },
+            {
+                id: 'SP-2025-001056',
+                type: 'pickup',
+                from: 'Bole International Airport',
+                to: 'Hyatt Regency',
+                date: '2025-11-20',
+                time: '18:45',
+                price: '$52',
+                status: 'completed'
+            },
+            {
+                id: 'SP-2025-000998',
+                type: 'dropoff',
+                from: 'Capital Hotel',
+                to: 'Bole International Airport',
+                date: '2025-11-15',
+                time: '04:30',
+                price: '$35',
+                status: 'completed'
+            },
+            {
+                id: 'SP-2025-000876',
+                type: 'pickup',
+                from: 'Bole International Airport',
+                to: 'African Union HQ',
+                date: '2025-11-05',
+                time: '09:00',
+                price: '$40',
+                status: 'cancelled'
+            }
+        ];
+
+        // Demo addresses
+        const addresses = [
+            {
+                id: 1,
+                type: 'home',
+                label: 'Home',
+                address: 'Bole Road, Near Edna Mall, Addis Ababa',
+                isDefault: true
+            },
+            {
+                id: 2,
+                type: 'work',
+                label: 'Office',
+                address: 'Kazanchis Business District, Tower 3, Floor 8'
+            },
+            {
+                id: 3,
+                type: 'hotel',
+                label: 'Sheraton Addis',
+                address: 'Taitu Street, Addis Ababa, Ethiopia'
+            }
+        ];
+
+        // Render bookings
+        function renderBookings() {
+            const upcoming = bookings.filter(b => b.status === 'upcoming');
+            const recent = bookings.filter(b => b.status !== 'upcoming').slice(0, 3);
+
+            document.getElementById('upcomingBookings').innerHTML = upcoming.length > 0
+                ? upcoming.map(b => renderBookingItem(b)).join('')
+                : '<p style="color: var(--account-text-muted); text-align: center; padding: 2rem;">No upcoming transfers. <a href="/pages/booking.html">Book one now!</a></p>';
+
+            document.getElementById('recentBookings').innerHTML = recent.map(b => renderBookingItem(b)).join('');
+
+            document.getElementById('allBookings').innerHTML = bookings.map(b => renderBookingItem(b)).join('');
+
+            // Update stats
+            document.getElementById('totalBookings').textContent = bookings.length;
+            document.getElementById('completedTrips').textContent = bookings.filter(b => b.status === 'completed').length;
+            document.getElementById('upcomingTrips').textContent = upcoming.length;
+        }
+
+        function renderBookingItem(booking) {
+            const icon = booking.type === 'pickup' ? 'plane-arrival' : 'plane-departure';
+            return `
+                <div class="booking-item">
+                    <div class="booking-icon">
+                        <i class="fas fa-${icon}"></i>
+                    </div>
+                    <div class="booking-details">
+                        <h4>${booking.from} → ${booking.to}</h4>
+                        <p><i class="fas fa-calendar"></i> ${formatDate(booking.date)} at ${booking.time} &bull; Ref: ${booking.id}</p>
+                    </div>
+                    <div class="booking-meta">
+                        <div class="booking-price">${booking.price}</div>
+                        <span class="booking-status ${booking.status}">${capitalize(booking.status)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // Render addresses
+        function renderAddresses() {
+            const grid = document.getElementById('addressGrid');
+            grid.innerHTML = addresses.map(addr => `
+                <div class="address-card ${addr.isDefault ? 'default' : ''}">
+                    ${addr.isDefault ? '<span class="address-badge">Default</span>' : ''}
+                    <div class="address-type">
+                        <i class="fas fa-${addr.type === 'home' ? 'home' : addr.type === 'work' ? 'briefcase' : 'hotel'}"></i>
+                        <span>${addr.label}</span>
+                    </div>
+                    <p class="address-text">${addr.address}</p>
+                    <div class="address-actions">
+                        <button onclick="editAddress(${addr.id})">Edit</button>
+                        ${!addr.isDefault ? '<button onclick="setDefault(' + addr.id + ')">Set Default</button>' : ''}
+                        <button onclick="deleteAddress(${addr.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('') + `
+                <div class="add-address-card address-card" onclick="addAddress()">
+                    <i class="fas fa-plus"></i>
+                    <span>Add New Address</span>
+                </div>
+            `;
+        }
+
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.account-section-content').forEach(s => s.style.display = 'none');
+
+            // Show selected section
+            document.getElementById('section-' + sectionId).style.display = 'block';
+
+            // Update active menu
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            document.querySelector(`.sidebar-menu a[data-section="${sectionId}"]`).classList.add('active');
+        }
+
+        // Menu click handlers
+        document.querySelectorAll('.sidebar-menu a[data-section]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSection(this.dataset.section);
+            });
+        });
+
+        // Filter bookings
+        function filterBookings() {
+            const filter = document.getElementById('bookingFilter').value;
+            const filtered = filter === 'all' ? bookings : bookings.filter(b => b.status === filter);
+            document.getElementById('allBookings').innerHTML = filtered.length > 0
+                ? filtered.map(b => renderBookingItem(b)).join('')
+                : '<p style="color: var(--account-text-muted); text-align: center; padding: 2rem;">No bookings found.</p>';
+        }
+
+        // Address actions
+        function addAddress() {
+            alert('Add address modal would open here');
+        }
+
+        function editAddress(id) {
+            alert('Edit address ' + id);
+        }
+
+        function setDefault(id) {
+            addresses.forEach(a => a.isDefault = (a.id === id));
+            renderAddresses();
+        }
+
+        function deleteAddress(id) {
+            if (confirm('Delete this address?')) {
+                const index = addresses.findIndex(a => a.id === id);
+                if (index > -1) addresses.splice(index, 1);
+                renderAddresses();
+            }
+        }
+
+        // Profile form
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Profile saved!');
+        });
+
+        // Change password
+        function showChangePassword() {
+            alert('Change password modal would open here');
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('customer_logged_in');
+            localStorage.removeItem('customer_email');
+            localStorage.removeItem('customer_name');
+            localStorage.removeItem('customer_phone');
+            window.location.href = 'login.html';
+        }
+
+        // Initialize
+        renderBookings();
+        renderAddresses();
+
+        // Load profile data
+        const nameParts = userName.split(' ');
+        document.getElementById('profileFirstName').value = nameParts[0] || '';
+        document.getElementById('profileLastName').value = nameParts[1] || '';
+        document.getElementById('profileEmail').value = userEmail;
+        document.getElementById('profilePhone').value = localStorage.getItem('customer_phone') || '';
+    </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Driver Assigned - Shuttle Plus</title>
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+    <style>
+        body, table, td, p, a, li, blockquote {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        @media screen and (max-width: 600px) {
+            .mobile-padding {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+            .mobile-stack {
+                display: block !important;
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4;">
+    <!-- Preview Text -->
+    <div style="display: none; max-height: 0; overflow: hidden;">
+        Your driver {{driver_name}} is assigned and ready! Vehicle: {{vehicle_model}} ({{vehicle_plate}})
+    </div>
+
+    <!-- Email Container -->
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f4f4;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <!-- Email Content -->
+                <table role="presentation" cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #597B87 0%, #183251 100%); padding: 30px 40px; text-align: center;">
+                            <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
+                                Shuttle<span style="color: rgba(255,255,255,0.8);">Plus</span>
+                            </h1>
+                        </td>
+                    </tr>
+
+                    <!-- Driver Assigned Banner -->
+                    <tr>
+                        <td style="background-color: #1a73e8; padding: 20px 40px; text-align: center;">
+                            <p style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600;">
+                                =— Your Driver Has Been Assigned!
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 40px;" class="mobile-padding">
+                            <!-- Greeting -->
+                            <p style="margin: 0 0 20px; color: #333333; font-size: 16px; line-height: 1.6;">
+                                Hi <strong>{{customer_name}}</strong>,
+                            </p>
+                            <p style="margin: 0 0 30px; color: #666666; font-size: 16px; line-height: 1.6;">
+                                Great news! A driver has been assigned to your upcoming transfer. Here are the details:
+                            </p>
+
+                            <!-- Driver Card -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8f9fa; border-radius: 16px; overflow: hidden; margin-bottom: 30px;">
+                                <tr>
+                                    <td style="padding: 25px;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="100" valign="top">
+                                                    <!-- Driver Photo -->
+                                                    <div style="width: 80px; height: 80px; background-color: #597B87; border-radius: 50%; text-align: center; line-height: 80px; color: white; font-size: 32px; font-weight: 600;">
+                                                        {{driver_initials}}
+                                                    </div>
+                                                </td>
+                                                <td valign="top" style="padding-left: 15px;">
+                                                    <h3 style="margin: 0 0 5px; color: #333333; font-size: 20px; font-weight: 600;">{{driver_name}}</h3>
+                                                    <p style="margin: 0 0 10px; color: #666666; font-size: 14px;">
+                                                        P {{driver_rating}} rating " {{driver_trips}}+ trips
+                                                    </p>
+                                                    <p style="margin: 0; color: #1a73e8; font-size: 14px; font-weight: 500;">
+                                                        Speaks: {{driver_languages}}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Vehicle Details -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border: 2px solid #e9ecef; border-radius: 12px; overflow: hidden; margin-bottom: 30px;">
+                                <tr>
+                                    <td style="background-color: #f8f9fa; padding: 15px 20px; border-bottom: 1px solid #e9ecef;">
+                                        <p style="margin: 0; color: #333333; font-size: 14px; font-weight: 600;">=™ Vehicle Details</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="padding-bottom: 15px;">
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px;">VEHICLE</p>
+                                                    <p style="margin: 0; color: #333333; font-size: 16px; font-weight: 600;">{{vehicle_model}}</p>
+                                                </td>
+                                                <td style="padding-bottom: 15px; text-align: right;">
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px;">COLOR</p>
+                                                    <p style="margin: 0; color: #333333; font-size: 16px;">{{vehicle_color}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="text-align: center; padding-top: 15px; border-top: 1px solid #e9ecef;">
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px;">LICENSE PLATE</p>
+                                                    <p style="margin: 0; color: #1a73e8; font-size: 24px; font-weight: 700; letter-spacing: 2px; font-family: monospace;">
+                                                        {{vehicle_plate}}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Trip Details -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #e8f4fd; border-radius: 12px; padding: 20px; margin-bottom: 30px;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <p style="margin: 0 0 15px; color: #1a73e8; font-size: 14px; font-weight: 600;">=Å Your Trip</p>
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="padding-bottom: 10px;">
+                                                    <p style="margin: 0; color: #333333; font-size: 16px; font-weight: 600;">
+                                                        {{trip_date}} at {{trip_time}}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p style="margin: 0 0 5px; color: #666666; font-size: 14px;">
+                                                        <strong>From:</strong> {{pickup_location}}
+                                                    </p>
+                                                    <p style="margin: 0; color: #666666; font-size: 14px;">
+                                                        <strong>To:</strong> {{dropoff_location}}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Contact Driver -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="text-align: center; padding-bottom: 15px;">
+                                        <p style="margin: 0 0 15px; color: #666666; font-size: 14px;">Contact your driver directly:</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="50%" style="padding-right: 10px;">
+                                                    <a href="tel:{{driver_phone}}" style="display: block; background-color: #34a853; color: #ffffff; text-decoration: none; padding: 15px; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: center;">
+                                                        =Þ Call Driver
+                                                    </a>
+                                                </td>
+                                                <td width="50%" style="padding-left: 10px;">
+                                                    <a href="https://wa.me/{{driver_whatsapp}}" style="display: block; background-color: #25D366; color: #ffffff; text-decoration: none; padding: 15px; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: center;">
+                                                        =¬ WhatsApp
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Meeting Point Info -->
+                    <tr>
+                        <td style="background-color: #fff8e6; padding: 25px 40px;" class="mobile-padding">
+                            <p style="margin: 0 0 10px; color: #856404; font-size: 14px; font-weight: 600;">
+                                =Í Meeting Point
+                            </p>
+                            <p style="margin: 0; color: #856404; font-size: 14px; line-height: 1.6;">
+                                {{meeting_instructions}}
+                            </p>
+                            <p style="margin: 10px 0 0; color: #856404; font-size: 14px;">
+                                Your driver will hold a sign with your name: <strong>{{customer_name}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Track Your Ride -->
+                    <tr>
+                        <td style="padding: 30px 40px; text-align: center;" class="mobile-padding">
+                            <a href="{{tracking_url}}" style="display: inline-block; background: linear-gradient(135deg, #597B87 0%, #183251 100%); color: #ffffff; text-decoration: none; padding: 15px 40px; border-radius: 8px; font-size: 16px; font-weight: 600;">
+                                =Í Track Your Ride Live
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f8f9fa; padding: 25px 40px; text-align: center;" class="mobile-padding">
+                            <p style="margin: 0 0 15px; color: #666666; font-size: 14px;">
+                                Need help? We're here 24/7
+                            </p>
+                            <p style="margin: 0 0 20px; color: #597B87; font-size: 14px; font-weight: 500;">
+                                =Þ +251 91 234 5678 " 	 support@shuttleplus.et
+                            </p>
+                            <p style="margin: 0; color: #999999; font-size: 12px;">
+                                © 2024 Shuttle Plus. All rights reserved.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

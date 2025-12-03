@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard | Shuttle Plus</title>
+    <meta name="description" content="Shuttle Plus driver dashboard - manage trips, track earnings, and more.">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/icon-96x96.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/driver.css">
+</head>
+<body class="driver-portal">
+    <!-- Header -->
+    <header class="driver-header">
+        <div class="driver-header-content">
+            <div class="driver-header-left">
+                <a href="dashboard.html" class="driver-header-logo">Shuttle<span>Plus</span></a>
+                <div class="driver-status-toggle" onclick="toggleStatus()">
+                    <span class="status-indicator online" id="statusIndicator"></span>
+                    <span id="statusText">Online</span>
+                </div>
+            </div>
+            <div class="driver-header-right">
+                <button class="driver-notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+                <img src="https://ui-avatars.com/api/?name=Abebe+Kebede&background=1a73e8&color=fff" alt="Driver" class="driver-avatar">
+            </div>
+        </div>
+    </header>
+
+    <!-- Active Trip Banner (shown when trip in progress) -->
+    <div class="active-trip-banner" id="activeTripBanner" style="display: none;">
+        <div class="active-trip-info">
+            <i class="fas fa-car"></i>
+            <div class="active-trip-details">
+                <h4>Trip in Progress</h4>
+                <p>Heading to Bole International Airport</p>
+            </div>
+        </div>
+        <button class="active-trip-action" onclick="viewActiveTrip()">View Trip</button>
+    </div>
+
+    <!-- Main Content -->
+    <main class="driver-content">
+        <!-- Earnings Card -->
+        <div class="driver-earnings-card">
+            <div class="earnings-header">
+                <div class="earnings-period">
+                    Today's Earnings
+                    <select id="earningsPeriod" onchange="updateEarnings()">
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                    </select>
+                </div>
+                <button class="earnings-details-btn" onclick="window.location.href='earnings.html'">
+                    <i class="fas fa-chart-line"></i>
+                    Details
+                </button>
+            </div>
+            <div class="earnings-amount">
+                <div class="label">Total Earned</div>
+                <div class="amount"><span class="currency">ETB</span> <span id="totalEarnings">2,450</span></div>
+            </div>
+            <div class="earnings-stats">
+                <div class="earnings-stat">
+                    <div class="value" id="completedTrips">8</div>
+                    <div class="label">Trips</div>
+                </div>
+                <div class="earnings-stat">
+                    <div class="value" id="onlineHours">6.5h</div>
+                    <div class="label">Online</div>
+                </div>
+                <div class="earnings-stat">
+                    <div class="value" id="acceptanceRate">92%</div>
+                    <div class="label">Acceptance</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="driver-quick-stats">
+            <div class="quick-stat-card">
+                <div class="stat-icon trips">
+                    <i class="fas fa-route"></i>
+                </div>
+                <div class="stat-value">156</div>
+                <div class="stat-label">Total Trips</div>
+            </div>
+            <div class="quick-stat-card">
+                <div class="stat-icon hours">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-value">124h</div>
+                <div class="stat-label">Hours Driven</div>
+            </div>
+            <div class="quick-stat-card">
+                <div class="stat-icon rating">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-value">4.92</div>
+                <div class="stat-label">Rating</div>
+            </div>
+            <div class="quick-stat-card">
+                <div class="stat-icon distance">
+                    <i class="fas fa-road"></i>
+                </div>
+                <div class="stat-value">2,340</div>
+                <div class="stat-label">KM Driven</div>
+            </div>
+        </div>
+
+        <!-- New Trip Requests -->
+        <div class="section-header">
+            <h2>New Requests</h2>
+            <a href="trips.html">View All</a>
+        </div>
+
+        <div id="tripRequests">
+            <!-- New Trip Request -->
+            <div class="trip-card new-request">
+                <div class="trip-card-header">
+                    <div class="trip-type">
+                        <i class="fas fa-plane-arrival"></i>
+                        <div class="trip-type-info">
+                            <h4>Airport Pickup</h4>
+                            <span>2 min away</span>
+                        </div>
+                    </div>
+                    <div class="trip-fare">
+                        <div class="amount">ETB 850</div>
+                        <div class="distance">12.5 km</div>
+                    </div>
+                </div>
+                <div class="trip-route">
+                    <div class="route-point">
+                        <div class="route-dot pickup"></div>
+                        <div class="route-info">
+                            <h5>Bole International Airport</h5>
+                            <p>Terminal 2, Arrivals</p>
+                        </div>
+                    </div>
+                    <div class="route-point">
+                        <div class="route-dot dropoff"></div>
+                        <div class="route-info">
+                            <h5>Sheraton Addis Hotel</h5>
+                            <p>Taitu Street, Piazza</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="trip-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-user"></i>
+                        <span>Sarah M. (4.8)</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-suitcase"></i>
+                        <span>2 bags</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Pick up now</span>
+                    </div>
+                </div>
+                <div class="trip-actions">
+                    <button class="btn-trip decline" onclick="declineTrip(this)">
+                        <i class="fas fa-times"></i>
+                        Decline
+                    </button>
+                    <button class="btn-trip accept" onclick="acceptTrip(this)">
+                        <i class="fas fa-check"></i>
+                        Accept
+                    </button>
+                </div>
+            </div>
+
+            <!-- Another Request -->
+            <div class="trip-card new-request">
+                <div class="trip-card-header">
+                    <div class="trip-type">
+                        <i class="fas fa-plane-departure"></i>
+                        <div class="trip-type-info">
+                            <h4>Airport Dropoff</h4>
+                            <span>5 min away</span>
+                        </div>
+                    </div>
+                    <div class="trip-fare">
+                        <div class="amount">ETB 720</div>
+                        <div class="distance">10.2 km</div>
+                    </div>
+                </div>
+                <div class="trip-route">
+                    <div class="route-point">
+                        <div class="route-dot pickup"></div>
+                        <div class="route-info">
+                            <h5>Hilton Addis Ababa</h5>
+                            <p>Menelik II Avenue</p>
+                        </div>
+                    </div>
+                    <div class="route-point">
+                        <div class="route-dot dropoff"></div>
+                        <div class="route-info">
+                            <h5>Bole International Airport</h5>
+                            <p>Terminal 1, Departures</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="trip-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-user"></i>
+                        <span>John D. (4.9)</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-suitcase"></i>
+                        <span>3 bags</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>In 15 min</span>
+                    </div>
+                </div>
+                <div class="trip-actions">
+                    <button class="btn-trip decline" onclick="declineTrip(this)">
+                        <i class="fas fa-times"></i>
+                        Decline
+                    </button>
+                    <button class="btn-trip accept" onclick="acceptTrip(this)">
+                        <i class="fas fa-check"></i>
+                        Accept
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scheduled Trips -->
+        <div class="section-header" style="margin-top: 1.5rem;">
+            <h2>Upcoming Scheduled</h2>
+            <a href="trips.html?tab=scheduled">View All</a>
+        </div>
+
+        <div class="trip-card">
+            <div class="trip-card-header">
+                <div class="trip-type">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="trip-type-info">
+                        <h4>Scheduled Pickup</h4>
+                        <span>Tomorrow, 6:00 AM</span>
+                    </div>
+                </div>
+                <div class="trip-fare">
+                    <div class="amount">ETB 950</div>
+                    <div class="distance">15.8 km</div>
+                </div>
+            </div>
+            <div class="trip-route">
+                <div class="route-point">
+                    <div class="route-dot pickup"></div>
+                    <div class="route-info">
+                        <h5>Radisson Blu Hotel</h5>
+                        <p>Kazanchis, Addis Ababa</p>
+                    </div>
+                </div>
+                <div class="route-point">
+                    <div class="route-dot dropoff"></div>
+                    <div class="route-info">
+                        <h5>Bole International Airport</h5>
+                        <p>Terminal 2, Departures</p>
+                    </div>
+                </div>
+            </div>
+            <div class="trip-meta">
+                <div class="meta-item">
+                    <i class="fas fa-user"></i>
+                    <span>Michael T. (5.0)</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-suitcase"></i>
+                    <span>1 bag</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Card Payment</span>
+                </div>
+            </div>
+            <div class="trip-actions">
+                <button class="btn-trip call">
+                    <i class="fas fa-phone"></i>
+                    Call
+                </button>
+                <button class="btn-trip navigate">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Navigate
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="driver-bottom-nav">
+        <a href="dashboard.html" class="driver-nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="trips.html" class="driver-nav-item">
+            <i class="fas fa-car"></i>
+            <span>Trips</span>
+        </a>
+        <a href="earnings.html" class="driver-nav-item">
+            <i class="fas fa-wallet"></i>
+            <span>Earnings</span>
+        </a>
+        <a href="profile.html" class="driver-nav-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // Check authentication
+        if (!localStorage.getItem('driver_logged_in')) {
+            window.location.href = 'login.html';
+        }
+
+        // Toggle online status
+        let isOnline = true;
+        function toggleStatus() {
+            isOnline = !isOnline;
+            const indicator = document.getElementById('statusIndicator');
+            const text = document.getElementById('statusText');
+
+            if (isOnline) {
+                indicator.classList.remove('offline');
+                indicator.classList.add('online');
+                text.textContent = 'Online';
+            } else {
+                indicator.classList.remove('online');
+                indicator.classList.add('offline');
+                text.textContent = 'Offline';
+            }
+        }
+
+        // Accept trip
+        function acceptTrip(btn) {
+            const card = btn.closest('.trip-card');
+            card.classList.remove('new-request');
+            card.style.borderLeftColor = 'var(--driver-primary)';
+
+            // Update actions
+            const actions = card.querySelector('.trip-actions');
+            actions.innerHTML = `
+                <button class="btn-trip call">
+                    <i class="fas fa-phone"></i>
+                    Call
+                </button>
+                <button class="btn-trip navigate" onclick="startNavigation()">
+                    <i class="fas fa-navigation"></i>
+                    Navigate
+                </button>
+            `;
+
+            // Show active trip banner
+            document.getElementById('activeTripBanner').style.display = 'flex';
+
+            // Show notification
+            showToast('Trip accepted! Navigate to pickup location.');
+        }
+
+        // Decline trip
+        function declineTrip(btn) {
+            const card = btn.closest('.trip-card');
+            card.style.animation = 'fadeOut 0.3s ease forwards';
+            setTimeout(() => card.remove(), 300);
+            showToast('Trip declined');
+        }
+
+        // Start navigation
+        function startNavigation() {
+            // Open Google Maps with directions
+            window.open('https://www.google.com/maps/dir/?api=1&destination=Bole+International+Airport', '_blank');
+        }
+
+        // View active trip
+        function viewActiveTrip() {
+            window.location.href = 'trips.html?active=true';
+        }
+
+        // Update earnings based on period
+        function updateEarnings() {
+            const period = document.getElementById('earningsPeriod').value;
+            const earningsData = {
+                today: { amount: '2,450', trips: '8', hours: '6.5h', acceptance: '92%' },
+                week: { amount: '18,320', trips: '52', hours: '42h', acceptance: '89%' },
+                month: { amount: '68,450', trips: '186', hours: '156h', acceptance: '91%' }
+            };
+
+            const data = earningsData[period];
+            document.getElementById('totalEarnings').textContent = data.amount;
+            document.getElementById('completedTrips').textContent = data.trips;
+            document.getElementById('onlineHours').textContent = data.hours;
+            document.getElementById('acceptanceRate').textContent = data.acceptance;
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--driver-dark);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                z-index: 1000;
+                animation: slideUp 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Add keyframe animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; transform: translateX(-50%); }
+                to { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            }
+            @keyframes slideUp {
+                from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                to { opacity: 1; transform: translateX(-50%); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

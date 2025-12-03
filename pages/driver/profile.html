@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Profile | Shuttle Plus</title>
+    <meta name="description" content="Manage your Shuttle Plus driver profile and settings.">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/icon-96x96.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/driver.css">
+</head>
+<body class="driver-portal" style="padding-bottom: 80px;">
+    <!-- Profile Header -->
+    <div class="driver-profile-header">
+        <a href="dashboard.html" style="position: absolute; left: 1rem; top: 1rem; color: white; text-decoration: none;">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <img src="https://ui-avatars.com/api/?name=Abebe+Kebede&background=ffffff&color=1a73e8&size=200" alt="Driver" class="driver-profile-avatar">
+        <h1 class="driver-profile-name" id="driverName">Abebe Kebede</h1>
+        <p class="driver-profile-id" id="driverId">Driver ID: DRV-2024-001</p>
+        <div class="driver-profile-rating">
+            <i class="fas fa-star"></i>
+            <span>4.92 Rating</span>
+        </div>
+    </div>
+
+    <!-- Profile Stats -->
+    <div class="profile-stats">
+        <div class="profile-stat-card">
+            <div class="value">156</div>
+            <div class="label">Total Trips</div>
+        </div>
+        <div class="profile-stat-card">
+            <div class="value">2yr</div>
+            <div class="label">Experience</div>
+        </div>
+        <div class="profile-stat-card">
+            <div class="value">98%</div>
+            <div class="label">Completion</div>
+        </div>
+    </div>
+
+    <!-- Profile Menu Sections -->
+    <div class="profile-section">
+        <div class="profile-section-title">Account</div>
+        <a href="#" class="profile-menu-item" onclick="editProfile()">
+            <i class="fas fa-user-edit"></i>
+            <div class="profile-menu-info">
+                <h4>Personal Information</h4>
+                <p>Name, phone, email</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+        <a href="#" class="profile-menu-item">
+            <i class="fas fa-car"></i>
+            <div class="profile-menu-info">
+                <h4>Vehicle Information</h4>
+                <p>Toyota Corolla " AA-12345</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+        <a href="#" class="profile-menu-item">
+            <i class="fas fa-file-alt"></i>
+            <div class="profile-menu-info">
+                <h4>Documents</h4>
+                <p>License, insurance, permits</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+    </div>
+
+    <div class="profile-section">
+        <div class="profile-section-title">Earnings & Payouts</div>
+        <a href="earnings.html" class="profile-menu-item">
+            <i class="fas fa-chart-line"></i>
+            <div class="profile-menu-info">
+                <h4>Earnings History</h4>
+                <p>View detailed earnings reports</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+        <a href="#" class="profile-menu-item">
+            <i class="fas fa-university"></i>
+            <div class="profile-menu-info">
+                <h4>Payment Method</h4>
+                <p>Commercial Bank of Ethiopia ****4523</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+        <a href="#" class="profile-menu-item">
+            <i class="fas fa-receipt"></i>
+            <div class="profile-menu-info">
+                <h4>Tax Information</h4>
+                <p>TIN and tax documents</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+    </div>
+
+    <div class="profile-section">
+        <div class="profile-section-title">Preferences</div>
+        <a href="#" class="profile-menu-item">
+            <i class="fas fa-bell"></i>
+            <div class="profile-menu-info">
+                <h4>Notifications</h4>
+                <p>Trip alerts, messages, promotions</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+        <a href="#" class="profile-menu-item">
+            <i class="fas fa-language"></i>
+            <div class="profile-menu-info">
+                <h4>Language</h4>
+                <p>English</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+        <a href="#" class="profile-menu-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="profile-menu-info">
+                <h4>Preferred Areas</h4>
+                <p>Set pickup preferences</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+    </div>
+
+    <div class="profile-section">
+        <div class="profile-section-title">Support</div>
+        <a href="#" class="profile-menu-item">
+            <i class="fas fa-question-circle"></i>
+            <div class="profile-menu-info">
+                <h4>Help Center</h4>
+                <p>FAQs and support articles</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+        <a href="#" class="profile-menu-item">
+            <i class="fas fa-headset"></i>
+            <div class="profile-menu-info">
+                <h4>Contact Support</h4>
+                <p>Get help from our team</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+        <a href="/pages/doc/driver-guidelines.html" class="profile-menu-item">
+            <i class="fas fa-book"></i>
+            <div class="profile-menu-info">
+                <h4>Driver Guidelines</h4>
+                <p>Rules and best practices</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+    </div>
+
+    <div class="profile-section">
+        <div class="profile-section-title">Legal</div>
+        <a href="/pages/doc/terms.html" class="profile-menu-item">
+            <i class="fas fa-file-contract"></i>
+            <div class="profile-menu-info">
+                <h4>Terms of Service</h4>
+                <p>Driver agreement</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+        <a href="/pages/doc/privacy.html" class="profile-menu-item">
+            <i class="fas fa-shield-alt"></i>
+            <div class="profile-menu-info">
+                <h4>Privacy Policy</h4>
+                <p>How we protect your data</p>
+            </div>
+            <i class="fas fa-chevron-right arrow"></i>
+        </a>
+    </div>
+
+    <div class="profile-section" style="margin-bottom: 2rem;">
+        <a href="#" class="profile-menu-item danger" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <div class="profile-menu-info">
+                <h4>Sign Out</h4>
+                <p>Log out of your account</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- App Version -->
+    <div style="text-align: center; padding: 1rem; color: var(--driver-text-muted); font-size: 0.8rem;">
+        Shuttle Plus Driver v2.1.0
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="driver-bottom-nav">
+        <a href="dashboard.html" class="driver-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="trips.html" class="driver-nav-item">
+            <i class="fas fa-car"></i>
+            <span>Trips</span>
+        </a>
+        <a href="earnings.html" class="driver-nav-item">
+            <i class="fas fa-wallet"></i>
+            <span>Earnings</span>
+        </a>
+        <a href="profile.html" class="driver-nav-item active">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // Check authentication
+        if (!localStorage.getItem('driver_logged_in')) {
+            window.location.href = 'login.html';
+        }
+
+        // Load driver info
+        document.getElementById('driverName').textContent = localStorage.getItem('driver_name') || 'Abebe Kebede';
+        document.getElementById('driverId').textContent = 'Driver ID: ' + (localStorage.getItem('driver_id') || 'DRV-2024-001');
+
+        // Edit profile
+        function editProfile() {
+            alert('Edit profile functionality coming soon!');
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to sign out?')) {
+                localStorage.removeItem('driver_logged_in');
+                localStorage.removeItem('driver_email');
+                localStorage.removeItem('driver_name');
+                localStorage.removeItem('driver_id');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

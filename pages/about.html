@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Shuttle Plus - Premium Airport Transfers</title>
+    <meta name="description" content="Learn about Shuttle Plus, Ethiopia's leading airport transfer service. Our story, mission, and commitment to excellence in transportation.">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/icon-96x96.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .about-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .about-hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .about-section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-grid.reverse {
+            direction: rtl;
+        }
+
+        .about-grid.reverse > * {
+            direction: ltr;
+        }
+
+        .about-content h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-content p {
+            color: var(--text);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .about-image {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .about-image-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 5rem;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: var(--light);
+            padding: 5rem 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .stat-card .number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .label {
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        /* Values Section */
+        .values-section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .values-section h2 {
+            text-align: center;
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 3rem;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .value-card {
+            padding: 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .value-card .icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+        }
+
+        .value-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .value-card p {
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Team Section */
+        .team-section {
+            background: var(--light);
+            padding: 5rem 2rem;
+        }
+
+        .team-section h2 {
+            text-align: center;
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .team-section > p {
+            text-align: center;
+            color: var(--text);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .team-card {
+            text-align: center;
+        }
+
+        .team-card .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .team-card .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-card h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .team-card .role {
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .cta-section h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .cta-buttons .btn {
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-buttons .btn-white {
+            background: white;
+            color: var(--primary);
+        }
+
+        .cta-buttons .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .cta-buttons .btn-outline-white {
+            border: 2px solid white;
+            color: white;
+        }
+
+        .cta-buttons .btn-outline-white:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        @media (max-width: 968px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .about-grid.reverse {
+                direction: ltr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .about-hero h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="logo-text">Shuttle<span class="logo-accent">Plus</span></span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#services">Services</a></li>
+                <li><a href="/#destinations">Destinations</a></li>
+                <li><a href="/#fleet">Our Fleet</a></li>
+                <li><a href="about.html" class="active">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="tickets.html" class="btn btn-outline">My Tickets</a>
+                <a href="booking.html" class="btn btn-primary">Book Transfer</a>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <h1>About Shuttle Plus</h1>
+        <p>Ethiopia's most trusted airport transfer service, connecting travelers with reliable, comfortable transportation since 2019.</p>
+    </section>
+
+    <!-- Our Story -->
+    <section class="about-section">
+        <div class="about-grid">
+            <div class="about-content">
+                <h2>Our Story</h2>
+                <p>Shuttle Plus was founded in 2019 with a simple mission: to transform the airport transfer experience in Ethiopia. We noticed that travelers arriving at Bole International Airport often faced uncertainty, negotiations, and unreliable transportation options.</p>
+                <p>We set out to change that by creating a service that prioritizes transparency, reliability, and comfort. Today, we're proud to be the leading airport transfer provider in Addis Ababa, serving thousands of satisfied customers each month.</p>
+                <p>Our journey has been marked by continuous improvement, always listening to our customers and adapting to their needs. From our first vehicle to our current fleet of premium cars, we've never compromised on quality.</p>
+            </div>
+            <div class="about-image">
+                <div class="about-image-placeholder">
+                    <i class="fas fa-car-side"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="number">15K+</div>
+                <div class="label">Transfers Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">4.9</div>
+                <div class="label">Average Rating</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">50+</div>
+                <div class="label">Professional Drivers</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">5+</div>
+                <div class="label">Years of Service</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission -->
+    <section class="about-section">
+        <div class="about-grid reverse">
+            <div class="about-content">
+                <h2>Our Mission</h2>
+                <p>To provide world-class airport transfer services that exceed expectations. We believe every journey should start and end with comfort, safety, and peace of mind.</p>
+                <p>We're committed to:</p>
+                <ul style="color: var(--text); line-height: 2; margin-left: 1.5rem;">
+                    <li>Transparent, fixed pricing with no hidden fees</li>
+                    <li>Professional, vetted drivers who know the city</li>
+                    <li>Modern, well-maintained vehicles</li>
+                    <li>24/7 customer support in multiple languages</li>
+                    <li>Real-time flight tracking for timely pickups</li>
+                </ul>
+            </div>
+            <div class="about-image">
+                <div class="about-image-placeholder">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Values -->
+    <section class="values-section">
+        <h2>Our Core Values</h2>
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Safety First</h3>
+                <p>Your safety is our top priority. All our drivers undergo rigorous background checks and our vehicles are regularly inspected and maintained.</p>
+            </div>
+            <div class="value-card">
+                <div class="icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>Punctuality</h3>
+                <p>We track your flight in real-time and adjust pickup times accordingly. Our drivers are always on time, every time.</p>
+            </div>
+            <div class="value-card">
+                <div class="icon">
+                    <i class="fas fa-hand-holding-heart"></i>
+                </div>
+                <h3>Customer Care</h3>
+                <p>From booking to drop-off, we're here for you. Our 24/7 support team speaks English, Amharic, and French.</p>
+            </div>
+            <div class="value-card">
+                <div class="icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>Excellence</h3>
+                <p>We strive for excellence in everything we do. Our 4.9-star rating reflects our commitment to quality service.</p>
+            </div>
+            <div class="value-card">
+                <div class="icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h3>Sustainability</h3>
+                <p>We're committed to reducing our environmental impact with fuel-efficient vehicles and carbon offset programs.</p>
+            </div>
+            <div class="value-card">
+                <div class="icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Community</h3>
+                <p>We believe in giving back. We support local communities and provide fair employment to Ethiopian drivers.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <h2>Leadership Team</h2>
+        <p>Meet the people dedicated to making your travel experience exceptional.</p>
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="avatar">
+                    <img src="https://ui-avatars.com/api/?name=Yohannes+Tadesse&background=597B87&color=fff&size=300" alt="CEO">
+                </div>
+                <h4>Yohannes Tadesse</h4>
+                <span class="role">CEO & Founder</span>
+            </div>
+            <div class="team-card">
+                <div class="avatar">
+                    <img src="https://ui-avatars.com/api/?name=Sara+Mengistu&background=597B87&color=fff&size=300" alt="COO">
+                </div>
+                <h4>Sara Mengistu</h4>
+                <span class="role">Chief Operations Officer</span>
+            </div>
+            <div class="team-card">
+                <div class="avatar">
+                    <img src="https://ui-avatars.com/api/?name=Daniel+Bekele&background=597B87&color=fff&size=300" alt="CTO">
+                </div>
+                <h4>Daniel Bekele</h4>
+                <span class="role">Chief Technology Officer</span>
+            </div>
+            <div class="team-card">
+                <div class="avatar">
+                    <img src="https://ui-avatars.com/api/?name=Hana+Girma&background=597B87&color=fff&size=300" alt="Head of CS">
+                </div>
+                <h4>Hana Girma</h4>
+                <span class="role">Head of Customer Success</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Experience the Difference?</h2>
+        <p>Book your airport transfer today and discover why thousands of travelers trust Shuttle Plus.</p>
+        <div class="cta-buttons">
+            <a href="booking.html" class="btn btn-white">Book Now</a>
+            <a href="contact.html" class="btn btn-outline-white">Contact Us</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="footer-logo">Shuttle<span>Plus</span></a>
+                    <p>Ethiopia's premier airport transfer service. Professional, reliable, and always on time.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="booking.html">Book Transfer</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="doc/terms.html">Terms of Service</a></li>
+                        <li><a href="doc/privacy.html">Privacy Policy</a></li>
+                        <li><a href="doc/cancellation.html">Cancellation Policy</a></li>
+                        <li><a href="doc/faq.html">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-phone"></i> +251 91 234 5678</p>
+                    <p><i class="fas fa-envelope"></i> info@shuttleplus.et</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Addis Ababa, Ethiopia</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Shuttle Plus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

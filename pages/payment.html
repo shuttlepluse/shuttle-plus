@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Shuttle Plus</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#597B87">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="../manifest.json">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../images/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="../images/icons/icon-192x192.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stripe JS -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/payment.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="payment-header">
+        <div class="header-content">
+            <a href="booking.html" class="back-btn" aria-label="Go back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <h1>Payment</h1>
+            <div class="secure-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                Secure
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="payment-main">
+        <!-- Order Summary -->
+        <section class="order-summary">
+            <h2>Order Summary</h2>
+            <div class="summary-card">
+                <div class="trip-info">
+                    <div class="trip-route">
+                        <div class="route-point">
+                            <span class="point-dot pickup"></span>
+                            <span class="point-text" id="pickupLocation">Bole International Airport</span>
+                        </div>
+                        <div class="route-line"></div>
+                        <div class="route-point">
+                            <span class="point-dot dropoff"></span>
+                            <span class="point-text" id="dropoffLocation">Sheraton Addis</span>
+                        </div>
+                    </div>
+                    <div class="trip-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Date & Time</span>
+                            <span class="detail-value" id="tripDateTime">Dec 15, 2025 • 2:30 PM</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Vehicle</span>
+                            <span class="detail-value" id="vehicleClass">Executive Sedan</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Passengers</span>
+                            <span class="detail-value" id="passengers">2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="price-breakdown">
+                    <div class="price-row">
+                        <span>Base Fare</span>
+                        <span id="baseFare">$45.00</span>
+                    </div>
+                    <div class="price-row" id="surchargeRow" style="display: none;">
+                        <span>Late Night Surcharge</span>
+                        <span id="surcharge">$0.00</span>
+                    </div>
+                    <div class="price-row" id="stopsRow" style="display: none;">
+                        <span>Additional Stops</span>
+                        <span id="stopsCharge">$0.00</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>Total</span>
+                        <span class="total-amount">
+                            <span id="totalUSD">$45.00</span>
+                            <span class="etb-amount" id="totalETB">(7,110 ETB)</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payment Methods -->
+        <section class="payment-methods">
+            <h2>Payment Method</h2>
+
+            <div class="method-tabs">
+                <button class="method-tab active" data-method="card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                        <line x1="1" y1="10" x2="23" y2="10"/>
+                    </svg>
+                    Card
+                </button>
+                <button class="method-tab" data-method="telebirr">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                        <line x1="12" y1="18" x2="12.01" y2="18"/>
+                    </svg>
+                    Telebirr
+                </button>
+                <button class="method-tab" data-method="cash">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M2 8h2M20 8h2M2 16h2M20 16h2"/>
+                    </svg>
+                    Cash
+                </button>
+            </div>
+
+            <!-- Card Payment Form -->
+            <div class="payment-form" id="cardForm">
+                <div class="card-brands">
+                    <img src="../images/icons/visa.svg" alt="Visa" onerror="this.style.display='none'">
+                    <img src="../images/icons/mastercard.svg" alt="Mastercard" onerror="this.style.display='none'">
+                    <img src="../images/icons/amex.svg" alt="American Express" onerror="this.style.display='none'">
+                    <span class="more-cards">& more</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="cardholderName">Cardholder Name</label>
+                    <input type="text" id="cardholderName" placeholder="Name on card" autocomplete="cc-name">
+                </div>
+
+                <div class="form-group">
+                    <label for="cardElement">Card Details</label>
+                    <div id="cardElement" class="stripe-element">
+                        <!-- Stripe Elements will be inserted here -->
+                    </div>
+                    <div id="cardErrors" class="error-message" role="alert"></div>
+                </div>
+
+                <div class="save-card">
+                    <input type="checkbox" id="saveCard">
+                    <label for="saveCard">Save card for future payments</label>
+                </div>
+            </div>
+
+            <!-- Telebirr Payment Form -->
+            <div class="payment-form" id="telebirrForm" style="display: none;">
+                <div class="telebirr-info">
+                    <div class="telebirr-logo">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.5 3A3.5 3.5 0 0 1 21 6.5v11a3.5 3.5 0 0 1-3.5 3.5h-11A3.5 3.5 0 0 1 3 17.5v-11A3.5 3.5 0 0 1 6.5 3h11zm-5.5 4a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+                        </svg>
+                        Telebirr
+                    </div>
+                    <p>Pay securely with your Telebirr mobile wallet</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="telebirrPhone">Phone Number</label>
+                    <div class="phone-input">
+                        <span class="country-code">+251</span>
+                        <input type="tel" id="telebirrPhone" placeholder="9XX XXX XXXX" maxlength="12" autocomplete="tel">
+                    </div>
+                    <p class="input-hint">Enter your Telebirr registered phone number</p>
+                </div>
+
+                <div class="telebirr-steps">
+                    <h4>How it works:</h4>
+                    <ol>
+                        <li>Enter your Telebirr phone number</li>
+                        <li>Click "Pay with Telebirr"</li>
+                        <li>Approve the payment on your phone</li>
+                        <li>Receive instant confirmation</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Cash Payment Info -->
+            <div class="payment-form" id="cashForm" style="display: none;">
+                <div class="cash-info">
+                    <div class="cash-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M2 8h2M20 8h2M2 16h2M20 16h2"/>
+                        </svg>
+                    </div>
+                    <h3>Pay in Cash</h3>
+                    <p>Pay your driver directly at the end of your trip</p>
+                </div>
+
+                <div class="cash-amount">
+                    <span class="label">Amount Due</span>
+                    <span class="amount" id="cashAmountETB">7,110 ETB</span>
+                    <span class="usd-equiv" id="cashAmountUSD">(~$45.00 USD)</span>
+                </div>
+
+                <div class="cash-notes">
+                    <div class="note">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="16" x2="12" y2="12"/>
+                            <line x1="12" y1="8" x2="12.01" y2="8"/>
+                        </svg>
+                        <span>Please have exact change ready</span>
+                    </div>
+                    <div class="note">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                        <span>Your booking will be confirmed immediately</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Promo Code -->
+        <section class="promo-section">
+            <button class="promo-toggle" id="promoToggle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                    <line x1="7" y1="7" x2="7.01" y2="7"/>
+                </svg>
+                Have a promo code?
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
+            </button>
+            <div class="promo-input-wrapper" id="promoWrapper" style="display: none;">
+                <input type="text" id="promoCode" placeholder="Enter promo code">
+                <button class="apply-btn" id="applyPromo">Apply</button>
+            </div>
+            <div class="promo-applied" id="promoApplied" style="display: none;">
+                <span class="promo-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    <span id="promoCodeText">WELCOME10</span>
+                </span>
+                <button class="remove-promo" id="removePromo">Remove</button>
+            </div>
+        </section>
+
+        <!-- Terms -->
+        <section class="terms-section">
+            <label class="checkbox-wrapper">
+                <input type="checkbox" id="acceptTerms">
+                <span class="checkmark"></span>
+                <span class="terms-text">
+                    I agree to the <a href="#" id="termsLink">Terms of Service</a> and <a href="#" id="cancellationLink">Cancellation Policy</a>
+                </span>
+            </label>
+        </section>
+    </main>
+
+    <!-- Payment Button -->
+    <div class="payment-footer">
+        <button class="pay-btn" id="payButton" disabled>
+            <span class="btn-text">Pay <span id="payAmount">$45.00</span></span>
+            <span class="btn-loading" style="display: none;">
+                <span class="spinner"></span>
+                Processing...
+            </span>
+        </button>
+        <p class="secure-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Your payment information is secure and encrypted
+        </p>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="modal-content">
+            <div class="success-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+            </div>
+            <h2>Payment Successful!</h2>
+            <p>Your booking has been confirmed</p>
+            <div class="booking-reference">
+                <span class="label">Booking Reference</span>
+                <span class="reference" id="bookingReference">SP-2025-ABC123</span>
+            </div>
+            <div class="success-actions">
+                <a href="tickets.html" class="btn-primary">View My Ticket</a>
+                <a href="../index.html" class="btn-secondary">Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="error-modal" id="errorModal">
+        <div class="modal-content">
+            <div class="error-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+            </div>
+            <h2>Payment Failed</h2>
+            <p id="errorMessage">Something went wrong. Please try again.</p>
+            <div class="error-actions">
+                <button class="btn-primary" id="retryPayment">Try Again</button>
+                <button class="btn-secondary" id="changeMethod">Change Payment Method</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Telebirr Pending Modal -->
+    <div class="pending-modal" id="pendingModal">
+        <div class="modal-content">
+            <div class="pending-icon">
+                <div class="phone-animation">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                        <line x1="12" y1="18" x2="12.01" y2="18"/>
+                    </svg>
+                    <div class="ripple"></div>
+                </div>
+            </div>
+            <h2>Approve Payment</h2>
+            <p>Please approve the payment request on your Telebirr app</p>
+            <div class="pending-timer">
+                <span>Waiting for approval...</span>
+                <span id="pendingTimer">2:00</span>
+            </div>
+            <button class="btn-secondary" id="cancelPending">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span class="toast-message"></span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/offline-storage.js"></script>
+    <script src="../js/api-client.js"></script>
+    <script src="../js/payment-handler.js"></script>
+</body>
+</html>

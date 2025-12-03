@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Booking Confirmed - Shuttle Plus</title>
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+    <style>
+        /* Reset styles */
+        body, table, td, p, a, li, blockquote {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        a {
+            color: #597B87;
+        }
+        @media screen and (max-width: 600px) {
+            .mobile-padding {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+            .mobile-stack {
+                display: block !important;
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4;">
+    <!-- Preview Text -->
+    <div style="display: none; max-height: 0; overflow: hidden;">
+        Your airport transfer is confirmed! Booking #SP-2024-001234 - Pickup on Dec 15, 2024 at 2:30 PM
+    </div>
+
+    <!-- Email Container -->
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f4f4;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <!-- Email Content -->
+                <table role="presentation" cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #597B87 0%, #183251 100%); padding: 30px 40px; text-align: center;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
+                                            Shuttle<span style="color: rgba(255,255,255,0.8);">Plus</span>
+                                        </h1>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Success Banner -->
+                    <tr>
+                        <td style="background-color: #34a853; padding: 20px 40px; text-align: center;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <p style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600;">
+                                             Booking Confirmed!
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 40px;" class="mobile-padding">
+                            <!-- Greeting -->
+                            <p style="margin: 0 0 20px; color: #333333; font-size: 16px; line-height: 1.6;">
+                                Dear <strong>{{customer_name}}</strong>,
+                            </p>
+                            <p style="margin: 0 0 30px; color: #666666; font-size: 16px; line-height: 1.6;">
+                                Thank you for choosing Shuttle Plus! Your airport transfer has been confirmed. Here are your booking details:
+                            </p>
+
+                            <!-- Booking Reference -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8f9fa; border-radius: 8px; margin-bottom: 30px;">
+                                <tr>
+                                    <td style="padding: 20px; text-align: center;">
+                                        <p style="margin: 0 0 5px; color: #666666; font-size: 14px;">Booking Reference</p>
+                                        <p style="margin: 0; color: #597B87; font-size: 28px; font-weight: 700; letter-spacing: 2px;">
+                                            {{booking_reference}}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Trip Details Card -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border: 2px solid #e9ecef; border-radius: 12px; overflow: hidden; margin-bottom: 30px;">
+                                <tr>
+                                    <td style="background-color: #597B87; padding: 15px 20px;">
+                                        <p style="margin: 0; color: #ffffff; font-size: 16px; font-weight: 600;">
+                                            =Å {{trip_date}} at {{trip_time}}
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 25px 20px;">
+                                        <!-- Pickup -->
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="40" valign="top">
+                                                    <div style="width: 24px; height: 24px; background-color: #34a853; border-radius: 50%; text-align: center; line-height: 24px; color: white; font-size: 12px;">Ï</div>
+                                                </td>
+                                                <td valign="top">
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px; text-transform: uppercase;">Pickup</p>
+                                                    <p style="margin: 0; color: #333333; font-size: 15px; font-weight: 600;">{{pickup_location}}</p>
+                                                    <p style="margin: 5px 0 0; color: #666666; font-size: 14px;">{{pickup_address}}</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Connector Line -->
+                                        <div style="margin-left: 11px; border-left: 2px dashed #e0e0e0; height: 30px;"></div>
+
+                                        <!-- Dropoff -->
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="40" valign="top">
+                                                    <div style="width: 24px; height: 24px; background-color: #ea4335; border-radius: 50%; text-align: center; line-height: 24px; color: white; font-size: 12px;">Ï</div>
+                                                </td>
+                                                <td valign="top">
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px; text-transform: uppercase;">Drop-off</p>
+                                                    <p style="margin: 0; color: #333333; font-size: 15px; font-weight: 600;">{{dropoff_location}}</p>
+                                                    <p style="margin: 5px 0 0; color: #666666; font-size: 14px;">{{dropoff_address}}</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Booking Details -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 30px;">
+                                <tr>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="color: #666666; font-size: 14px;">Vehicle Type</td>
+                                                <td style="color: #333333; font-size: 14px; font-weight: 600; text-align: right;">{{vehicle_type}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="color: #666666; font-size: 14px;">Passengers</td>
+                                                <td style="color: #333333; font-size: 14px; font-weight: 600; text-align: right;">{{passengers}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="color: #666666; font-size: 14px;">Luggage</td>
+                                                <td style="color: #333333; font-size: 14px; font-weight: 600; text-align: right;">{{luggage}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="color: #666666; font-size: 14px;">Flight Number</td>
+                                                <td style="color: #333333; font-size: 14px; font-weight: 600; text-align: right;">{{flight_number}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="color: #333333; font-size: 16px; font-weight: 700;">Total Amount</td>
+                                                <td style="color: #597B87; font-size: 20px; font-weight: 700; text-align: right;">ETB {{total_amount}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Action Buttons -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding-bottom: 15px;">
+                                        <a href="{{view_booking_url}}" style="display: inline-block; background: linear-gradient(135deg, #597B87 0%, #183251 100%); color: #ffffff; text-decoration: none; padding: 15px 40px; border-radius: 8px; font-size: 16px; font-weight: 600;">
+                                            View Booking Details
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <a href="{{add_to_calendar_url}}" style="color: #597B87; text-decoration: none; font-size: 14px;">
+                                            =Å Add to Calendar
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Important Info -->
+                    <tr>
+                        <td style="background-color: #fff8e6; padding: 25px 40px;" class="mobile-padding">
+                            <p style="margin: 0 0 10px; color: #856404; font-size: 14px; font-weight: 600;">
+                                9 Important Information
+                            </p>
+                            <ul style="margin: 0; padding-left: 20px; color: #856404; font-size: 14px; line-height: 1.8;">
+                                <li>Your driver will track your flight and adjust pickup time accordingly</li>
+                                <li>Driver details will be sent 2 hours before pickup</li>
+                                <li>Free cancellation up to 4 hours before pickup</li>
+                                <li>For assistance, call: +251 91 234 5678</li>
+                            </ul>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f8f9fa; padding: 30px 40px; text-align: center;" class="mobile-padding">
+                            <p style="margin: 0 0 15px; color: #666666; font-size: 14px;">
+                                Need help? Contact us anytime
+                            </p>
+                            <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 0 auto 20px;">
+                                <tr>
+                                    <td style="padding: 0 15px;">
+                                        <a href="tel:+251912345678" style="color: #597B87; text-decoration: none; font-size: 14px;">=Þ +251 91 234 5678</a>
+                                    </td>
+                                    <td style="padding: 0 15px;">
+                                        <a href="mailto:support@shuttleplus.et" style="color: #597B87; text-decoration: none; font-size: 14px;">	 support@shuttleplus.et</a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="margin: 0; color: #999999; font-size: 12px;">
+                                © 2024 Shuttle Plus. All rights reserved.<br>
+                                Addis Ababa, Ethiopia
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shuttle Plus | Premium Airport Transfers in Addis Ababa, Ethiopia</title>
+    <meta name="description" content="Professional airport transfer services from Bole International Airport. Fixed prices, flight tracking, meet & greet service. Book your reliable Addis Ababa transfer today.">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#597B87">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Shuttle Plus">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-TileColor" content="#183251">
+    <meta name="msapplication-TileImage" content="/images/icons/icon-144x144.png">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="/images/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/icons/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="/images/icons/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="/images/icons/icon-128x128.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/icons/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/images/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="384x384" href="/images/icons/icon-384x384.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/images/icons/icon-512x512.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/icon-96x96.png">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="logo-text">Shuttle<span class="logo-accent">Plus</span></span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#destinations">Destinations</a></li>
+                <li><a href="#fleet">Our Fleet</a></li>
+                <li><a href="#testimonials">Reviews</a></li>
+                <li><a href="pages/blog.html">Blog</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <div class="language-switcher">
+                    <button class="lang-toggle" data-lang-toggle="en" title="English">EN</button>
+                    <button class="lang-toggle" data-lang-toggle="am" title="አማርኛ">አማ</button>
+                </div>
+                <a href="pages/tickets.html" class="btn btn-outline" data-i18n="tickets_title">My Tickets</a>
+                <a href="pages/booking.html" class="btn btn-primary" data-i18n="btn_book_now">Book Transfer</a>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg">
+            <div class="hero-gradient"></div>
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+        </div>
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-plane"></i>
+                    <span>Bole International Airport (ADD)</span>
+                </div>
+                <h1 class="hero-title">
+                    Addis Ababa<br>
+                    <span class="gradient-text">Airport Transfers</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Professional airport pickup and drop-off services in Ethiopia.
+                    Fixed prices, flight tracking, and meet & greet included. No negotiation, no surprises.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" data-count="15">0</span><span class="stat-suffix">K+</span>
+                        <span class="stat-label">Transfers Completed</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" data-count="60">0</span><span class="stat-suffix">min</span>
+                        <span class="stat-label">Free Waiting Time</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" data-count="99">0</span><span class="stat-suffix">%</span>
+                        <span class="stat-label">On-Time Pickups</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-booking">
+                <div class="booking-card">
+                    <div class="booking-header">
+                        <h3>Book Your Transfer</h3>
+                        <div class="booking-tabs">
+                            <button class="tab-btn active" data-tab="arrival">From Airport</button>
+                            <button class="tab-btn" data-tab="departure">To Airport</button>
+                        </div>
+                    </div>
+                    <form class="booking-form" id="bookingForm">
+                        <div class="form-group">
+                            <label><i class="fas fa-plane-arrival"></i> Flight Number</label>
+                            <input type="text" placeholder="e.g. ET 500, LH 590" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-map-marker-alt"></i> Drop-off Location</label>
+                            <select required>
+                                <option value="">Select destination</option>
+                                <optgroup label="Hotels - Near Airport">
+                                    <option>Ethiopian Skylight Hotel</option>
+                                    <option>Golden Tulip Addis Ababa</option>
+                                    <option>Capital Hotel & Spa</option>
+                                </optgroup>
+                                <optgroup label="Hotels - City Center">
+                                    <option>Sheraton Addis</option>
+                                    <option>Radisson Blu Hotel</option>
+                                    <option>Hyatt Regency Addis</option>
+                                    <option>Best Western Plus Addis</option>
+                                </optgroup>
+                                <optgroup label="Business Districts">
+                                    <option>Bole District</option>
+                                    <option>Kazanchis Business Area</option>
+                                    <option>African Union HQ</option>
+                                    <option>UN ECA Compound</option>
+                                </optgroup>
+                                <option value="other">Other Address</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-calendar"></i> Arrival Date</label>
+                                <input type="date" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-clock"></i> Flight Time</label>
+                                <input type="time" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-users"></i> Passengers & Luggage</label>
+                            <select>
+                                <option>1-2 Passengers, 2 Bags</option>
+                                <option>3-4 Passengers, 4 Bags</option>
+                                <option>5-6 Passengers, 6 Bags</option>
+                                <option>7+ Passengers (Group)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <span>Get Instant Quote</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+                    <p class="booking-note">
+                        <i class="fas fa-shield-alt"></i>
+                        Free cancellation up to 24 hours before pickup
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <a href="#services">
+                <span>Scroll to explore</span>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section class="partners">
+        <div class="container">
+            <p class="partners-label">Trusted by international organizations & hotels</p>
+            <div class="partners-logos">
+                <div class="partner-logo"><i class="fas fa-plane"></i> Ethiopian Airlines</div>
+                <div class="partner-logo"><i class="fas fa-hotel"></i> Sheraton Addis</div>
+                <div class="partner-logo"><i class="fas fa-globe-africa"></i> African Union</div>
+                <div class="partner-logo"><i class="fas fa-building"></i> UN ECA</div>
+                <div class="partner-logo"><i class="fas fa-hotel"></i> Radisson Blu</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Our Services</span>
+                <h2 class="section-title">Professional Airport Transfer Services</h2>
+                <p class="section-subtitle">From Bole International Airport to anywhere in Addis Ababa and beyond</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card featured">
+                    <div class="service-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Meet & Greet Service</h3>
+                    <p>Your driver waits at arrivals with a name sign. Assistance with luggage and escort to your vehicle. Perfect for first-time visitors.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Driver waiting at arrivals hall</li>
+                        <li><i class="fas fa-check"></i> Personalized name sign</li>
+                        <li><i class="fas fa-check"></i> Luggage assistance included</li>
+                        <li><i class="fas fa-check"></i> 60 minutes free waiting</li>
+                    </ul>
+                    <a href="pages/booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-plane-departure"></i>
+                    </div>
+                    <h3>Departure Transfers</h3>
+                    <p>Punctual pickup from your hotel or residence. We monitor traffic and ensure you reach Bole Airport with time to spare.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> On-time hotel pickup</li>
+                        <li><i class="fas fa-check"></i> Flight schedule awareness</li>
+                        <li><i class="fas fa-check"></i> Traffic monitoring</li>
+                        <li><i class="fas fa-check"></i> Help with check-in luggage</li>
+                    </ul>
+                    <a href="pages/booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3>Corporate Accounts</h3>
+                    <p>Dedicated transportation solutions for businesses, NGOs, and international organizations operating in Ethiopia.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Monthly invoicing in ETB/USD</li>
+                        <li><i class="fas fa-check"></i> Dedicated account manager</li>
+                        <li><i class="fas fa-check"></i> Priority booking 24/7</li>
+                        <li><i class="fas fa-check"></i> Detailed travel reports</li>
+                    </ul>
+                    <a href="#corporate" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Hourly Charter</h3>
+                    <p>Book a vehicle with chauffeur by the hour for business meetings, city tours, or day trips to nearby attractions.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Flexible 4-12 hour packages</li>
+                        <li><i class="fas fa-check"></i> Multiple stops included</li>
+                        <li><i class="fas fa-check"></i> English-speaking drivers</li>
+                        <li><i class="fas fa-check"></i> City tours available</li>
+                    </ul>
+                    <a href="pages/booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="why-us">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Why Shuttle Plus</span>
+                <h2 class="section-title">The Smarter Way to Travel from Bole Airport</h2>
+                <p class="section-subtitle">Say goodbye to price negotiations and unreliable taxis</p>
+            </div>
+            <div class="comparison-grid">
+                <div class="comparison-card problem">
+                    <h3><i class="fas fa-times-circle"></i> The Old Way</h3>
+                    <ul>
+                        <li><i class="fas fa-times"></i> Price negotiation at arrival</li>
+                        <li><i class="fas fa-times"></i> Risk of tourist overcharging</li>
+                        <li><i class="fas fa-times"></i> No flight delay accommodation</li>
+                        <li><i class="fas fa-times"></i> Uncertain vehicle quality</li>
+                        <li><i class="fas fa-times"></i> Language barriers</li>
+                        <li><i class="fas fa-times"></i> Cash-only payments</li>
+                    </ul>
+                </div>
+                <div class="comparison-card solution">
+                    <h3><i class="fas fa-check-circle"></i> The Shuttle Plus Way</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Fixed price confirmed at booking</li>
+                        <li><i class="fas fa-check"></i> Same rate for locals & visitors</li>
+                        <li><i class="fas fa-check"></i> Automatic flight tracking</li>
+                        <li><i class="fas fa-check"></i> Modern, inspected vehicles</li>
+                        <li><i class="fas fa-check"></i> English-speaking drivers</li>
+                        <li><i class="fas fa-check"></i> Card, mobile & cash payments</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destinations Section -->
+    <section class="destinations" id="destinations">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Popular Routes</span>
+                <h2 class="section-title">Fixed-Price Transfers from Bole Airport</h2>
+                <p class="section-subtitle">Transparent pricing to all major destinations in Addis Ababa</p>
+            </div>
+            <div class="destinations-grid">
+                <div class="destination-card">
+                    <div class="destination-icon">
+                        <i class="fas fa-hotel"></i>
+                    </div>
+                    <div class="destination-info">
+                        <h3>Bole District Hotels</h3>
+                        <p>Ethiopian Skylight, Golden Tulip, Capital Hotel</p>
+                        <span class="distance"><i class="fas fa-road"></i> 2-5 km from airport</span>
+                    </div>
+                    <div class="destination-price">
+                        <span class="price-label">From</span>
+                        <span class="price-amount">1,040 ETB</span>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-icon">
+                        <i class="fas fa-city"></i>
+                    </div>
+                    <div class="destination-info">
+                        <h3>City Center / Piazza</h3>
+                        <p>Sheraton Addis, Radisson Blu, Meskel Square</p>
+                        <span class="distance"><i class="fas fa-road"></i> 8-10 km from airport</span>
+                    </div>
+                    <div class="destination-price">
+                        <span class="price-label">From</span>
+                        <span class="price-amount">1,560 ETB</span>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-icon">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <div class="destination-info">
+                        <h3>African Union / UN ECA</h3>
+                        <p>Diplomatic district, embassies, NGO offices</p>
+                        <span class="distance"><i class="fas fa-road"></i> 6-8 km from airport</span>
+                    </div>
+                    <div class="destination-price">
+                        <span class="price-label">From</span>
+                        <span class="price-amount">1,300 ETB</span>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="destination-info">
+                        <h3>Kazanchis Business</h3>
+                        <p>Banks, corporate offices, business hotels</p>
+                        <span class="distance"><i class="fas fa-road"></i> 7-9 km from airport</span>
+                    </div>
+                    <div class="destination-price">
+                        <span class="price-label">From</span>
+                        <span class="price-amount">1,430 ETB</span>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-icon">
+                        <i class="fas fa-mountain"></i>
+                    </div>
+                    <div class="destination-info">
+                        <h3>Entoto Hill Area</h3>
+                        <p>Entoto Park, historical churches, viewpoints</p>
+                        <span class="distance"><i class="fas fa-road"></i> 15-18 km from airport</span>
+                    </div>
+                    <div class="destination-price">
+                        <span class="price-label">From</span>
+                        <span class="price-amount">2,340 ETB</span>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="destination-info">
+                        <h3>Merkato Market</h3>
+                        <p>Africa's largest open-air market</p>
+                        <span class="distance"><i class="fas fa-road"></i> 12-14 km from airport</span>
+                    </div>
+                    <div class="destination-price">
+                        <span class="price-label">From</span>
+                        <span class="price-amount">1,950 ETB</span>
+                    </div>
+                </div>
+            </div>
+            <p class="destinations-note">
+                <i class="fas fa-info-circle"></i>
+                Prices shown are for Standard Sedan (up to 3 passengers, 2 bags).
+                All prices include meet & greet, 60 min waiting time, and flight tracking.
+            </p>
+        </div>
+    </section>
+
+    <!-- Fleet Section -->
+    <section class="fleet" id="fleet">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Our Fleet</span>
+                <h2 class="section-title">Choose Your Vehicle Class</h2>
+                <p class="section-subtitle">Modern, air-conditioned vehicles maintained to international standards</p>
+            </div>
+            <div class="fleet-grid">
+                <div class="fleet-card">
+                    <div class="fleet-image">
+                        <div class="fleet-placeholder">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <span class="fleet-badge">Popular</span>
+                    </div>
+                    <div class="fleet-info">
+                        <h3>Standard Sedan</h3>
+                        <p>Toyota Corolla, Hyundai Elantra or similar. Perfect for solo travelers and couples.</p>
+                        <div class="fleet-specs">
+                            <span><i class="fas fa-user"></i> Up to 3</span>
+                            <span><i class="fas fa-suitcase"></i> 2 large bags</span>
+                        </div>
+                        <div class="fleet-price">
+                            <span class="price-from">Bole to City Center</span>
+                            <span class="price-amount">1,560 ETB</span>
+                        </div>
+                        <a href="#home" class="btn btn-outline btn-block">Select</a>
+                    </div>
+                </div>
+                <div class="fleet-card featured">
+                    <div class="fleet-image">
+                        <div class="fleet-placeholder">
+                            <i class="fas fa-car-side"></i>
+                        </div>
+                        <span class="fleet-badge">Best Value</span>
+                    </div>
+                    <div class="fleet-info">
+                        <h3>Executive Sedan</h3>
+                        <p>Toyota Camry, Honda Accord or similar. Ideal for business travelers seeking comfort.</p>
+                        <div class="fleet-specs">
+                            <span><i class="fas fa-user"></i> Up to 3</span>
+                            <span><i class="fas fa-suitcase"></i> 3 large bags</span>
+                        </div>
+                        <div class="fleet-price">
+                            <span class="price-from">Bole to City Center</span>
+                            <span class="price-amount">2,340 ETB</span>
+                        </div>
+                        <a href="#home" class="btn btn-primary btn-block">Select</a>
+                    </div>
+                </div>
+                <div class="fleet-card">
+                    <div class="fleet-image">
+                        <div class="fleet-placeholder">
+                            <i class="fas fa-shuttle-van"></i>
+                        </div>
+                        <span class="fleet-badge">Families</span>
+                    </div>
+                    <div class="fleet-info">
+                        <h3>SUV / Minivan</h3>
+                        <p>Toyota Fortuner, Hyundai H1 or similar. Spacious for families and groups with luggage.</p>
+                        <div class="fleet-specs">
+                            <span><i class="fas fa-user"></i> Up to 6</span>
+                            <span><i class="fas fa-suitcase"></i> 5 large bags</span>
+                        </div>
+                        <div class="fleet-price">
+                            <span class="price-from">Bole to City Center</span>
+                            <span class="price-amount">3,250 ETB</span>
+                        </div>
+                        <a href="#home" class="btn btn-outline btn-block">Select</a>
+                    </div>
+                </div>
+                <div class="fleet-card">
+                    <div class="fleet-image">
+                        <div class="fleet-placeholder">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <span class="fleet-badge luxury">VIP</span>
+                    </div>
+                    <div class="fleet-info">
+                        <h3>Luxury Class</h3>
+                        <p>Mercedes E-Class, BMW 5 Series or similar. Premium experience for executives and VIPs.</p>
+                        <div class="fleet-specs">
+                            <span><i class="fas fa-user"></i> Up to 3</span>
+                            <span><i class="fas fa-suitcase"></i> 3 large bags</span>
+                        </div>
+                        <div class="fleet-price">
+                            <span class="price-from">Bole to City Center</span>
+                            <span class="price-amount">4,550 ETB</span>
+                        </div>
+                        <a href="#home" class="btn btn-outline btn-block">Select</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <h3>Flight Tracking</h3>
+                    <p>We monitor your flight in real-time. If delayed, your driver adjusts automatically. No extra charges.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3>Fixed Prices</h3>
+                    <p>The price you see is the price you pay. No surge pricing, no negotiation, no hidden fees.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>60 Min Free Wait</h3>
+                    <p>One hour complimentary waiting after landing. Plenty of time for immigration and baggage.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>24/7 Support</h3>
+                    <p>Our team is available around the clock. WhatsApp, phone, and email support in English and Amharic.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Testimonials</span>
+                <h2 class="section-title">What Our Passengers Say</h2>
+                <p class="section-subtitle">Trusted by business travelers, tourists, and organizations</p>
+            </div>
+            <div class="testimonials-slider">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"After years of negotiating with taxi drivers at Bole, Shuttle Plus was a revelation. Driver was waiting with my name, car was clean and air-conditioned. Price was exactly what I paid online. This is how it should be!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <h4>Dr. Sarah Mitchell</h4>
+                            <span>UN Consultant, New York</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"My Ethiopian Airlines flight from Frankfurt was delayed 3 hours. I was worried about my transfer but the driver tracked my flight and was there when I landed at 2 AM. Incredible service!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <h4>Klaus Weber</h4>
+                            <span>Business Traveler, Germany</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"We use Shuttle Plus for all our staff airport transfers. The corporate account makes billing simple, and the service is consistently excellent. Highly recommend for organizations in Addis."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <h4>Tigist Alemayehu</h4>
+                            <span>Operations Manager, NGO</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Corporate Section -->
+    <section class="corporate" id="corporate">
+        <div class="container">
+            <div class="corporate-content">
+                <div class="corporate-info">
+                    <span class="section-tag">For Business</span>
+                    <h2>Corporate & Organization Accounts</h2>
+                    <p>Streamlined airport transfer solutions for businesses, NGOs, embassies, and international organizations operating in Ethiopia.</p>
+                    <div class="corporate-features">
+                        <div class="corp-feature">
+                            <i class="fas fa-file-invoice"></i>
+                            <div>
+                                <h4>Monthly Invoicing</h4>
+                                <p>Consolidated billing in ETB or USD. No individual payments needed.</p>
+                            </div>
+                        </div>
+                        <div class="corp-feature">
+                            <i class="fas fa-user-tie"></i>
+                            <div>
+                                <h4>Dedicated Manager</h4>
+                                <p>Personal account manager for bookings, changes, and support.</p>
+                            </div>
+                        </div>
+                        <div class="corp-feature">
+                            <i class="fas fa-chart-line"></i>
+                            <div>
+                                <h4>Travel Reports</h4>
+                                <p>Detailed monthly reports for expense tracking and compliance.</p>
+                            </div>
+                        </div>
+                        <div class="corp-feature">
+                            <i class="fas fa-percent"></i>
+                            <div>
+                                <h4>Volume Discounts</h4>
+                                <p>Preferential rates for high-volume accounts.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#contact" class="btn btn-primary">Request Corporate Account</a>
+                </div>
+                <div class="corporate-clients">
+                    <h3>Trusted by</h3>
+                    <div class="client-logos">
+                        <div class="client-logo">International Organizations</div>
+                        <div class="client-logo">Embassies & Consulates</div>
+                        <div class="client-logo">NGOs & Development Agencies</div>
+                        <div class="client-logo">Hotels & Travel Agencies</div>
+                        <div class="client-logo">Ethiopian Corporations</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Download Section -->
+    <section class="app-section">
+        <div class="container">
+            <div class="app-content">
+                <div class="app-info">
+                    <span class="section-tag">Coming Soon</span>
+                    <h2>Book Transfers On The Go</h2>
+                    <p>Our mobile app is launching soon. Track your driver in real-time, manage bookings, save favorite destinations, and access exclusive app-only rates.</p>
+                    <div class="app-features">
+                        <div class="app-feature">
+                            <i class="fas fa-bolt"></i>
+                            <span>Instant booking</span>
+                        </div>
+                        <div class="app-feature">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <span>Live tracking</span>
+                        </div>
+                        <div class="app-feature">
+                            <i class="fas fa-wallet"></i>
+                            <span>Easy payments</span>
+                        </div>
+                    </div>
+                    <div class="app-buttons">
+                        <a href="#" class="app-btn">
+                            <i class="fab fa-apple"></i>
+                            <div>
+                                <span>Coming soon on</span>
+                                <strong>App Store</strong>
+                            </div>
+                        </a>
+                        <a href="#" class="app-btn">
+                            <i class="fab fa-google-play"></i>
+                            <div>
+                                <span>Coming soon on</span>
+                                <strong>Google Play</strong>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="app-mockup">
+                    <div class="phone-frame">
+                        <div class="phone-screen">
+                            <div class="mock-app">
+                                <div class="mock-header">
+                                    <i class="fas fa-plane-arrival"></i>
+                                    <span>Shuttle Plus</span>
+                                </div>
+                                <div class="mock-map"></div>
+                                <div class="mock-card">
+                                    <div class="mock-input">
+                                        <i class="fas fa-plane"></i>
+                                        <span>Bole Airport (ADD)</span>
+                                    </div>
+                                    <div class="mock-input">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>Sheraton Addis</span>
+                                    </div>
+                                    <div class="mock-button">Book Transfer</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="book">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Landing at Bole Airport?</h2>
+                <p>Book your transfer now and skip the taxi queues. Fixed prices, professional drivers, flight tracking included.</p>
+                <div class="cta-buttons">
+                    <a href="pages/booking.html" class="btn btn-white">Book Airport Transfer</a>
+                    <a href="#contact" class="btn btn-outline-white">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <span class="section-tag">Contact Us</span>
+                    <h2>Get In Touch</h2>
+                    <p>Have questions about your transfer? Need a custom quote for a group? Our team is ready to help.</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <div>
+                                <h4>WhatsApp</h4>
+                                <p>+251 91 234 5678</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div>
+                                <h4>Phone</h4>
+                                <p>+251 11 234 5678</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h4>Email</h4>
+                                <p>bookings@shuttleplus.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h4>Office</h4>
+                                <p>Bole District, Addis Ababa, Ethiopia</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form-wrapper">
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <select>
+                                <option value="">Inquiry Type</option>
+                                <option>Airport Transfer Booking</option>
+                                <option>Corporate Account</option>
+                                <option>Group Transfer Quote</option>
+                                <option>Partnership Inquiry</option>
+                                <option>General Question</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Your Message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Send Message
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <span class="logo-text">Shuttle<span class="logo-accent">Plus</span></span>
+                    </a>
+                    <p>Professional airport transfer services in Addis Ababa, Ethiopia. Fixed prices, flight tracking, and reliable service from Bole International Airport.</p>
+                    <div class="footer-badges">
+                        <span class="badge"><i class="fas fa-shield-alt"></i> Licensed & Insured</span>
+                        <span class="badge"><i class="fas fa-plane"></i> Flight Tracking</span>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#services">Airport Pickup</a></li>
+                        <li><a href="#services">Departure Transfers</a></li>
+                        <li><a href="#corporate">Corporate Accounts</a></li>
+                        <li><a href="#services">Hourly Charter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Destinations</h4>
+                    <ul>
+                        <li><a href="#destinations">Bole District</a></li>
+                        <li><a href="#destinations">City Center</a></li>
+                        <li><a href="#destinations">African Union</a></li>
+                        <li><a href="#destinations">Kazanchis</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Shuttle Plus. All rights reserved. Addis Ababa, Ethiopia.</p>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fas fa-mobile-alt" title="Telebirr"></i>
+                    <i class="fas fa-money-bill-wave" title="Cash"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PWA Install Prompt Banner -->
+    <div class="pwa-install-banner" id="pwaInstallBanner">
+        <div class="pwa-install-content">
+            <div class="pwa-install-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="pwa-install-text">
+                <strong>Install Shuttle Plus</strong>
+                <span>Add to home screen for quick access</span>
+            </div>
+        </div>
+        <div class="pwa-install-actions">
+            <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
+            <button class="pwa-dismiss-btn" id="pwaDismissBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Offline Indicator -->
+    <div class="offline-indicator" id="offlineIndicator">
+        <i class="fas fa-wifi-slash"></i>
+        <span>You're offline. Some features may be unavailable.</span>
+    </div>
+
+    <!-- Mobile Bottom Navigation (PWA) -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+        <a href="/" class="bottom-nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="pages/booking.html" class="bottom-nav-item">
+            <i class="fas fa-plus-circle"></i>
+            <span>Book</span>
+        </a>
+        <a href="pages/tickets.html" class="bottom-nav-item">
+            <i class="fas fa-ticket-alt"></i>
+            <span>Tickets</span>
+        </a>
+        <a href="#contact" class="bottom-nav-item">
+            <i class="fas fa-headset"></i>
+            <span>Support</span>
+        </a>
+    </nav>
+
+    <!-- Scripts -->
+    <script src="js/i18n.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

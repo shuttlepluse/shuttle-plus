@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Trip Reminder - Shuttle Plus</title>
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+    <style>
+        body, table, td, p, a, li, blockquote {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        @media screen and (max-width: 600px) {
+            .mobile-padding {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4;">
+    <!-- Preview Text -->
+    <div style="display: none; max-height: 0; overflow: hidden;">
+        Reminder: Your airport transfer is {{time_until_pickup}}! Driver {{driver_name}} will pick you up at {{trip_time}}.
+    </div>
+
+    <!-- Email Container -->
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f4f4;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <!-- Email Content -->
+                <table role="presentation" cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #597B87 0%, #183251 100%); padding: 30px 40px; text-align: center;">
+                            <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
+                                Shuttle<span style="color: rgba(255,255,255,0.8);">Plus</span>
+                            </h1>
+                        </td>
+                    </tr>
+
+                    <!-- Reminder Banner -->
+                    <tr>
+                        <td style="background-color: #ff9800; padding: 20px 40px; text-align: center;">
+                            <p style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600;">
+                                ð Trip Reminder - {{time_until_pickup}}
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 40px;" class="mobile-padding">
+                            <!-- Greeting -->
+                            <p style="margin: 0 0 20px; color: #333333; font-size: 16px; line-height: 1.6;">
+                                Hi <strong>{{customer_name}}</strong>,
+                            </p>
+                            <p style="margin: 0 0 30px; color: #666666; font-size: 16px; line-height: 1.6;">
+                                This is a friendly reminder about your upcoming airport transfer. Here's everything you need to know:
+                            </p>
+
+                            <!-- Countdown Timer Look -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background: linear-gradient(135deg, #597B87 0%, #183251 100%); border-radius: 16px; margin-bottom: 30px;">
+                                <tr>
+                                    <td style="padding: 30px; text-align: center;">
+                                        <p style="margin: 0 0 10px; color: rgba(255,255,255,0.8); font-size: 14px;">YOUR PICKUP IS IN</p>
+                                        <p style="margin: 0 0 5px; color: #ffffff; font-size: 48px; font-weight: 700;">{{countdown_hours}}h {{countdown_minutes}}m</p>
+                                        <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 16px;">{{trip_date}} at {{trip_time}}</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Trip Summary -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border: 2px solid #e9ecef; border-radius: 12px; overflow: hidden; margin-bottom: 30px;">
+                                <tr>
+                                    <td style="padding: 25px;">
+                                        <!-- Pickup -->
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="40" valign="top">
+                                                    <div style="width: 24px; height: 24px; background-color: #34a853; border-radius: 50%; text-align: center; line-height: 24px; color: white; font-size: 12px;">Ï</div>
+                                                </td>
+                                                <td valign="top">
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px; text-transform: uppercase;">Pickup at {{trip_time}}</p>
+                                                    <p style="margin: 0; color: #333333; font-size: 15px; font-weight: 600;">{{pickup_location}}</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Connector Line -->
+                                        <div style="margin-left: 11px; border-left: 2px dashed #e0e0e0; height: 25px;"></div>
+
+                                        <!-- Dropoff -->
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="40" valign="top">
+                                                    <div style="width: 24px; height: 24px; background-color: #ea4335; border-radius: 50%; text-align: center; line-height: 24px; color: white; font-size: 12px;">Ï</div>
+                                                </td>
+                                                <td valign="top">
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px; text-transform: uppercase;">Drop-off</p>
+                                                    <p style="margin: 0; color: #333333; font-size: 15px; font-weight: 600;">{{dropoff_location}}</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Driver Info -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8f9fa; border-radius: 12px; margin-bottom: 30px;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="70" valign="top">
+                                                    <div style="width: 60px; height: 60px; background-color: #597B87; border-radius: 50%; text-align: center; line-height: 60px; color: white; font-size: 24px; font-weight: 600;">
+                                                        {{driver_initials}}
+                                                    </div>
+                                                </td>
+                                                <td valign="middle" style="padding-left: 10px;">
+                                                    <p style="margin: 0 0 5px; color: #333333; font-size: 16px; font-weight: 600;">{{driver_name}}</p>
+                                                    <p style="margin: 0 0 5px; color: #666666; font-size: 14px;">{{vehicle_model}} " {{vehicle_color}}</p>
+                                                    <p style="margin: 0; color: #1a73e8; font-size: 14px; font-weight: 600; font-family: monospace;">{{vehicle_plate}}</p>
+                                                </td>
+                                                <td valign="middle" style="text-align: right;">
+                                                    <a href="tel:{{driver_phone}}" style="display: inline-block; background-color: #34a853; color: white; text-decoration: none; padding: 10px 15px; border-radius: 8px; font-size: 14px;">
+                                                        =Þ Call
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Quick Checklist -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 30px;">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0 0 15px; color: #333333; font-size: 16px; font-weight: 600;"> Quick Checklist</p>
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="padding: 8px 0; color: #666666; font-size: 14px;">
+                                                     Passport and travel documents ready
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; color: #666666; font-size: 14px;">
+                                                     Booking confirmation saved
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; color: #666666; font-size: 14px;">
+                                                     Phone charged for driver contact
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; color: #666666; font-size: 14px;">
+                                                     Check luggage count matches booking
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Action Buttons -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="text-align: center; padding-bottom: 15px;">
+                                        <a href="{{view_booking_url}}" style="display: inline-block; background: linear-gradient(135deg, #597B87 0%, #183251 100%); color: #ffffff; text-decoration: none; padding: 15px 40px; border-radius: 8px; font-size: 16px; font-weight: 600;">
+                                            View Booking Details
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <a href="{{tracking_url}}" style="color: #597B87; text-decoration: none; font-size: 14px;">
+                                            =Í Track Your Driver (available on pickup day)
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Need Changes? -->
+                    <tr>
+                        <td style="background-color: #e8f4fd; padding: 25px 40px;" class="mobile-padding">
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0 0 10px; color: #1a73e8; font-size: 14px; font-weight: 600;">
+                                            Need to make changes?
+                                        </p>
+                                        <p style="margin: 0; color: #666666; font-size: 14px; line-height: 1.6;">
+                                            You can modify or cancel your booking up to 4 hours before pickup time for a full refund.
+                                            <a href="{{modify_booking_url}}" style="color: #1a73e8; text-decoration: none; font-weight: 500;">Modify Booking ’</a>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f8f9fa; padding: 25px 40px; text-align: center;" class="mobile-padding">
+                            <p style="margin: 0 0 15px; color: #666666; font-size: 14px;">
+                                Have a great trip! We're here if you need us.
+                            </p>
+                            <p style="margin: 0 0 20px; color: #597B87; font-size: 14px; font-weight: 500;">
+                                =Þ +251 91 234 5678 " 	 support@shuttleplus.et
+                            </p>
+                            <p style="margin: 0; color: #999999; font-size: 12px;">
+                                © 2024 Shuttle Plus. All rights reserved.<br>
+                                <a href="{{unsubscribe_url}}" style="color: #999999; text-decoration: underline;">Unsubscribe from reminders</a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

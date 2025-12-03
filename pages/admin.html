@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Shuttle Plus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-body">
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="admin-login">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="fas fa-shuttle-van"></i>
+                <span>Shuttle<span class="accent">Plus</span></span>
+            </div>
+            <h1>Admin Dashboard</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="admin@shuttleplus.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </form>
+            <p class="demo-hint">Demo: admin@shuttleplus.com / admin123</p>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="admin-container" style="display: none;">
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-shuttle-van"></i>
+                    <span>Shuttle<span class="accent">Plus</span></span>
+                </div>
+                <button id="sidebarToggle" class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="overview">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-page="bookings">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Bookings</span>
+                    <span class="badge" id="pendingBadge">0</span>
+                </a>
+                <a href="#" class="nav-item" data-page="drivers">
+                    <i class="fas fa-id-card"></i>
+                    <span>Drivers</span>
+                </a>
+                <a href="#" class="nav-item" data-page="customers">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="#" class="nav-item" data-page="vehicles">
+                    <i class="fas fa-car"></i>
+                    <span>Vehicles</span>
+                </a>
+                <a href="#" class="nav-item" data-page="reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="admin-profile">
+                    <div class="admin-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="admin-info">
+                        <span class="admin-name">Admin User</span>
+                        <span class="admin-role">Super Admin</span>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Top Bar -->
+            <header class="admin-topbar">
+                <h1 id="pageTitle" class="page-title">Overview</h1>
+                <div class="topbar-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="globalSearch" placeholder="Search bookings, customers...">
+                    </div>
+                    <button id="refreshBtn" class="btn-icon" title="Refresh Data">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="btn-icon" title="Notifications" id="notificationBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                        <span class="notification-count">2</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="admin-content">
+
+                <!-- Overview Page -->
+                <section id="page-overview" class="page-section active">
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span id="statTodayBookings" class="stat-value">0</span>
+                                <span class="stat-label">Today's Bookings</span>
+                            </div>
+                            <span class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i> 12%
+                            </span>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span id="statTodayRevenue" class="stat-value">$0</span>
+                                <span class="stat-label">Today's Revenue</span>
+                            </div>
+                            <span class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i> 8%
+                            </span>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span id="statPending" class="stat-value">0</span>
+                                <span class="stat-label">Pending Trips</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span id="statActiveDrivers" class="stat-value">0</span>
+                                <span class="stat-label">Active Drivers</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Grid -->
+                    <div class="dashboard-grid">
+                        <!-- Recent Bookings -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-list"></i> Recent Bookings</h3>
+                                <a href="#" class="view-all" data-page="bookings">View All</a>
+                            </div>
+                            <div class="card-body">
+                                <table class="data-table mini">
+                                    <thead>
+                                        <tr>
+                                            <th>Reference</th>
+                                            <th>Customer</th>
+                                            <th>Time</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentBookingsTable">
+                                        <tr>
+                                            <td colspan="4" class="loading-cell">
+                                                <i class="fas fa-spinner fa-spin"></i> Loading...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Today's Schedule -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-calendar-day"></i> Today's Schedule</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="scheduleTimeline" class="schedule-timeline">
+                                    <div class="timeline-empty">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>Loading schedule...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <h3>Quick Actions</h3>
+                        <div class="actions-grid">
+                            <button id="newBookingBtn" class="action-btn">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>New Booking</span>
+                            </button>
+                            <button class="action-btn" onclick="navigateToPage('drivers')">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Add Driver</span>
+                            </button>
+                            <button class="action-btn" onclick="navigateToPage('reports')">
+                                <i class="fas fa-file-export"></i>
+                                <span>Export Report</span>
+                            </button>
+                            <button class="action-btn" onclick="navigateToPage('settings')">
+                                <i class="fas fa-sliders-h"></i>
+                                <span>Settings</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bookings Page -->
+                <section id="page-bookings" class="page-section">
+                    <div class="page-header">
+                        <div class="filter-bar">
+                            <select id="statusFilter">
+                                <option value="">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="driver_assigned">Driver Assigned</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            <select id="dateFilter">
+                                <option value="">All Dates</option>
+                                <option value="today">Today</option>
+                                <option value="tomorrow">Tomorrow</option>
+                                <option value="week">This Week</option>
+                            </select>
+                            <input type="text" placeholder="Search booking..." id="bookingSearch">
+                        </div>
+                        <button id="addBookingBtn" class="btn-primary">
+                            <i class="fas fa-plus"></i>
+                            New Booking
+                        </button>
+                    </div>
+
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Customer</th>
+                                    <th>Type</th>
+                                    <th>Pickup Time</th>
+                                    <th>Destination</th>
+                                    <th>Vehicle</th>
+                                    <th>Driver</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingsTableBody">
+                                <tr>
+                                    <td colspan="10" class="loading-cell">
+                                        <i class="fas fa-spinner fa-spin"></i> Loading bookings...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination">
+                        <button class="btn-page" disabled>
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <span class="page-info">Page 1 of 1</span>
+                        <button class="btn-page" disabled>
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Drivers Page -->
+                <section id="page-drivers" class="page-section">
+                    <div class="page-header">
+                        <div class="filter-bar">
+                            <select id="driverStatusFilter">
+                                <option value="">All Status</option>
+                                <option value="available">Available</option>
+                                <option value="on_trip">On Trip</option>
+                                <option value="offline">Offline</option>
+                            </select>
+                            <input type="text" placeholder="Search driver..." id="driverSearch">
+                        </div>
+                        <button class="btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Add Driver
+                        </button>
+                    </div>
+
+                    <div id="driversGrid" class="drivers-grid">
+                        <p class="loading-cell"><i class="fas fa-spinner fa-spin"></i> Loading drivers...</p>
+                    </div>
+                </section>
+
+                <!-- Customers Page -->
+                <section id="page-customers" class="page-section">
+                    <div class="page-header">
+                        <div class="filter-bar">
+                            <input type="text" placeholder="Search customer..." id="customerSearch">
+                        </div>
+                        <button class="btn-secondary">
+                            <i class="fas fa-file-export"></i>
+                            Export
+                        </button>
+                    </div>
+
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Total Trips</th>
+                                    <th>Total Spent</th>
+                                    <th>Last Trip</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody">
+                                <tr>
+                                    <td colspan="7" class="loading-cell">
+                                        <i class="fas fa-spinner fa-spin"></i> Loading customers...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Vehicles Page -->
+                <section id="page-vehicles" class="page-section">
+                    <div class="page-header">
+                        <div class="filter-bar">
+                            <select id="vehicleTypeFilter">
+                                <option value="">All Types</option>
+                                <option value="standard">Standard</option>
+                                <option value="executive">Executive</option>
+                                <option value="suv">SUV/Minivan</option>
+                                <option value="luxury">Luxury</option>
+                            </select>
+                            <input type="text" placeholder="Search vehicle..." id="vehicleSearch">
+                        </div>
+                        <button class="btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Add Vehicle
+                        </button>
+                    </div>
+
+                    <div id="vehiclesGrid" class="vehicles-grid">
+                        <p class="loading-cell"><i class="fas fa-spinner fa-spin"></i> Loading vehicles...</p>
+                    </div>
+                </section>
+
+                <!-- Reports Page -->
+                <section id="page-reports" class="page-section">
+                    <!-- Report Period Selector -->
+                    <div class="report-controls">
+                        <div class="period-selector">
+                            <button class="period-btn active" data-period="week">This Week</button>
+                            <button class="period-btn" data-period="month">This Month</button>
+                            <button class="period-btn" data-period="quarter">Quarter</button>
+                            <button class="period-btn" data-period="year">Year</button>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn-secondary" id="exportReportPDF">
+                                <i class="fas fa-file-pdf"></i> Export PDF
+                            </button>
+                            <button class="btn-secondary" id="exportReportExcel">
+                                <i class="fas fa-file-excel"></i> Export Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Summary Stats -->
+                    <div class="report-summary">
+                        <div class="summary-card">
+                            <div class="summary-icon green">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="summary-info">
+                                <span class="summary-value" id="reportTotalRevenue">$0</span>
+                                <span class="summary-label">Total Revenue</span>
+                                <span class="summary-change up"><i class="fas fa-arrow-up"></i> 12% vs last period</span>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon blue">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="summary-info">
+                                <span class="summary-value" id="reportTotalBookings">0</span>
+                                <span class="summary-label">Total Bookings</span>
+                                <span class="summary-change up"><i class="fas fa-arrow-up"></i> 8% vs last period</span>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon orange">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <div class="summary-info">
+                                <span class="summary-value" id="reportCompletedTrips">0</span>
+                                <span class="summary-label">Completed Trips</span>
+                                <span class="summary-change up"><i class="fas fa-arrow-up"></i> 15% vs last period</span>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon purple">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="summary-info">
+                                <span class="summary-value" id="reportAvgRating">0.0</span>
+                                <span class="summary-label">Avg. Rating</span>
+                                <span class="summary-change neutral"><i class="fas fa-minus"></i> No change</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid -->
+                    <div class="charts-grid">
+                        <!-- Revenue Chart -->
+                        <div class="chart-card wide">
+                            <div class="chart-header">
+                                <h3><i class="fas fa-chart-line"></i> Revenue Overview</h3>
+                                <div class="chart-legend">
+                                    <span class="legend-item"><span class="legend-color" style="background: #597B87"></span> Revenue</span>
+                                    <span class="legend-item"><span class="legend-color" style="background: #22c55e"></span> Profit</span>
+                                </div>
+                            </div>
+                            <div class="chart-body">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Bookings Chart -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3><i class="fas fa-calendar-alt"></i> Bookings by Status</h3>
+                            </div>
+                            <div class="chart-body">
+                                <canvas id="bookingsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Vehicle Utilization -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3><i class="fas fa-car"></i> Vehicle Class Distribution</h3>
+                            </div>
+                            <div class="chart-body">
+                                <canvas id="vehicleChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Peak Hours Chart -->
+                        <div class="chart-card wide">
+                            <div class="chart-header">
+                                <h3><i class="fas fa-clock"></i> Bookings by Hour</h3>
+                            </div>
+                            <div class="chart-body">
+                                <canvas id="peakHoursChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Top Destinations -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3><i class="fas fa-map-marker-alt"></i> Top Destinations</h3>
+                            </div>
+                            <div class="chart-body">
+                                <div class="top-list" id="topDestinations">
+                                    <!-- Dynamic content -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Driver Performance -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3><i class="fas fa-trophy"></i> Top Drivers</h3>
+                            </div>
+                            <div class="chart-body">
+                                <div class="top-list" id="topDrivers">
+                                    <!-- Dynamic content -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Reports -->
+                    <div class="quick-reports">
+                        <h3>Generate Reports</h3>
+                        <div class="reports-grid">
+                            <div class="report-card">
+                                <h4><i class="fas fa-chart-line"></i> Revenue Report</h4>
+                                <p>Daily, weekly, and monthly revenue analysis with trends</p>
+                                <button class="btn-secondary" data-report="revenue">
+                                    <i class="fas fa-download"></i> Generate
+                                </button>
+                            </div>
+                            <div class="report-card">
+                                <h4><i class="fas fa-calendar-alt"></i> Booking Report</h4>
+                                <p>Booking statistics, peak hours, and popular routes</p>
+                                <button class="btn-secondary" data-report="bookings">
+                                    <i class="fas fa-download"></i> Generate
+                                </button>
+                            </div>
+                            <div class="report-card">
+                                <h4><i class="fas fa-user-check"></i> Driver Performance</h4>
+                                <p>Driver ratings, trip counts, and earnings summary</p>
+                                <button class="btn-secondary" data-report="drivers">
+                                    <i class="fas fa-download"></i> Generate
+                                </button>
+                            </div>
+                            <div class="report-card">
+                                <h4><i class="fas fa-users"></i> Customer Insights</h4>
+                                <p>Customer retention, repeat bookings, and spending patterns</p>
+                                <button class="btn-secondary" data-report="customers">
+                                    <i class="fas fa-download"></i> Generate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Page -->
+                <section id="page-settings" class="page-section">
+                    <div class="settings-container">
+                        <div class="settings-section">
+                            <h3><i class="fas fa-dollar-sign"></i> Pricing Settings</h3>
+                            <form class="settings-form">
+                                <div class="form-row">
+                                    <label>Base Fare (USD)</label>
+                                    <input type="number" value="25" min="0" step="1">
+                                </div>
+                                <div class="form-row">
+                                    <label>Price per KM (USD)</label>
+                                    <input type="number" value="1.50" min="0" step="0.1">
+                                </div>
+                                <div class="form-row">
+                                    <label>Night Surcharge (%)</label>
+                                    <input type="number" value="15" min="0" max="100">
+                                </div>
+                                <div class="form-row">
+                                    <label>Free Waiting Time (minutes)</label>
+                                    <input type="number" value="60" min="0">
+                                </div>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save"></i> Save Pricing
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3><i class="fas fa-bell"></i> Notification Settings</h3>
+                            <form class="settings-form">
+                                <div class="form-row toggle-row">
+                                    <label>SMS Notifications</label>
+                                    <input type="checkbox" checked>
+                                </div>
+                                <div class="form-row toggle-row">
+                                    <label>Email Notifications</label>
+                                    <input type="checkbox" checked>
+                                </div>
+                                <div class="form-row toggle-row">
+                                    <label>Push Notifications</label>
+                                    <input type="checkbox" checked>
+                                </div>
+                                <div class="form-row toggle-row">
+                                    <label>WhatsApp Notifications</label>
+                                    <input type="checkbox">
+                                </div>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save"></i> Save Notifications
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3><i class="fas fa-building"></i> Company Info</h3>
+                            <form class="settings-form">
+                                <div class="form-row">
+                                    <label>Company Name</label>
+                                    <input type="text" value="Shuttle Plus">
+                                </div>
+                                <div class="form-row">
+                                    <label>Contact Email</label>
+                                    <input type="email" value="antenehnegash@gmail.com">
+                                </div>
+                                <div class="form-row">
+                                    <label>Contact Phone</label>
+                                    <input type="text" value="+1 202-599-9077">
+                                </div>
+                                <div class="form-row">
+                                    <label>WhatsApp</label>
+                                    <input type="text" value="+1 571-314-9223">
+                                </div>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save"></i> Save Info
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3><i class="fas fa-exchange-alt"></i> Exchange Rate</h3>
+                            <form class="settings-form">
+                                <div class="form-row">
+                                    <label>USD to ETB Rate</label>
+                                    <input type="number" value="56.50" min="0" step="0.01">
+                                </div>
+                                <div class="form-row toggle-row">
+                                    <label>Auto-update from API</label>
+                                    <input type="checkbox" checked>
+                                </div>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save"></i> Save Rate
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Booking Detail Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2><i class="fas fa-ticket-alt"></i> Booking Details</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="bookingModalContent">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-close">Close</button>
+                <button class="btn-primary">
+                    <i class="fas fa-print"></i> Print
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Driver Modal -->
+    <div id="assignDriverModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> Assign Driver</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Assign driver to booking: <strong id="assignBookingRef"></strong></p>
+                <div id="availableDriversList" class="driver-select-list">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-close">Cancel</button>
+                <button id="confirmAssignDriver" class="btn-primary">
+                    <i class="fas fa-check"></i> Assign Driver
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Driver Modal -->
+    <div id="driverModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2><i class="fas fa-id-card"></i> <span id="driverModalTitle">Add New Driver</span></h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="driverForm" class="admin-form">
+                    <input type="hidden" id="driverId">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="driverName">Full Name *</label>
+                            <input type="text" id="driverName" placeholder="Enter driver's full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="driverPhone">Phone Number *</label>
+                            <input type="tel" id="driverPhone" placeholder="+251 9XX XXX XXXX" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="driverEmail">Email Address</label>
+                            <input type="email" id="driverEmail" placeholder="driver@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="driverLicense">License Number *</label>
+                            <input type="text" id="driverLicense" placeholder="DL-XXXXXX" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="driverLicenseExpiry">License Expiry *</label>
+                            <input type="date" id="driverLicenseExpiry" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="driverStatus">Status</label>
+                            <select id="driverStatus">
+                                <option value="available">Available</option>
+                                <option value="on_trip">On Trip</option>
+                                <option value="offline">Offline</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h4><i class="fas fa-car"></i> Assigned Vehicle</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="driverVehicle">Vehicle</label>
+                                <select id="driverVehicle">
+                                    <option value="">Select Vehicle</option>
+                                    <option value="toyota_corolla">Toyota Corolla</option>
+                                    <option value="hyundai_accent">Hyundai Accent</option>
+                                    <option value="toyota_camry">Toyota Camry</option>
+                                    <option value="toyota_landcruiser">Toyota Land Cruiser</option>
+                                    <option value="mercedes_e">Mercedes E-Class</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="driverPlate">License Plate</label>
+                                <input type="text" id="driverPlate" placeholder="3-AA-XXXXX">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h4><i class="fas fa-file-alt"></i> Documents</h4>
+                        <div class="document-upload-grid">
+                            <div class="document-upload">
+                                <label>Profile Photo</label>
+                                <div class="upload-box" data-doc="photo">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Upload Photo</span>
+                                </div>
+                            </div>
+                            <div class="document-upload">
+                                <label>License Copy</label>
+                                <div class="upload-box" data-doc="license">
+                                    <i class="fas fa-id-card"></i>
+                                    <span>Upload License</span>
+                                </div>
+                            </div>
+                            <div class="document-upload">
+                                <label>Insurance</label>
+                                <div class="upload-box" data-doc="insurance">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Upload Insurance</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-close">Cancel</button>
+                <button id="saveDriverBtn" class="btn-primary">
+                    <i class="fas fa-save"></i> Save Driver
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Driver Modal -->
+    <div id="viewDriverModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2><i class="fas fa-user"></i> Driver Profile</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="viewDriverContent">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-close">Close</button>
+                <button id="editDriverFromViewBtn" class="btn-primary">
+                    <i class="fas fa-edit"></i> Edit Driver
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Vehicle Modal -->
+    <div id="vehicleModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2><i class="fas fa-car"></i> <span id="vehicleModalTitle">Add New Vehicle</span></h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="vehicleForm" class="admin-form">
+                    <input type="hidden" id="vehicleId">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="vehicleMake">Make *</label>
+                            <select id="vehicleMake" required>
+                                <option value="">Select Make</option>
+                                <option value="Toyota">Toyota</option>
+                                <option value="Hyundai">Hyundai</option>
+                                <option value="Honda">Honda</option>
+                                <option value="Mercedes">Mercedes-Benz</option>
+                                <option value="BMW">BMW</option>
+                                <option value="Suzuki">Suzuki</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleModel">Model *</label>
+                            <input type="text" id="vehicleModel" placeholder="e.g. Corolla, Camry" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleYear">Year *</label>
+                            <input type="number" id="vehicleYear" placeholder="2023" min="2015" max="2025" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehiclePlate">License Plate *</label>
+                            <input type="text" id="vehiclePlate" placeholder="3-AA-XXXXX" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleColor">Color *</label>
+                            <input type="text" id="vehicleColor" placeholder="e.g. White, Silver" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleType">Vehicle Class *</label>
+                            <select id="vehicleType" required>
+                                <option value="standard">Standard</option>
+                                <option value="executive">Executive</option>
+                                <option value="suv">SUV/Minivan</option>
+                                <option value="luxury">Luxury</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="vehicleCapacity">Passenger Capacity</label>
+                            <select id="vehicleCapacity">
+                                <option value="3">3 Passengers</option>
+                                <option value="4">4 Passengers</option>
+                                <option value="6">6 Passengers</option>
+                                <option value="7">7+ Passengers</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleLuggage">Luggage Capacity</label>
+                            <select id="vehicleLuggage">
+                                <option value="2">2 Large Bags</option>
+                                <option value="3">3 Large Bags</option>
+                                <option value="4">4 Large Bags</option>
+                                <option value="5">5+ Large Bags</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleStatus">Status</label>
+                            <select id="vehicleStatus">
+                                <option value="available">Available</option>
+                                <option value="in_use">In Use</option>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleDriver">Assigned Driver</label>
+                            <select id="vehicleDriver">
+                                <option value="">Unassigned</option>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h4><i class="fas fa-clipboard-check"></i> Maintenance Info</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="vehicleLastService">Last Service Date</label>
+                                <input type="date" id="vehicleLastService">
+                            </div>
+                            <div class="form-group">
+                                <label for="vehicleNextService">Next Service Due</label>
+                                <input type="date" id="vehicleNextService">
+                            </div>
+                            <div class="form-group">
+                                <label for="vehicleInsuranceExpiry">Insurance Expiry</label>
+                                <input type="date" id="vehicleInsuranceExpiry">
+                            </div>
+                            <div class="form-group">
+                                <label for="vehicleMileage">Current Mileage (km)</label>
+                                <input type="number" id="vehicleMileage" placeholder="e.g. 45000">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h4><i class="fas fa-list-check"></i> Features</h4>
+                        <div class="checkbox-grid">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="featureAC" checked>
+                                <span>Air Conditioning</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="featureWifi">
+                                <span>WiFi</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="featureCharger" checked>
+                                <span>Phone Charger</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="featureWater">
+                                <span>Bottled Water</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="featureChildSeat">
+                                <span>Child Seat Available</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="featureWheelchair">
+                                <span>Wheelchair Accessible</span>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-close">Cancel</button>
+                <button id="saveVehicleBtn" class="btn-primary">
+                    <i class="fas fa-save"></i> Save Vehicle
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Vehicle Modal -->
+    <div id="viewVehicleModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2><i class="fas fa-car"></i> Vehicle Details</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="viewVehicleContent">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-close">Close</button>
+                <button id="editVehicleFromViewBtn" class="btn-primary">
+                    <i class="fas fa-edit"></i> Edit Vehicle
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div id="notificationPanel" class="notification-panel">
+        <div class="notification-header">
+            <h3><i class="fas fa-bell"></i> Notifications</h3>
+            <button id="markAllReadBtn" class="btn-text">Mark all read</button>
+        </div>
+        <div class="notification-list" id="notificationList">
+            <!-- Dynamic notifications -->
+        </div>
+        <div class="notification-footer">
+            <a href="#" id="viewAllNotifications">View All Notifications</a>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Chart.js for Reports -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>

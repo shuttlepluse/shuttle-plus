@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Payment Receipt - Shuttle Plus</title>
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+    <style>
+        body, table, td, p, a, li, blockquote {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        @media screen and (max-width: 600px) {
+            .mobile-padding {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4;">
+    <!-- Preview Text -->
+    <div style="display: none; max-height: 0; overflow: hidden;">
+        Payment Receipt for your Shuttle Plus trip - Receipt #RCP-2024-001234
+    </div>
+
+    <!-- Email Container -->
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f4f4;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <!-- Email Content -->
+                <table role="presentation" cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #597B87 0%, #183251 100%); padding: 30px 40px;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
+                                            Shuttle<span style="color: rgba(255,255,255,0.8);">Plus</span>
+                                        </h1>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 14px;">RECEIPT</p>
+                                        <p style="margin: 5px 0 0; color: #ffffff; font-size: 16px; font-weight: 600;">{{receipt_number}}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 40px;" class="mobile-padding">
+                            <!-- Thank You Message -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 30px;">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <div style="width: 60px; height: 60px; background-color: #34a853; border-radius: 50%; margin: 0 auto 15px; line-height: 60px;">
+                                            <span style="color: white; font-size: 28px;"></span>
+                                        </div>
+                                        <h2 style="margin: 0 0 10px; color: #333333; font-size: 24px; font-weight: 700;">Payment Successful</h2>
+                                        <p style="margin: 0; color: #666666; font-size: 16px;">Thank you for your payment, {{customer_name}}!</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Payment Amount -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8f9fa; border-radius: 12px; margin-bottom: 30px;">
+                                <tr>
+                                    <td style="padding: 30px; text-align: center;">
+                                        <p style="margin: 0 0 5px; color: #666666; font-size: 14px;">Amount Paid</p>
+                                        <p style="margin: 0; color: #333333; font-size: 42px; font-weight: 700;">
+                                            ETB {{total_amount}}
+                                        </p>
+                                        <p style="margin: 10px 0 0; color: #34a853; font-size: 14px; font-weight: 500;">
+                                             Paid on {{payment_date}}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Trip Summary -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border: 1px solid #e9ecef; border-radius: 8px; overflow: hidden; margin-bottom: 30px;">
+                                <tr>
+                                    <td style="background-color: #f8f9fa; padding: 15px 20px; border-bottom: 1px solid #e9ecef;">
+                                        <p style="margin: 0; color: #333333; font-size: 14px; font-weight: 600;">Trip Summary</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="padding-bottom: 15px;">
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px;">DATE & TIME</p>
+                                                    <p style="margin: 0; color: #333333; font-size: 15px;">{{trip_date}} at {{trip_time}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-bottom: 15px;">
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px;">FROM</p>
+                                                    <p style="margin: 0; color: #333333; font-size: 15px;">{{pickup_location}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-bottom: 15px;">
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px;">TO</p>
+                                                    <p style="margin: 0; color: #333333; font-size: 15px;">{{dropoff_location}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px;">BOOKING REFERENCE</p>
+                                                    <p style="margin: 0; color: #597B87; font-size: 15px; font-weight: 600;">{{booking_reference}}</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Price Breakdown -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 30px;">
+                                <tr>
+                                    <td style="padding-bottom: 15px;">
+                                        <p style="margin: 0; color: #333333; font-size: 16px; font-weight: 600;">Price Breakdown</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="color: #666666; font-size: 14px;">Base Fare ({{vehicle_type}})</td>
+                                                <td style="color: #333333; font-size: 14px; text-align: right;">ETB {{base_fare}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="color: #666666; font-size: 14px;">Meet & Greet Service</td>
+                                                <td style="color: #333333; font-size: 14px; text-align: right;">ETB {{meet_greet_fee}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="color: #666666; font-size: 14px;">Service Fee</td>
+                                                <td style="color: #333333; font-size: 14px; text-align: right;">ETB {{service_fee}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="color: #34a853; font-size: 14px;">Discount ({{discount_code}})</td>
+                                                <td style="color: #34a853; font-size: 14px; text-align: right;">- ETB {{discount_amount}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 15px 0;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="color: #333333; font-size: 18px; font-weight: 700;">Total Paid</td>
+                                                <td style="color: #333333; font-size: 18px; font-weight: 700; text-align: right;">ETB {{total_amount}}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Payment Method -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                                <tr>
+                                    <td style="padding: 15px 20px;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td>
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px;">PAYMENT METHOD</p>
+                                                    <p style="margin: 0; color: #333333; font-size: 15px; font-weight: 500;">
+                                                        =³ {{payment_method}} ending in {{card_last_four}}
+                                                    </p>
+                                                </td>
+                                                <td style="text-align: right;">
+                                                    <p style="margin: 0 0 5px; color: #999999; font-size: 12px;">TRANSACTION ID</p>
+                                                    <p style="margin: 0; color: #333333; font-size: 13px; font-family: monospace;">{{transaction_id}}</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Download Button -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center">
+                                        <a href="{{download_receipt_url}}" style="display: inline-block; background-color: #ffffff; border: 2px solid #597B87; color: #597B87; text-decoration: none; padding: 12px 30px; border-radius: 8px; font-size: 14px; font-weight: 600;">
+                                            =å Download PDF Receipt
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Help Section -->
+                    <tr>
+                        <td style="background-color: #f8f9fa; padding: 25px 40px; border-top: 1px solid #e9ecef;" class="mobile-padding">
+                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <p style="margin: 0 0 10px; color: #666666; font-size: 14px;">
+                                            Questions about this receipt?
+                                        </p>
+                                        <a href="mailto:billing@shuttleplus.et" style="color: #597B87; text-decoration: none; font-size: 14px; font-weight: 500;">
+                                            Contact our billing team ’
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 25px 40px; text-align: center;" class="mobile-padding">
+                            <p style="margin: 0 0 10px; color: #999999; font-size: 12px;">
+                                This is an official receipt for your records.
+                            </p>
+                            <p style="margin: 0; color: #999999; font-size: 12px;">
+                                © 2024 Shuttle Plus. All rights reserved.<br>
+                                Addis Ababa, Ethiopia | TIN: 0012345678
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
