@@ -18,6 +18,9 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/driver.css">
+
+    <!-- Driver App Script -->
+    <script src="../../js/driver.js" defer></script>
 </head>
 <body class="driver-portal">
     <!-- Header -->
@@ -25,7 +28,7 @@
         <div class="driver-header-content">
             <div class="driver-header-left">
                 <a href="dashboard.html" class="driver-header-logo">Shuttle<span>Plus</span></a>
-                <div class="driver-status-toggle" onclick="toggleStatus()">
+                <div class="driver-status-toggle" onclick="driverApp.toggleOnlineStatus()">
                     <span class="status-indicator online" id="statusIndicator"></span>
                     <span id="statusText">Online</span>
                 </div>

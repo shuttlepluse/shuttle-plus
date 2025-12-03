@@ -27,6 +27,7 @@ const analyticsRoutes = require('./routes/analytics');
 const auditRoutes = require('./routes/audit');
 const groupRoutes = require('./routes/groups');
 const partnerRoutes = require('./routes/partners');
+const driverRoutes = require('./routes/drivers');
 
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/errorHandler');
@@ -127,6 +128,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/audit', auditRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/partners', partnerRoutes);
+app.use('/api/drivers', driverRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

@@ -6,6 +6,7 @@ const express = require('express');
 const router = express.Router();
 const CorporateAccount = require('../models/CorporateAccount');
 const corporatePricingService = require('../services/corporatePricingService');
+const { authenticate, requireAdmin } = require('../middleware/auth');
 
 // Middleware to authenticate corporate API requests
 const authenticateCorporateApi = async (req, res, next) => {
@@ -372,13 +373,12 @@ router.delete('/users/:email', authenticateCorporateApi, async (req, res) => {
 });
 
 // ========================================
-// Admin Routes (would need admin auth)
+// Admin Routes (requires admin authentication)
 // ========================================
 
 // List all corporate accounts (admin only)
-router.get('/admin/accounts', async (req, res) => {
+router.get('/admin/accounts', authenticate, requireAdmin, async (req, res) => {
     try {
-        // TODO: Add admin authentication
         const { status, tier, page = 1, limit = 20 } = req.query;
 
         const query = {};
@@ -409,9 +409,8 @@ router.get('/admin/accounts', async (req, res) => {
 });
 
 // Approve/activate corporate account (admin only)
-router.post('/admin/accounts/:accountId/approve', async (req, res) => {
+router.post('/admin/accounts/:accountId/approve', authenticate, requireAdmin, async (req, res) => {
     try {
-        // TODO: Add admin authentication
         const { accountId } = req.params;
         const { pricingTier, customDiscount, creditLimit } = req.body;
 
@@ -443,9 +442,8 @@ router.post('/admin/accounts/:accountId/approve', async (req, res) => {
 });
 
 // Update corporate account pricing (admin only)
-router.put('/admin/accounts/:accountId/pricing', async (req, res) => {
+router.put('/admin/accounts/:accountId/pricing', authenticate, requireAdmin, async (req, res) => {
     try {
-        // TODO: Add admin authentication
         const { accountId } = req.params;
         const { pricingTier, discountPercentage, volumeDiscounts, customRates, vehicleRates } = req.body;
 

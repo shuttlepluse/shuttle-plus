@@ -212,9 +212,17 @@
             const response = await fetch(`${API_BASE}/bookings`);
             if (response.ok) {
                 const result = await response.json();
-                bookings = result.data || [];
+                // Handle both array and object with data property
+                const fetchedBookings = Array.isArray(result) ? result : (result.data || []);
+                // Map API response to expected format
+                bookings = fetchedBookings.map(b => ({
+                    ...b,
+                    customer: b.contact ? { name: b.contact.name, phone: b.contact.phone, email: b.contact.email } : b.customer
+                }));
+                if (bookings.length === 0) {
+                    bookings = generateDemoBookings();
+                }
             } else {
-                // Use demo data
                 bookings = generateDemoBookings();
             }
             updatePendingBadge();
@@ -235,6 +243,22 @@
     }
 
     async function loadStats() {
+        try {
+            // Try to fetch real stats from analytics API
+            const response = await fetch(`${API_BASE}/analytics/quick-stats`);
+            if (response.ok) {
+                const stats = await response.json();
+                document.getElementById('statTodayBookings').textContent = stats.todayBookings || 0;
+                document.getElementById('statTodayRevenue').textContent = '$' + (stats.todayRevenue || 0);
+                document.getElementById('statPending').textContent = stats.pendingBookings || 0;
+                document.getElementById('statActiveDrivers').textContent = stats.activeDrivers || drivers.filter(d => d.status === 'available' || d.status === 'on_trip').length;
+                return;
+            }
+        } catch (error) {
+            console.log('Analytics API not available, using local calculations');
+        }
+
+        // Fallback to local calculations
         const today = new Date().toDateString();
         const todayBookings = bookings.filter(b =>
             new Date(b.createdAt).toDateString() === today
@@ -535,6 +559,26 @@
                     </div>
                 </div>
             </div>
+            <div class="detail-section" style="grid-column: 1 / -1; margin-top: 1rem;">
+                <h4>Update Status</h4>
+                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <select id="updateStatusSelect" class="form-control" style="flex: 1; min-width: 200px;">
+                        <option value="pending" ${booking.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="confirmed" ${booking.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                        <option value="driver_assigned" ${booking.status === 'driver_assigned' ? 'selected' : ''}>Driver Assigned</option>
+                        <option value="driver_enroute" ${booking.status === 'driver_enroute' ? 'selected' : ''}>Driver En Route</option>
+                        <option value="driver_arrived" ${booking.status === 'driver_arrived' ? 'selected' : ''}>Driver Arrived</option>
+                        <option value="passenger_picked_up" ${booking.status === 'passenger_picked_up' ? 'selected' : ''}>Passenger Picked Up</option>
+                        <option value="in_progress" ${booking.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="completed" ${booking.status === 'completed' ? 'selected' : ''}>Completed</option>
+                        <option value="cancelled" ${booking.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                        <option value="no_show" ${booking.status === 'no_show' ? 'selected' : ''}>No Show</option>
+                    </select>
+                    <button class="btn-primary" onclick="updateBookingStatus('${booking.bookingReference}')">
+                        <i class="fas fa-save"></i> Update Status
+                    </button>
+                </div>
+            </div>
             <style>
                 .booking-detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
                 .detail-section h4 { margin: 0 0 1rem 0; font-size: 0.9rem; color: var(--admin-primary); border-bottom: 1px solid var(--admin-border); padding-bottom: 0.5rem; }
@@ -585,42 +629,181 @@
         selectedDriver = drivers.find(d => d.id === driverId);
     };
 
-    document.getElementById('confirmAssignDriver')?.addEventListener('click', () => {
+    document.getElementById('confirmAssignDriver')?.addEventListener('click', async () => {
         if (!selectedDriver || !selectedBooking) {
             showToast('Please select a driver', 'error');
             return;
         }
 
-        // Update booking
-        const bookingIndex = bookings.findIndex(b => b.bookingReference === selectedBooking.bookingReference);
-        if (bookingIndex !== -1) {
-            bookings[bookingIndex].driver = {
-                name: selectedDriver.name,
-                phone: selectedDriver.phone,
-                vehiclePlate: selectedDriver.plate
-            };
-            bookings[bookingIndex].status = 'driver_assigned';
-        }
+        const driverData = {
+            name: selectedDriver.name,
+            phone: selectedDriver.phone,
+            vehiclePlate: selectedDriver.plate,
+            vehicleModel: selectedDriver.vehicle
+        };
 
-        closeModals();
-        renderBookingsTable();
-        renderRecentBookings();
-        showToast(`Driver ${selectedDriver.name} assigned to ${selectedBooking.bookingReference}`, 'success');
+        try {
+            // Try to update via API
+            const response = await fetch(`${API_BASE}/bookings/${selectedBooking._id || selectedBooking.bookingReference}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    status: 'driver_assigned',
+                    driver: driverData
+                })
+            });
+
+            if (response.ok) {
+                // Update local state
+                const bookingIndex = bookings.findIndex(b => b.bookingReference === selectedBooking.bookingReference);
+                if (bookingIndex !== -1) {
+                    bookings[bookingIndex].driver = driverData;
+                    bookings[bookingIndex].status = 'driver_assigned';
+                }
+                closeModals();
+                renderBookingsTable();
+                renderRecentBookings();
+                showToast(`Driver ${selectedDriver.name} assigned to ${selectedBooking.bookingReference}`, 'success');
+            } else {
+                // Fallback to local-only update
+                const bookingIndex = bookings.findIndex(b => b.bookingReference === selectedBooking.bookingReference);
+                if (bookingIndex !== -1) {
+                    bookings[bookingIndex].driver = driverData;
+                    bookings[bookingIndex].status = 'driver_assigned';
+                }
+                closeModals();
+                renderBookingsTable();
+                renderRecentBookings();
+                showToast(`Driver ${selectedDriver.name} assigned (offline)`, 'success');
+            }
+        } catch (error) {
+            console.error('Error assigning driver:', error);
+            // Fallback to local-only update
+            const bookingIndex = bookings.findIndex(b => b.bookingReference === selectedBooking.bookingReference);
+            if (bookingIndex !== -1) {
+                bookings[bookingIndex].driver = driverData;
+                bookings[bookingIndex].status = 'driver_assigned';
+            }
+            closeModals();
+            renderBookingsTable();
+            renderRecentBookings();
+            showToast(`Driver ${selectedDriver.name} assigned (offline)`, 'success');
+        }
 
         selectedDriver = null;
         selectedBooking = null;
     });
 
-    window.cancelBooking = function(ref) {
+    window.cancelBooking = async function(ref) {
         if (!confirm(`Cancel booking ${ref}?`)) return;
 
-        const bookingIndex = bookings.findIndex(b => b.bookingReference === ref);
-        if (bookingIndex !== -1) {
-            bookings[bookingIndex].status = 'cancelled';
+        try {
+            // Find the booking to get its ID
+            const booking = bookings.find(b => b.bookingReference === ref);
+            if (!booking) {
+                showToast('Booking not found', 'error');
+                return;
+            }
+
+            // Try to update via API
+            const response = await fetch(`${API_BASE}/bookings/${booking._id || ref}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'cancelled' })
+            });
+
+            if (response.ok) {
+                // Update local state
+                const bookingIndex = bookings.findIndex(b => b.bookingReference === ref);
+                if (bookingIndex !== -1) {
+                    bookings[bookingIndex].status = 'cancelled';
+                }
+                renderBookingsTable();
+                renderRecentBookings();
+                updatePendingBadge();
+                showToast(`Booking ${ref} cancelled`, 'success');
+            } else {
+                // Fallback to local-only update
+                const bookingIndex = bookings.findIndex(b => b.bookingReference === ref);
+                if (bookingIndex !== -1) {
+                    bookings[bookingIndex].status = 'cancelled';
+                    renderBookingsTable();
+                    renderRecentBookings();
+                    updatePendingBadge();
+                    showToast(`Booking ${ref} cancelled (offline)`, 'success');
+                }
+            }
+        } catch (error) {
+            console.error('Error cancelling booking:', error);
+            // Fallback to local-only update
+            const bookingIndex = bookings.findIndex(b => b.bookingReference === ref);
+            if (bookingIndex !== -1) {
+                bookings[bookingIndex].status = 'cancelled';
+                renderBookingsTable();
+                renderRecentBookings();
+                updatePendingBadge();
+                showToast(`Booking ${ref} cancelled (offline)`, 'success');
+            }
+        }
+    };
+
+    window.updateBookingStatus = async function(ref) {
+        const newStatus = document.getElementById('updateStatusSelect')?.value;
+        if (!newStatus) {
+            showToast('Please select a status', 'error');
+            return;
+        }
+
+        const booking = bookings.find(b => b.bookingReference === ref);
+        if (!booking) {
+            showToast('Booking not found', 'error');
+            return;
+        }
+
+        if (booking.status === newStatus) {
+            showToast('Status unchanged', 'info');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE}/bookings/${booking._id || ref}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+
+            if (response.ok) {
+                const bookingIndex = bookings.findIndex(b => b.bookingReference === ref);
+                if (bookingIndex !== -1) {
+                    bookings[bookingIndex].status = newStatus;
+                }
+                closeModals();
+                renderBookingsTable();
+                renderRecentBookings();
+                updatePendingBadge();
+                showToast(`Booking ${ref} updated to ${formatStatus(newStatus)}`, 'success');
+            } else {
+                const bookingIndex = bookings.findIndex(b => b.bookingReference === ref);
+                if (bookingIndex !== -1) {
+                    bookings[bookingIndex].status = newStatus;
+                }
+                closeModals();
+                renderBookingsTable();
+                renderRecentBookings();
+                updatePendingBadge();
+                showToast(`Booking ${ref} updated (offline)`, 'success');
+            }
+        } catch (error) {
+            console.error('Error updating booking:', error);
+            const bookingIndex = bookings.findIndex(b => b.bookingReference === ref);
+            if (bookingIndex !== -1) {
+                bookings[bookingIndex].status = newStatus;
+            }
+            closeModals();
             renderBookingsTable();
             renderRecentBookings();
             updatePendingBadge();
-            showToast(`Booking ${ref} cancelled`, 'success');
+            showToast(`Booking ${ref} updated (offline)`, 'success');
         }
     };
 

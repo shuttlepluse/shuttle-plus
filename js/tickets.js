@@ -607,9 +607,40 @@
         }
     };
 
-    function downloadTicket() {
-        showToast('Download feature coming soon');
-        // TODO: Generate PDF ticket
+    async function downloadTicket() {
+        if (!selectedTicket) return;
+
+        const bookingId = selectedTicket._id || selectedTicket.bookingReference;
+        showToast('Generating PDF...');
+
+        try {
+            // Fetch PDF from API
+            const response = await fetch(`/api/bookings/${bookingId}/ticket`);
+
+            if (!response.ok) {
+                throw new Error('Failed to generate PDF');
+            }
+
+            // Get the PDF blob
+            const blob = await response.blob();
+
+            // Create download link
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ShuttlePlus-Ticket-${selectedTicket.bookingReference}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+
+            // Cleanup
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            showToast('Ticket downloaded');
+        } catch (error) {
+            console.error('Download error:', error);
+            showToast('Failed to download ticket. Please try again.');
+        }
     }
 
     function addToCalendar() {
