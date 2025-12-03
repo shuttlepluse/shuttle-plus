@@ -2,6 +2,22 @@
 
 Premium airport transfer service platform for Addis Ababa, Ethiopia. A full-stack Progressive Web Application (PWA) built with Express.js, MongoDB, and vanilla JavaScript.
 
+## Branch Structure
+
+| Branch | Purpose | Key Files |
+|--------|---------|-----------|
+| `master` | Production-ready code | All files |
+| `develop` | Development integration | All files |
+| `feature/public-website` | Landing page & booking | `index.html`, `pages/booking.html`, `pages/tickets.html`, `css/style.css`, `css/booking.css` |
+| `feature/driver-app` | Driver mobile app | `pages/driver/*`, `js/driver.js`, `css/driver.css` |
+| `feature/admin-dashboard` | Admin panel | `pages/admin.html`, `js/admin.js`, `css/admin.css` |
+| `feature/backend-api` | Server & API | `server/*` |
+
+### Workflow
+1. Create feature branches from `develop`
+2. Merge completed features into `develop`
+3. Release to `master` when stable
+
 ## Project Structure
 
 ```
