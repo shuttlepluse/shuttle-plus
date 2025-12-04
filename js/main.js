@@ -226,21 +226,35 @@ function initFormHandlers() {
         // Check if user is returning from booking page to edit route
         loadEditRouteData();
 
+        // Setup passenger/luggage dynamic update
+        const passengerSelect = document.getElementById('homePassengers');
+        const luggageSelect = document.getElementById('homeLuggage');
+
+        if (passengerSelect && luggageSelect) {
+            // Update luggage options when passengers change
+            passengerSelect.addEventListener('change', () => {
+                updateLuggageOptions(passengerSelect, luggageSelect);
+            });
+
+            // Initialize luggage options
+            updateLuggageOptions(passengerSelect, luggageSelect);
+        }
+
         bookingForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
             // Get form data and store in sessionStorage for the booking page
             const inputs = bookingForm.querySelectorAll('input, select');
-            const passengerSelect = inputs[4];
-            const selectedOption = passengerSelect?.options[passengerSelect.selectedIndex];
+            const passengers = document.getElementById('homePassengers')?.value || '2';
+            const luggage = document.getElementById('homeLuggage')?.value || '2';
 
             const quickBookingData = {
                 flightNumber: inputs[0]?.value || '',
                 destination: inputs[1]?.value || '',
                 date: inputs[2]?.value || '',
                 time: inputs[3]?.value || '',
-                passengers: inputs[4]?.value || '2',
-                passengersText: selectedOption?.text || '1-2 Passengers, 2 Bags',
+                passengers: passengers,
+                luggage: luggage,
                 transferType: document.querySelector('.tab-btn.active')?.dataset.tab || 'arrival'
             };
 
@@ -250,6 +264,29 @@ function initFormHandlers() {
             window.location.href = 'pages/booking.html';
         });
     }
+}
+
+// ----------------------------------------
+// Update Luggage Options Based on Passengers
+// ----------------------------------------
+function updateLuggageOptions(passengerSelect, luggageSelect) {
+    const passengers = parseInt(passengerSelect.value) || 2;
+    const currentLuggage = parseInt(luggageSelect.value) || 2;
+
+    // Clear existing options
+    luggageSelect.innerHTML = '';
+
+    // Add options from 0 to passenger count (max 1 luggage per passenger)
+    for (let i = 0; i <= passengers; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i === 0 ? 'No Bags' : (i === 1 ? '1 Bag' : `${i} Bags`);
+        luggageSelect.appendChild(option);
+    }
+
+    // Set default to passenger count or current value (whichever is smaller)
+    const newValue = Math.min(currentLuggage, passengers);
+    luggageSelect.value = newValue > 0 ? newValue : passengers;
 }
 
 // ----------------------------------------
@@ -309,13 +346,23 @@ function loadEditRouteDataInner(editData) {
             inputs[3].value = data.time;
         }
 
-        // Set passengers
-        if (inputs[4] && data.passengers) {
+        // Set passengers using new separate dropdown
+        const passengerSelect = document.getElementById('homePassengers');
+        const luggageSelect = document.getElementById('homeLuggage');
+
+        if (passengerSelect && data.passengers) {
             const passengerValue = String(data.passengers);
-            const options = Array.from(inputs[4].options);
-            const matchingOption = options.find(opt => opt.value === passengerValue);
-            if (matchingOption) {
-                inputs[4].value = passengerValue;
+            passengerSelect.value = passengerValue;
+
+            // Update luggage options based on passenger count
+            if (luggageSelect) {
+                updateLuggageOptions(passengerSelect, luggageSelect);
+
+                // Set luggage value if provided
+                if (data.luggage !== undefined) {
+                    const luggageValue = String(data.luggage);
+                    luggageSelect.value = luggageValue;
+                }
             }
         }
 
@@ -355,15 +402,15 @@ function loadEditRouteDataInner(editData) {
         }
 
         // IMPORTANT: Also create quickBookingData so it's ready when user clicks "See Prices"
-        const passengerSelect = inputs[4];
-        const selectedOption = passengerSelect?.options[passengerSelect.selectedIndex];
+        const passengers = document.getElementById('homePassengers')?.value || '2';
+        const luggage = document.getElementById('homeLuggage')?.value || passengers;
         const quickBookingData = {
             flightNumber: inputs[0]?.value || '',
             destination: inputs[1]?.value || '',
             date: inputs[2]?.value || '',
             time: inputs[3]?.value || '',
-            passengers: inputs[4]?.value || '2',
-            passengersText: selectedOption?.text || '1-2 Passengers, 2 Bags',
+            passengers: passengers,
+            luggage: luggage,
             transferType: data.transferType || 'arrival'
         };
         sessionStorage.setItem('quickBookingData', JSON.stringify(quickBookingData));

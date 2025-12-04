@@ -214,13 +214,21 @@
             bookingData.passengers = passengerCount;
             document.getElementById('passengers').value = passengerCount;
 
-            // Parse and store luggage
-            let luggageCount = 2;
-            const textToParse = data.passengersText || data.passengers || '';
-            const luggageMatch = textToParse.match(/(\d+)\s*Bags?/i);
-            if (luggageMatch) {
-                luggageCount = parseInt(luggageMatch[1]) || 2;
+            // Parse and store luggage (max 1 per passenger)
+            let luggageCount = passengerCount; // Default to passenger count
+            if (data.luggage !== undefined) {
+                // Direct luggage value from new dropdown
+                luggageCount = parseInt(data.luggage) || passengerCount;
+            } else {
+                // Legacy format: parse from passengersText
+                const textToParse = data.passengersText || data.passengers || '';
+                const luggageMatch = textToParse.match(/(\d+)\s*Bags?/i);
+                if (luggageMatch) {
+                    luggageCount = parseInt(luggageMatch[1]) || passengerCount;
+                }
             }
+            // Enforce max 1 luggage per passenger
+            luggageCount = Math.min(luggageCount, passengerCount);
             bookingData.luggage = luggageCount;
             document.getElementById('luggage').value = luggageCount;
 
@@ -582,19 +590,36 @@
     // ========================================
     function filterVehiclesByCapacity(passengers) {
         passengers = parseInt(passengers) || 2;
-        console.log('[Booking] Filtering vehicles for', passengers, 'passengers');
+        const luggage = bookingData.luggage || passengers;
+        console.log('[Booking] Filtering vehicles for', passengers, 'passengers,', luggage, 'luggage');
 
+        // Vehicle capacities:
+        // Sedan (standard, executive, luxury): 1-3 passengers max
+        // SUV: 1-5 passengers max
+        // Van: 1-11 passengers max
         const vehicleCapacities = {
-            standard: 2,    // Sedan - 1-2 passengers
-            executive: 2,   // Sedan - 1-2 passengers
-            suv: 5,         // SUV - 3-5 passengers
-            van: 11,        // Van - 6-11 passengers
-            luxury: 2       // Sedan - 1-2 passengers
+            standard: 3,    // Sedan - max 3 passengers
+            executive: 3,   // Sedan - max 3 passengers
+            suv: 5,         // SUV - max 5 passengers
+            van: 11,        // Van - max 11 passengers
+            luxury: 3       // Sedan - max 3 passengers
         };
+
+        // Preferred vehicles by passenger count:
+        // 1-2: Sedan preferred (standard, executive, luxury), but can use SUV or Van
+        // 3-5: SUV preferred, can use Van
+        // 6+: Van only
+        const getPreferredVehicle = (count) => {
+            if (count <= 2) return 'standard';
+            if (count <= 5) return 'suv';
+            return 'van';
+        };
+
+        const preferredVehicle = getPreferredVehicle(passengers);
 
         const vehicleOptions = document.querySelectorAll('.vehicle-option');
         let firstAvailable = null;
-        let hiddenCount = 0;
+        let preferredOption = null;
 
         vehicleOptions.forEach(option => {
             const input = option.querySelector('input[name="vehicleClass"]');
@@ -604,55 +629,73 @@
             const capacity = vehicleCapacities[vehicleType] || 3;
 
             if (passengers > capacity) {
+                // Vehicle cannot fit the passengers
                 option.style.display = 'none';
                 option.classList.add('capacity-hidden');
                 input.disabled = true;
                 if (input.checked) {
                     input.checked = false;
                 }
-                hiddenCount++;
             } else {
+                // Vehicle can fit the passengers
                 option.style.display = '';
                 option.classList.remove('capacity-hidden');
                 input.disabled = false;
+
                 if (!firstAvailable) {
                     firstAvailable = input;
+                }
+
+                // Track preferred option
+                if (vehicleType === preferredVehicle) {
+                    preferredOption = input;
                 }
             }
         });
 
-        // Auto-select first available vehicle if current selection is hidden
+        // Auto-select preferred or first available vehicle if current selection is hidden
         const currentSelected = document.querySelector('input[name="vehicleClass"]:checked');
         if (!currentSelected || currentSelected.disabled) {
-            if (firstAvailable) {
-                firstAvailable.checked = true;
-                bookingData.vehicleClass = firstAvailable.value;
+            const toSelect = preferredOption || firstAvailable;
+            if (toSelect) {
+                toSelect.checked = true;
+                bookingData.vehicleClass = toSelect.value;
                 updatePricing();
             }
         }
 
-        // Reset to standard vehicle when passenger count decreases to 2 or less
-        // This handles the case when user edits route and changes from 5-6 passengers to 1-2
+        // Reset to preferred vehicle when passenger count changes
         if (passengers <= 2) {
             const standardOption = document.querySelector('input[name="vehicleClass"][value="standard"]');
             const suvOption = document.querySelector('input[name="vehicleClass"][value="suv"]');
             const vanOption = document.querySelector('input[name="vehicleClass"][value="van"]');
 
-            // If SUV or Van is currently selected but standard is now available
+            // If SUV or Van is currently selected but standard is preferred and available
             if ((suvOption?.checked || vanOption?.checked) && standardOption && !standardOption.disabled) {
-                // Reset to standard (most affordable option)
                 standardOption.checked = true;
                 bookingData.vehicleClass = 'standard';
                 updatePricing();
                 console.log('[Booking] Reset vehicle to standard for', passengers, 'passengers');
             }
+        } else if (passengers >= 3 && passengers <= 5) {
+            const suvOption = document.querySelector('input[name="vehicleClass"][value="suv"]');
+            const standardOption = document.querySelector('input[name="vehicleClass"][value="standard"]');
+            const vanOption = document.querySelector('input[name="vehicleClass"][value="van"]');
+
+            // If standard is selected but SUV is preferred
+            if (standardOption?.checked && suvOption && !suvOption.disabled) {
+                suvOption.checked = true;
+                bookingData.vehicleClass = 'suv';
+                updatePricing();
+                console.log('[Booking] Switched to SUV for', passengers, 'passengers');
+            }
         }
 
-        // Show warning for larger groups
+        // Show info message for vehicle recommendations
         const vehicleSection = document.querySelector('.vehicle-options');
         let capacityWarning = document.getElementById('suvOnlyWarning');
 
-        if (passengers > 2 && vehicleSection) {
+        if (vehicleSection) {
             if (!capacityWarning) {
                 capacityWarning = document.createElement('div');
                 capacityWarning.id = 'suvOnlyWarning';
@@ -662,12 +705,13 @@
 
             if (passengers >= 6) {
                 capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + ' passengers, only Van is available';
+                capacityWarning.style.display = 'block';
+            } else if (passengers >= 3) {
+                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + ' passengers, SUV is recommended';
+                capacityWarning.style.display = 'block';
             } else {
-                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + ' passengers, SUV or Van recommended';
+                capacityWarning.style.display = 'none';
             }
-            capacityWarning.style.display = 'block';
-        } else if (capacityWarning) {
-            capacityWarning.style.display = 'none';
         }
     }
 
