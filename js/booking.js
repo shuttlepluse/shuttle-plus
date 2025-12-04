@@ -227,8 +227,33 @@
             // Update the route summary card display
             updateRouteSummaryCard();
 
-            // DON'T clear sessionStorage here - it will be cleared on successful form submit
-            // This allows the page to survive hard refreshes
+            // Restore extras from editRouteData if returning from edit
+            const editData = sessionStorage.getItem('editRouteData');
+            if (editData) {
+                try {
+                    const extras = JSON.parse(editData);
+                    if (extras.vehicleClass) {
+                        bookingData.vehicleClass = extras.vehicleClass;
+                    }
+                    if (extras.childSeat !== undefined) {
+                        bookingData.childSeat = extras.childSeat;
+                        const cb = document.getElementById('childSeat');
+                        if (cb) cb.checked = extras.childSeat;
+                    }
+                    if (extras.meetGreet !== undefined) {
+                        bookingData.meetGreet = extras.meetGreet;
+                        const cb = document.getElementById('meetGreet');
+                        if (cb) cb.checked = extras.meetGreet;
+                    }
+                    console.log('[Booking] Extras restored:', extras.childSeat, extras.meetGreet);
+                } catch (e) {
+                    console.error('[Booking] Failed to restore extras:', e);
+                }
+                sessionStorage.removeItem('editRouteData');
+            }
+
+            // Clear quickBookingData to prevent stale data on future edits
+            sessionStorage.removeItem('quickBookingData');
 
             console.log('[Booking] Data loaded successfully:', bookingData);
             return true;
@@ -309,13 +334,19 @@
     // ========================================
     window.editRoute = function() {
         // Save current booking data back to sessionStorage for home page to load
+        // Include extras so they can be restored when returning
         const editData = {
             flightNumber: bookingData.flight?.number || document.getElementById('flightNumber')?.value || '',
             destination: bookingData.destination || document.getElementById('destination')?.value || '',
             date: bookingData.date || document.getElementById('flightDate')?.value || '',
             time: bookingData.time || document.getElementById('flightTimeInput')?.value || '',
             passengers: bookingData.passengers,
-            transferType: bookingData.type
+            transferType: bookingData.type,
+            // Preserve extras and vehicle selection
+            vehicleClass: bookingData.vehicleClass,
+            childSeat: bookingData.childSeat,
+            meetGreet: bookingData.meetGreet,
+            luggage: bookingData.luggage
         };
 
         sessionStorage.setItem('editRouteData', JSON.stringify(editData));
@@ -785,39 +816,45 @@
 
         showLoading();
 
-        const formData = collectFormData();
-
         try {
-            const pricingResponse = await fetch('/api/pricing/calculate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    pickup: formData.pickup.location,
-                    dropoff: formData.dropoff.location,
-                    vehicleClass: formData.vehicleClass,
-                    pickupTime: formData.pickup.scheduledTime,
-                    additionalStops: 0,
-                    childSeat: formData.childSeat
-                })
-            });
+            const formData = collectFormData();
 
-            if (pricingResponse.ok) {
-                const pricingData = await pricingResponse.json();
-                formData.pricing = pricingData.data;
-            } else {
+            try {
+                const pricingResponse = await fetch('/api/pricing/calculate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        pickup: formData.pickup.location,
+                        dropoff: formData.dropoff.location,
+                        vehicleClass: formData.vehicleClass,
+                        pickupTime: formData.pickup.scheduledTime,
+                        additionalStops: 0,
+                        childSeat: formData.childSeat
+                    })
+                });
+
+                if (pricingResponse.ok) {
+                    const pricingData = await pricingResponse.json();
+                    formData.pricing = pricingData.data;
+                } else {
+                    formData.pricing = bookingData.pricing;
+                }
+            } catch (error) {
+                console.log('[Booking] Using local pricing data');
                 formData.pricing = bookingData.pricing;
             }
-        } catch (error) {
-            console.log('[Booking] Using local pricing data');
-            formData.pricing = bookingData.pricing;
-        }
 
-        sessionStorage.setItem('pendingBooking', JSON.stringify(formData));
-        // Clear booking state on successful form submission
-        sessionStorage.removeItem('quickBookingData');
-        sessionStorage.removeItem('bookingState');
-        hideLoading();
-        window.location.href = 'payment.html';
+            sessionStorage.setItem('pendingBooking', JSON.stringify(formData));
+            // Clear booking state on successful form submission
+            sessionStorage.removeItem('quickBookingData');
+            sessionStorage.removeItem('bookingState');
+            hideLoading();
+            window.location.href = 'payment.html';
+        } catch (error) {
+            console.error('[Booking] Submit error:', error);
+            hideLoading();
+            showError('An error occurred. Please check your information and try again.');
+        }
     }
 
     function collectFormData() {
@@ -851,9 +888,9 @@
             childSeat: bookingData.childSeat,
             meetGreet: bookingData.meetGreet,
             contact: {
-                name: document.getElementById('contactName').value.trim(),
-                phone: document.getElementById('contactPhone').value.trim(),
-                email: document.getElementById('contactEmail')?.value.trim() || null
+                name: document.getElementById('contactName')?.value?.trim() || '',
+                phone: document.getElementById('contactPhone')?.value?.trim() || '',
+                email: document.getElementById('contactEmail')?.value?.trim() || null
             },
             specialRequests: document.getElementById('specialRequests')?.value.trim() || null,
             payment: {
