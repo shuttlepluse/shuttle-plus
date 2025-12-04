@@ -205,11 +205,12 @@
             });
         });
 
-        // Passengers
+        // Passengers - filter vehicles by capacity
         const passengersSelect = document.getElementById('passengers');
         if (passengersSelect) {
             passengersSelect.addEventListener('change', (e) => {
                 bookingData.passengers = parseInt(e.target.value) || 2;
+                filterVehiclesByCapacity(bookingData.passengers);
             });
         }
 
@@ -281,9 +282,10 @@
 
         currentStep = step;
 
-        // Update route summary banner on step 2
+        // Update route summary banner on step 2 and filter vehicles
         if (step === 2) {
             updateRouteSummary();
+            filterVehiclesByCapacity(bookingData.passengers);
         }
 
         // Update summary on step 4 (final step)
@@ -351,6 +353,13 @@
                     isValid = false;
                 }
             }
+
+            // Validate flight number format if provided
+            const flightNumber = document.getElementById('flightNumber')?.value.trim();
+            if (flightNumber && !/^[A-Za-z]{2}\s?\d{1,4}$/.test(flightNumber)) {
+                showError('Please enter a valid flight number (e.g., ET 500)');
+                isValid = false;
+            }
         }
 
         if (step === 3) {
@@ -358,13 +367,6 @@
             const phone = document.getElementById('contactPhone')?.value.trim();
             if (phone && !/^(\+251|0)?[97]\d{8}$/.test(phone.replace(/\s/g, ''))) {
                 showError('Please enter a valid phone number');
-                isValid = false;
-            }
-
-            // Validate flight number format if provided
-            const flightNumber = document.getElementById('flightNumber')?.value.trim();
-            if (flightNumber && !/^[A-Za-z]{2}\s?\d{1,4}$/.test(flightNumber)) {
-                showError('Please enter a valid flight number (e.g., ET 500)');
                 isValid = false;
             }
         }
@@ -460,6 +462,76 @@
             dateLabel.textContent = 'Departure Date';
             timeLabel.textContent = 'Pickup Time';
             destLabel.textContent = 'Pickup Location';
+        }
+    }
+
+    // ========================================
+    // Filter Vehicles by Passenger Capacity
+    // ========================================
+    function filterVehiclesByCapacity(passengers) {
+        // Vehicle capacities: standard=3, executive=3, suv=6, luxury=3
+        const vehicleCapacities = {
+            standard: 3,
+            executive: 3,
+            suv: 6,
+            luxury: 3
+        };
+
+        const vehicleOptions = document.querySelectorAll('.vehicle-option');
+        let firstAvailable = null;
+
+        vehicleOptions.forEach(option => {
+            const input = option.querySelector('input[name="vehicleClass"]');
+            if (!input) return;
+
+            const vehicleType = input.value;
+            const capacity = vehicleCapacities[vehicleType] || 3;
+
+            if (passengers > capacity) {
+                // Hide vehicles that can't accommodate passenger count
+                option.style.display = 'none';
+                option.classList.add('capacity-hidden');
+                if (input.checked) {
+                    input.checked = false;
+                }
+            } else {
+                // Show available vehicles
+                option.style.display = '';
+                option.classList.remove('capacity-hidden');
+                if (!firstAvailable) {
+                    firstAvailable = input;
+                }
+            }
+        });
+
+        // Select first available vehicle if current selection is hidden
+        const currentSelected = document.querySelector('input[name="vehicleClass"]:checked');
+        if (!currentSelected || currentSelected.closest('.vehicle-option').classList.contains('capacity-hidden')) {
+            if (firstAvailable) {
+                firstAvailable.checked = true;
+                bookingData.vehicleClass = firstAvailable.value;
+                updatePricing();
+            }
+        }
+
+        // Show warning if only SUV available
+        const suvWarning = document.getElementById('suvOnlyWarning');
+        if (passengers > 3) {
+            if (!suvWarning) {
+                const warning = document.createElement('div');
+                warning.id = 'suvOnlyWarning';
+                warning.className = 'capacity-warning';
+                warning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + '+ passengers, only SUV/Minivan is available';
+                const vehicleSection = document.querySelector('.vehicle-options');
+                if (vehicleSection) {
+                    vehicleSection.parentNode.insertBefore(warning, vehicleSection);
+                }
+            } else {
+                suvWarning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + '+ passengers, only SUV/Minivan is available';
+                suvWarning.style.display = 'block';
+            }
+        } else if (suvWarning) {
+            suvWarning.style.display = 'none';
         }
     }
 

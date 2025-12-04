@@ -987,3 +987,27 @@
         gap: 1rem;
     }
 }
+
+/* Capacity Warning */
+.capacity-warning {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #92400e;
+    font-size: 0.9375rem;
+}
+
+.capacity-warning i {
+    font-size: 1.25rem;
+    color: #f59e0b;
+}
+
+/* Hidden vehicles due to capacity */
+.vehicle-option.capacity-hidden {
+    display: none !important;
+}

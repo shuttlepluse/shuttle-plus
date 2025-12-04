@@ -143,6 +143,36 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="flightNumber">
+                            <i class="fas fa-plane"></i> Flight Number
+                        </label>
+                        <input type="text" id="flightNumber" name="flightNumber"
+                               placeholder="e.g. ET 500, LH 590"
+                               pattern="[A-Za-z]{2}\s?\d{1,4}">
+                        <span class="form-hint">Optional - for flight tracking</span>
+                    </div>
+
+                    <div class="form-group" id="flightInfoGroup" style="display: none;">
+                        <div class="flight-info-card">
+                            <div class="flight-info-header">
+                                <span class="airline-name" id="airlineName"></span>
+                                <span class="flight-status" id="flightStatus"></span>
+                            </div>
+                            <div class="flight-info-details">
+                                <div class="flight-route">
+                                    <span id="flightOrigin"></span>
+                                    <i class="fas fa-plane"></i>
+                                    <span>Addis Ababa (ADD)</span>
+                                </div>
+                                <div class="flight-time">
+                                    <i class="fas fa-clock"></i>
+                                    <span id="flightTime"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="flightDate">
                             <i class="fas fa-calendar"></i> <span id="dateLabel">Date</span>
                         </label>
@@ -332,49 +362,14 @@
                 </div>
             </div>
 
-            <!-- Step 3: Flight & Contact Details -->
+            <!-- Step 3: Contact Details -->
             <div class="booking-step" data-step="3">
                 <div class="step-header">
-                    <h2>Your Details</h2>
+                    <h2>Contact Details</h2>
                     <p>Almost there! Just a few more details</p>
                 </div>
 
                 <div class="form-grid">
-                    <!-- Flight Section -->
-                    <div class="form-section-header full-width">
-                        <i class="fas fa-plane"></i> Flight Information
-                    </div>
-
-                    <div class="form-group">
-                        <label for="flightNumber">
-                            <i class="fas fa-plane"></i> Flight Number
-                        </label>
-                        <input type="text" id="flightNumber" name="flightNumber"
-                               placeholder="e.g. ET 500, LH 590"
-                               pattern="[A-Za-z]{2}\s?\d{1,4}">
-                        <span class="form-hint">Optional - for flight tracking</span>
-                    </div>
-
-                    <div class="form-group" id="flightInfoGroup" style="display: none;">
-                        <div class="flight-info-card">
-                            <div class="flight-info-header">
-                                <span class="airline-name" id="airlineName"></span>
-                                <span class="flight-status" id="flightStatus"></span>
-                            </div>
-                            <div class="flight-info-details">
-                                <div class="flight-route">
-                                    <span id="flightOrigin"></span>
-                                    <i class="fas fa-plane"></i>
-                                    <span>Addis Ababa (ADD)</span>
-                                </div>
-                                <div class="flight-time">
-                                    <i class="fas fa-clock"></i>
-                                    <span id="flightTime"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Contact Section -->
                     <div class="form-section-header full-width">
                         <i class="fas fa-user"></i> Contact Information
