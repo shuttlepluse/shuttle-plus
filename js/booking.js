@@ -42,6 +42,73 @@
         setupDateDefaults();
         fetchExchangeRate();
         loadDraftBooking();
+        loadQuickBookingData(); // Load data from home page form
+    }
+
+    // ========================================
+    // Load Quick Booking Data from Home Page
+    // ========================================
+    function loadQuickBookingData() {
+        const quickData = sessionStorage.getItem('quickBookingData');
+        if (!quickData) return;
+
+        try {
+            const data = JSON.parse(quickData);
+
+            // Set transfer type
+            if (data.transferType) {
+                const typeInput = document.querySelector(`input[name="transferType"][value="${data.transferType}"]`);
+                if (typeInput) {
+                    typeInput.checked = true;
+                    bookingData.type = data.transferType;
+                    updateLabelsForType(data.transferType);
+                }
+            }
+
+            // Set flight number
+            const flightInput = document.getElementById('flightNumber');
+            if (flightInput && data.flightNumber) {
+                flightInput.value = data.flightNumber;
+            }
+
+            // Set date
+            const dateInput = document.getElementById('flightDate');
+            if (dateInput && data.date) {
+                dateInput.value = data.date;
+            }
+
+            // Set time
+            const timeInput = document.getElementById('flightTimeInput');
+            if (timeInput && data.time) {
+                timeInput.value = data.time;
+            }
+
+            // Set destination
+            const destInput = document.getElementById('destination');
+            if (destInput && data.destination) {
+                // Check if destination exists in the select options
+                const options = Array.from(destInput.options);
+                const matchingOption = options.find(opt => opt.value === data.destination || opt.text === data.destination);
+                if (matchingOption) {
+                    destInput.value = matchingOption.value;
+                } else if (data.destination) {
+                    // Set to "other" and fill custom address
+                    destInput.value = 'other';
+                    const customGroup = document.getElementById('customAddressGroup');
+                    const customInput = document.getElementById('customAddress');
+                    if (customGroup) customGroup.style.display = 'block';
+                    if (customInput) customInput.value = data.destination;
+                }
+            }
+
+            // Clear the quick booking data after loading
+            sessionStorage.removeItem('quickBookingData');
+
+            console.log('[Booking] Quick booking data loaded');
+        } catch (error) {
+            console.error('[Booking] Failed to load quick booking data:', error);
+            sessionStorage.removeItem('quickBookingData');
+        }
     }
 
     // ========================================

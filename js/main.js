@@ -202,20 +202,27 @@ function initSmoothScroll() {
 // Form Handlers
 // ----------------------------------------
 function initFormHandlers() {
-    // Booking Form
+    // Booking Form (Home page quick form)
     const bookingForm = document.getElementById('bookingForm');
-    if (bookingForm) {
+    if (bookingForm && window.location.pathname === '/' || window.location.pathname.endsWith('index.html')) {
         bookingForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            // Get form data
-            const formData = new FormData(bookingForm);
+            // Get form data and store in sessionStorage for the booking page
+            const inputs = bookingForm.querySelectorAll('input, select');
+            const quickBookingData = {
+                flightNumber: inputs[0]?.value || '',
+                destination: inputs[1]?.value || '',
+                date: inputs[2]?.value || '',
+                time: inputs[3]?.value || '',
+                passengers: inputs[4]?.value || '1-2 Passengers, 2 Bags',
+                transferType: document.querySelector('.tab-btn.active')?.dataset.tab || 'arrival'
+            };
 
-            // Show success message (in production, this would send to server)
-            showNotification('Quote request received! We\'ll contact you shortly.', 'success');
+            sessionStorage.setItem('quickBookingData', JSON.stringify(quickBookingData));
 
-            // Reset form
-            bookingForm.reset();
+            // Redirect to booking page
+            window.location.href = 'pages/booking.html';
         });
     }
 
