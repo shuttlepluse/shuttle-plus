@@ -36,6 +36,94 @@
     const successSection = document.getElementById('bookingSuccess');
 
     // ========================================
+    // State Persistence (survives hard refresh)
+    // ========================================
+    function saveBookingState() {
+        const state = {
+            currentStep: currentStep,
+            bookingData: bookingData,
+            formValues: {
+                vehicleClass: document.querySelector('input[name="vehicleClass"]:checked')?.value,
+                childSeat: document.getElementById('childSeat')?.checked,
+                meetGreet: document.getElementById('meetGreet')?.checked,
+                contactName: document.getElementById('contactName')?.value,
+                contactPhone: document.getElementById('contactPhone')?.value,
+                contactEmail: document.getElementById('contactEmail')?.value,
+                specialRequests: document.getElementById('specialRequests')?.value,
+                paymentMethod: document.querySelector('input[name="paymentMethod"]:checked')?.value,
+                termsAccepted: document.getElementById('termsAccepted')?.checked
+            }
+        };
+        sessionStorage.setItem('bookingState', JSON.stringify(state));
+        console.log('[Booking] State saved, step:', currentStep);
+    }
+
+    function restoreBookingState() {
+        const stateJson = sessionStorage.getItem('bookingState');
+        if (!stateJson) return false;
+
+        try {
+            const state = JSON.parse(stateJson);
+            console.log('[Booking] Restoring state, step:', state.currentStep);
+
+            // Restore bookingData
+            bookingData = { ...bookingData, ...state.bookingData };
+
+            // Restore form values
+            const fv = state.formValues;
+            if (fv.vehicleClass) {
+                const radio = document.querySelector(`input[name="vehicleClass"][value="${fv.vehicleClass}"]`);
+                if (radio) radio.checked = true;
+            }
+            if (fv.childSeat !== undefined) {
+                const cb = document.getElementById('childSeat');
+                if (cb) cb.checked = fv.childSeat;
+            }
+            if (fv.meetGreet !== undefined) {
+                const cb = document.getElementById('meetGreet');
+                if (cb) cb.checked = fv.meetGreet;
+            }
+            if (fv.contactName) {
+                const el = document.getElementById('contactName');
+                if (el) el.value = fv.contactName;
+            }
+            if (fv.contactPhone) {
+                const el = document.getElementById('contactPhone');
+                if (el) el.value = fv.contactPhone;
+            }
+            if (fv.contactEmail) {
+                const el = document.getElementById('contactEmail');
+                if (el) el.value = fv.contactEmail;
+            }
+            if (fv.specialRequests) {
+                const el = document.getElementById('specialRequests');
+                if (el) el.value = fv.specialRequests;
+            }
+            if (fv.paymentMethod) {
+                const radio = document.querySelector(`input[name="paymentMethod"][value="${fv.paymentMethod}"]`);
+                if (radio) radio.checked = true;
+            }
+            if (fv.termsAccepted !== undefined) {
+                const cb = document.getElementById('termsAccepted');
+                if (cb) cb.checked = fv.termsAccepted;
+            }
+
+            // Navigate to saved step (do this after a small delay to ensure DOM is ready)
+            if (state.currentStep && state.currentStep >= 1) {
+                setTimeout(() => {
+                    goToStep(state.currentStep);
+                }, 50);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('[Booking] Failed to restore state:', error);
+            sessionStorage.removeItem('bookingState');
+            return false;
+        }
+    }
+
+    // ========================================
     // Initialize
     // ========================================
     function init() {
@@ -45,12 +133,20 @@
         setupFormListeners();
         fetchExchangeRate();
 
-        // Load data from home page form
-        const dataLoaded = loadQuickBookingData();
+        // First try to restore existing booking state (for hard refresh)
+        const stateRestored = restoreBookingState();
 
-        // Only filter vehicles if data was loaded successfully
-        if (dataLoaded) {
+        if (!stateRestored) {
+            // No saved state - load fresh data from home page
+            const dataLoaded = loadQuickBookingData();
+            if (dataLoaded) {
+                filterVehiclesByCapacity(bookingData.passengers);
+                saveBookingState(); // Save initial state
+            }
+        } else {
+            // State was restored - filter vehicles and update display
             filterVehiclesByCapacity(bookingData.passengers);
+            updateRouteSummaryCard();
         }
     }
 
@@ -274,30 +370,53 @@
     // Form Listeners
     // ========================================
     function setupFormListeners() {
-        // Vehicle class
+        // Vehicle class - save on change
         document.querySelectorAll('input[name="vehicleClass"]').forEach(input => {
             input.addEventListener('change', (e) => {
                 bookingData.vehicleClass = e.target.value;
                 updatePricing();
+                saveBookingState();
             });
         });
 
-        // Child seat
+        // Child seat - save on change
         const childSeatCheckbox = document.getElementById('childSeat');
         if (childSeatCheckbox) {
             childSeatCheckbox.addEventListener('change', (e) => {
                 bookingData.childSeat = e.target.checked;
                 updatePricing();
+                saveBookingState();
             });
         }
 
-        // Meet & Greet
+        // Meet & Greet - save on change
         const meetGreetCheckbox = document.getElementById('meetGreet');
         if (meetGreetCheckbox) {
             meetGreetCheckbox.addEventListener('change', (e) => {
                 bookingData.meetGreet = e.target.checked;
                 updatePricing();
+                saveBookingState();
             });
+        }
+
+        // Contact fields - save on blur
+        ['contactName', 'contactPhone', 'contactEmail', 'specialRequests'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('blur', saveBookingState);
+                el.addEventListener('change', saveBookingState);
+            }
+        });
+
+        // Payment method - save on change
+        document.querySelectorAll('input[name="paymentMethod"]').forEach(input => {
+            input.addEventListener('change', saveBookingState);
+        });
+
+        // Terms checkbox - save on change
+        const termsCheckbox = document.getElementById('termsAccepted');
+        if (termsCheckbox) {
+            termsCheckbox.addEventListener('change', saveBookingState);
         }
     }
 
@@ -336,6 +455,9 @@
         if (step === 3) {
             updateSummary();
         }
+
+        // Save state after step change (for hard refresh persistence)
+        saveBookingState();
 
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -632,8 +754,9 @@
         }
 
         sessionStorage.setItem('pendingBooking', JSON.stringify(formData));
-        // Clear quickBookingData only on successful form submission
+        // Clear booking state on successful form submission
         sessionStorage.removeItem('quickBookingData');
+        sessionStorage.removeItem('bookingState');
         hideLoading();
         window.location.href = 'payment.html';
     }
