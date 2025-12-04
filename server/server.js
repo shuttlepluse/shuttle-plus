@@ -28,6 +28,7 @@ const auditRoutes = require('./routes/audit');
 const groupRoutes = require('./routes/groups');
 const partnerRoutes = require('./routes/partners');
 const driverRoutes = require('./routes/drivers');
+const adminRoutes = require('./routes/admin');
 
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/errorHandler');
@@ -129,6 +130,7 @@ app.use('/api/audit', auditRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/partners', partnerRoutes);
 app.use('/api/drivers', driverRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

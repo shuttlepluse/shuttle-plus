@@ -9,10 +9,22 @@
     // Configuration
     // ========================================
     const API_BASE = '/api';
+    const ADMIN_API = '/api/admin';
+    const ADMIN_TOKEN = 'shuttle-admin-2025';
     const DEMO_CREDENTIALS = {
         email: 'admin@shuttleplus.com',
         password: 'admin123'
     };
+
+    // Admin API helper
+    async function adminFetch(endpoint, options = {}) {
+        const headers = {
+            'Content-Type': 'application/json',
+            'X-Admin-Token': ADMIN_TOKEN,
+            ...options.headers
+        };
+        return fetch(`${ADMIN_API}${endpoint}`, { ...options, headers });
+    }
 
     // ========================================
     // State
@@ -209,7 +221,8 @@
 
     async function loadBookings() {
         try {
-            const response = await fetch(`${API_BASE}/bookings`);
+            // Use admin API endpoint to get ALL bookings
+            const response = await adminFetch('/bookings');
             if (response.ok) {
                 const result = await response.json();
                 // Handle both array and object with data property
@@ -219,17 +232,20 @@
                     ...b,
                     customer: b.contact ? { name: b.contact.name, phone: b.contact.phone, email: b.contact.email } : b.customer
                 }));
+                console.log(`[Admin] Loaded ${bookings.length} bookings from server`);
                 if (bookings.length === 0) {
+                    console.log('[Admin] No bookings found, using demo data');
                     bookings = generateDemoBookings();
                 }
             } else {
+                console.log('[Admin] API returned error, using demo data');
                 bookings = generateDemoBookings();
             }
             updatePendingBadge();
             renderRecentBookings();
             renderScheduleTimeline();
         } catch (error) {
-            console.error('Failed to load bookings:', error);
+            console.error('[Admin] Failed to load bookings:', error);
             bookings = generateDemoBookings();
             updatePendingBadge();
             renderRecentBookings();
@@ -244,30 +260,32 @@
 
     async function loadStats() {
         try {
-            // Try to fetch real stats from analytics API
-            const response = await fetch(`${API_BASE}/analytics/quick-stats`);
+            // Try to fetch real stats from admin API
+            const response = await adminFetch('/stats');
             if (response.ok) {
-                const stats = await response.json();
+                const result = await response.json();
+                const stats = result.data || result;
                 document.getElementById('statTodayBookings').textContent = stats.todayBookings || 0;
                 document.getElementById('statTodayRevenue').textContent = '$' + (stats.todayRevenue || 0);
                 document.getElementById('statPending').textContent = stats.pendingBookings || 0;
                 document.getElementById('statActiveDrivers').textContent = stats.activeDrivers || drivers.filter(d => d.status === 'available' || d.status === 'on_trip').length;
+                console.log('[Admin] Stats loaded from server');
                 return;
             }
         } catch (error) {
-            console.log('Analytics API not available, using local calculations');
+            console.log('[Admin] Stats API not available, using local calculations');
         }
 
-        // Fallback to local calculations
+        // Fallback to local calculations from loaded bookings
         const today = new Date().toDateString();
         const todayBookings = bookings.filter(b =>
             new Date(b.createdAt).toDateString() === today
         );
 
-        document.getElementById('statTodayBookings').textContent = todayBookings.length || Math.floor(Math.random() * 15) + 5;
-        document.getElementById('statTodayRevenue').textContent = '$' + (todayBookings.reduce((sum, b) => sum + (b.pricing?.totalUSD || 0), 0) || Math.floor(Math.random() * 500) + 200);
-        document.getElementById('statPending').textContent = bookings.filter(b => b.status === 'pending' || b.status === 'confirmed').length || Math.floor(Math.random() * 8) + 2;
-        document.getElementById('statActiveDrivers').textContent = drivers.filter(d => d.status === 'available' || d.status === 'on_trip').length || Math.floor(Math.random() * 6) + 3;
+        document.getElementById('statTodayBookings').textContent = todayBookings.length || 0;
+        document.getElementById('statTodayRevenue').textContent = '$' + (todayBookings.reduce((sum, b) => sum + (b.pricing?.totalUSD || 0), 0) || 0);
+        document.getElementById('statPending').textContent = bookings.filter(b => b.status === 'pending' || b.status === 'confirmed').length || 0;
+        document.getElementById('statActiveDrivers').textContent = drivers.filter(d => d.status === 'available' || d.status === 'on_trip').length || 0;
     }
 
     function refreshData() {
@@ -643,10 +661,9 @@
         };
 
         try {
-            // Try to update via API
-            const response = await fetch(`${API_BASE}/bookings/${selectedBooking._id || selectedBooking.bookingReference}`, {
+            // Try to update via Admin API
+            const response = await adminFetch(`/bookings/${selectedBooking._id || selectedBooking.bookingReference}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     status: 'driver_assigned',
                     driver: driverData
@@ -705,10 +722,9 @@
                 return;
             }
 
-            // Try to update via API
-            const response = await fetch(`${API_BASE}/bookings/${booking._id || ref}`, {
+            // Try to update via Admin API
+            const response = await adminFetch(`/bookings/${booking._id || ref}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: 'cancelled' })
             });
 
@@ -766,9 +782,8 @@
         }
 
         try {
-            const response = await fetch(`${API_BASE}/bookings/${booking._id || ref}`, {
+            const response = await adminFetch(`/bookings/${booking._id || ref}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus })
             });
 

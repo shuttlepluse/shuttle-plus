@@ -546,19 +546,43 @@
         };
 
         // Save to offline storage
-        if (typeof BookingStorage !== 'undefined') {
-            await BookingStorage.save(booking);
+        if (window.OfflineStorage && window.OfflineStorage.bookings) {
+            try {
+                await window.OfflineStorage.bookings.save(booking);
+            } catch (e) {
+                console.log('[Payment] Offline storage save failed:', e);
+            }
         }
 
-        // Save to backend
-        if (navigator.onLine && typeof BookingsAPI !== 'undefined') {
+        // Save to backend API
+        if (navigator.onLine) {
             try {
-                await BookingsAPI.create(booking);
+                // Use the ShuttlePlusAPI if available
+                if (window.ShuttlePlusAPI && window.ShuttlePlusAPI.bookings) {
+                    await window.ShuttlePlusAPI.bookings.create(booking);
+                    console.log('[Payment] Booking saved to backend successfully');
+                } else {
+                    // Direct API call as fallback
+                    const response = await fetch('/api/bookings', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(booking)
+                    });
+
+                    if (response.ok) {
+                        console.log('[Payment] Booking saved to backend via direct API');
+                    } else {
+                        throw new Error('API response not ok');
+                    }
+                }
             } catch (e) {
-                console.log('[Payment] Backend save failed, will sync later');
-                // Add to sync queue
-                if (typeof SyncStorage !== 'undefined') {
-                    await SyncStorage.add({ type: 'createBooking', data: booking });
+                console.log('[Payment] Backend save failed, will sync later:', e);
+                // Add to sync queue for later
+                if (window.OfflineStorage && window.OfflineStorage.sync) {
+                    await window.OfflineStorage.sync.addPending({
+                        type: 'CREATE_BOOKING',
+                        data: booking
+                    });
                 }
             }
         }
