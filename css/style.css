@@ -198,11 +198,11 @@ img {
 }
 
 .logo-accent {
-    color: var(--primary);
+    color: #00b7e6;
 }
 
 .navbar.scrolled .logo-accent {
-    color: var(--primary);
+    color: #00b7e6;
 }
 
 /* Logo Image Styles */
