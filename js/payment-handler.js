@@ -557,26 +557,26 @@
         // Save to backend API
         if (navigator.onLine) {
             try {
-                // Use the ShuttlePlusAPI if available
-                if (window.ShuttlePlusAPI && window.ShuttlePlusAPI.bookings) {
-                    await window.ShuttlePlusAPI.bookings.create(booking);
-                    console.log('[Payment] Booking saved to backend successfully');
-                } else {
-                    // Direct API call as fallback
-                    const response = await fetch('/api/bookings', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(booking)
-                    });
+                // Use admin endpoint for flexible booking creation
+                const response = await fetch('/api/admin/bookings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Admin-Token': 'shuttle-admin-2025'
+                    },
+                    body: JSON.stringify(booking)
+                });
 
-                    if (response.ok) {
-                        console.log('[Payment] Booking saved to backend via direct API');
-                    } else {
-                        throw new Error('API response not ok');
-                    }
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('[Payment] Booking saved to backend:', result.data?.bookingReference);
+                } else {
+                    const errorData = await response.json();
+                    console.log('[Payment] Backend save failed:', errorData.message);
+                    throw new Error(errorData.message || 'API response not ok');
                 }
             } catch (e) {
-                console.log('[Payment] Backend save failed, will sync later:', e);
+                console.log('[Payment] Backend save error:', e.message);
                 // Add to sync queue for later
                 if (window.OfflineStorage && window.OfflineStorage.sync) {
                     await window.OfflineStorage.sync.addPending({

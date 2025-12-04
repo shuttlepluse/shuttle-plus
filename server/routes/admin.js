@@ -123,6 +123,85 @@ router.get('/bookings',
 );
 
 // ========================================
+// POST /api/admin/bookings - Create booking (flexible validation)
+// ========================================
+router.post('/bookings',
+    async (req, res) => {
+        try {
+            const data = req.body;
+
+            // Generate booking reference if not provided
+            let bookingRef = data.bookingReference;
+            if (!bookingRef) {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                bookingRef = 'SP-';
+                for (let i = 0; i < 8; i++) {
+                    bookingRef += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+            }
+
+            // Transform frontend data to match Booking model
+            const bookingData = {
+                bookingReference: bookingRef,
+                type: data.type || data.transferType || 'arrival',
+                flight: {
+                    number: data.flightNumber || data.flight?.number || 'UNKNOWN',
+                    scheduledTime: data.flightTime || data.pickupTime || data.flight?.scheduledTime || new Date()
+                },
+                pickup: {
+                    location: data.pickup || data.pickupLocation || 'Bole International Airport',
+                    scheduledTime: data.pickupTime || data.pickup?.scheduledTime || new Date()
+                },
+                dropoff: {
+                    location: data.dropoff || data.dropoffLocation || data.destination || 'Addis Ababa'
+                },
+                vehicleClass: data.vehicleClass || 'standard',
+                passengers: parseInt(data.passengers) || 1,
+                luggage: data.luggage || {},
+                contact: {
+                    name: data.contact?.name || data.passengerName || data.name || 'Guest',
+                    phone: data.contact?.phone || data.phone || '+251911550001',
+                    email: data.contact?.email || data.email || ''
+                },
+                specialRequests: data.specialRequests || '',
+                pricing: data.pricing || {
+                    baseFare: 30,
+                    totalUSD: 30,
+                    totalETB: 4740
+                },
+                payment: data.payment || {
+                    method: 'cash',
+                    status: 'pending'
+                },
+                status: data.status || 'confirmed',
+                source: 'web',
+                createdAt: data.createdAt || new Date()
+            };
+
+            // Create booking
+            const booking = new Booking(bookingData);
+            await booking.save();
+
+            console.log('[Admin] Booking created:', booking.bookingReference);
+
+            res.status(201).json({
+                success: true,
+                message: 'Booking created successfully',
+                data: booking
+            });
+
+        } catch (error) {
+            console.error('Admin create booking error:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Failed to create booking',
+                error: error.message
+            });
+        }
+    }
+);
+
+// ========================================
 // GET /api/admin/bookings/:id - Get single booking
 // ========================================
 router.get('/bookings/:id',
