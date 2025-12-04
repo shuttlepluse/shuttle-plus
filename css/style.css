@@ -1585,12 +1585,14 @@ section {
 .destinations {
     background: var(--white);
     padding: 5rem 0;
+    overflow: visible;
 }
 
 .destinations-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
+    overflow: visible;
 }
 
 .destination-card {
@@ -1628,6 +1630,7 @@ section {
 .destination-info {
     flex: 1;
     min-width: 0;
+    overflow: hidden;
 }
 
 .destination-info h3 {
@@ -1635,6 +1638,9 @@ section {
     font-weight: 700;
     color: var(--dark);
     margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .destination-info p {
