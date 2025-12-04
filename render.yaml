@@ -1,40 +1,28 @@
 services:
   - type: web
     name: shuttle-plus-api
-    env: node
+    runtime: node
     region: frankfurt
     plan: free
-    branch: main
-    rootDir: server
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 10000
+        value: 3000
       - key: MONGODB_URI
         sync: false
-      - key: AVIATIONSTACK_API_KEY
-        sync: false
-      - key: MAPBOX_ACCESS_TOKEN
-        sync: false
+      - key: JWT_SECRET
+        generateValue: true
       - key: STRIPE_SECRET_KEY
         sync: false
-      - key: STRIPE_WEBHOOK_SECRET
+      - key: STRIPE_PUBLISHABLE_KEY
         sync: false
-      - key: TELEBIRR_APP_ID
-        sync: false
-      - key: TELEBIRR_APP_KEY
+      - key: SENDGRID_API_KEY
         sync: false
       - key: TWILIO_ACCOUNT_SID
         sync: false
       - key: TWILIO_AUTH_TOKEN
-        sync: false
-      - key: TWILIO_PHONE_NUMBER
-        sync: false
-      - key: VAPID_PUBLIC_KEY
-        sync: false
-      - key: VAPID_PRIVATE_KEY
         sync: false
