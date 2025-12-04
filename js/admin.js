@@ -39,6 +39,8 @@
     let selectedDriver = null;
     let selectedVehicle = null;
     let charts = {};
+    let autoRefreshInterval = null;
+    const AUTO_REFRESH_MS = 30000; // 30 seconds
 
     // ========================================
     // DOM Elements
@@ -139,6 +141,7 @@
     }
 
     function handleLogout() {
+        stopAutoRefresh();
         localStorage.removeItem('admin_logged_in');
         localStorage.removeItem('admin_email');
         dashboard.style.display = 'none';
@@ -149,7 +152,47 @@
         loginScreen.style.display = 'none';
         dashboard.style.display = 'flex';
         loadDashboardData();
+        startAutoRefresh();
     }
+
+    // ========================================
+    // Auto-Refresh for Real-time Updates
+    // ========================================
+    function startAutoRefresh() {
+        // Clear any existing interval
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+        }
+
+        // Set up new interval
+        autoRefreshInterval = setInterval(async () => {
+            console.log('[Admin] Auto-refreshing bookings...');
+            await loadBookings();
+            await loadStats();
+        }, AUTO_REFRESH_MS);
+
+        console.log(`[Admin] Auto-refresh enabled (every ${AUTO_REFRESH_MS / 1000}s)`);
+    }
+
+    function stopAutoRefresh() {
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+            console.log('[Admin] Auto-refresh disabled');
+        }
+    }
+
+    // Pause auto-refresh when tab is hidden
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            stopAutoRefresh();
+        } else if (localStorage.getItem('admin_logged_in')) {
+            startAutoRefresh();
+            // Also do an immediate refresh when tab becomes visible
+            loadBookings();
+            loadStats();
+        }
+    });
 
     // ========================================
     // Navigation
