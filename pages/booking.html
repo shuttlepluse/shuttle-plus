@@ -159,19 +159,41 @@
                         <input type="radio" name="vehicleClass" value="suv">
                         <div class="vehicle-card">
                             <div class="vehicle-image">
-                                <i class="fas fa-shuttle-van"></i>
+                                <i class="fas fa-car-alt"></i>
                             </div>
                             <div class="vehicle-info">
-                                <h3>SUV / Minivan</h3>
-                                <p>Toyota Land Cruiser, Hiace</p>
+                                <h3>SUV</h3>
+                                <p>Toyota Fortuner, Land Cruiser Prado</p>
                                 <div class="vehicle-features">
-                                    <span><i class="fas fa-user"></i> Up to 6</span>
-                                    <span><i class="fas fa-suitcase"></i> 6 bags</span>
+                                    <span><i class="fas fa-user"></i> 3-5</span>
+                                    <span><i class="fas fa-suitcase"></i> 5 bags</span>
                                     <span><i class="fas fa-snowflake"></i> AC</span>
                                 </div>
                             </div>
                             <div class="vehicle-price">
-                                <span class="price-amount" id="price-suv">$63</span>
+                                <span class="price-amount" id="price-suv">$55</span>
+                                <span class="price-label">fixed price</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="vehicle-option">
+                        <input type="radio" name="vehicleClass" value="van">
+                        <div class="vehicle-card">
+                            <div class="vehicle-image">
+                                <i class="fas fa-shuttle-van"></i>
+                            </div>
+                            <div class="vehicle-info">
+                                <h3>Van</h3>
+                                <p>Toyota Hiace, Minibus</p>
+                                <div class="vehicle-features">
+                                    <span><i class="fas fa-user"></i> 6-11</span>
+                                    <span><i class="fas fa-suitcase"></i> 11 bags</span>
+                                    <span><i class="fas fa-snowflake"></i> AC</span>
+                                </div>
+                            </div>
+                            <div class="vehicle-price">
+                                <span class="price-amount" id="price-van">$63</span>
                                 <span class="price-label">fixed price</span>
                             </div>
                         </div>
@@ -252,7 +274,7 @@
                         <div class="phone-input-wrapper">
                             <span class="country-code">+251</span>
                             <input type="tel" id="contactPhone" name="contactPhone"
-                                   placeholder="9XX XXX XXX" maxlength="12" required>
+                                   placeholder="9XX XXX XXX" maxlength="9" required>
                         </div>
                         <span class="form-hint">We'll send your confirmation via SMS</span>
                     </div>
@@ -457,6 +479,6 @@
     <script src="../js/app.js?v=6"></script>
     <script src="../js/offline-storage.js?v=6"></script>
     <script src="../js/api-client.js?v=6"></script>
-    <script src="../js/booking.js?v=8"></script>
+    <script src="../js/booking.js?v=9"></script>
 </body>
 </html>

@@ -441,6 +441,15 @@
             });
         }
 
+        // Phone input - real-time validation (digits only, max 9)
+        const phoneInput = document.getElementById('contactPhone');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', (e) => {
+                // Only allow digits, strip non-digits, limit to 9
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 9);
+            });
+        }
+
         // Contact fields - save on blur
         ['contactName', 'contactPhone', 'contactEmail', 'specialRequests'].forEach(id => {
             const el = document.getElementById(id);
@@ -538,12 +547,9 @@
                 isValid = false;
             }
 
-            // Validate email (required and valid format)
+            // Validate email (optional, but if provided must be valid format)
             const email = document.getElementById('contactEmail')?.value.trim();
-            if (!email) {
-                showError('Please enter your email address');
-                isValid = false;
-            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 showError('Please enter a valid email address');
                 isValid = false;
             }
@@ -579,10 +585,11 @@
         console.log('[Booking] Filtering vehicles for', passengers, 'passengers');
 
         const vehicleCapacities = {
-            standard: 3,
-            executive: 3,
-            suv: 6,
-            luxury: 3
+            standard: 2,    // Sedan - 1-2 passengers
+            executive: 2,   // Sedan - 1-2 passengers
+            suv: 5,         // SUV - 3-5 passengers
+            van: 11,        // Van - 6-11 passengers
+            luxury: 2       // Sedan - 1-2 passengers
         };
 
         const vehicleOptions = document.querySelectorAll('.vehicle-option');
@@ -624,14 +631,15 @@
             }
         }
 
-        // Reset to standard vehicle when passenger count decreases to 3 or less
+        // Reset to standard vehicle when passenger count decreases to 2 or less
         // This handles the case when user edits route and changes from 5-6 passengers to 1-2
-        if (passengers <= 3) {
+        if (passengers <= 2) {
             const standardOption = document.querySelector('input[name="vehicleClass"][value="standard"]');
             const suvOption = document.querySelector('input[name="vehicleClass"][value="suv"]');
+            const vanOption = document.querySelector('input[name="vehicleClass"][value="van"]');
 
-            // If SUV is currently selected but standard is now available
-            if (suvOption?.checked && standardOption && !standardOption.disabled) {
+            // If SUV or Van is currently selected but standard is now available
+            if ((suvOption?.checked || vanOption?.checked) && standardOption && !standardOption.disabled) {
                 // Reset to standard (most affordable option)
                 standardOption.checked = true;
                 bookingData.vehicleClass = 'standard';
@@ -640,21 +648,26 @@
             }
         }
 
-        // Show warning if only SUV available
+        // Show warning for larger groups
         const vehicleSection = document.querySelector('.vehicle-options');
-        let suvWarning = document.getElementById('suvOnlyWarning');
+        let capacityWarning = document.getElementById('suvOnlyWarning');
 
-        if (passengers > 3 && vehicleSection) {
-            if (!suvWarning) {
-                suvWarning = document.createElement('div');
-                suvWarning.id = 'suvOnlyWarning';
-                suvWarning.className = 'capacity-warning';
-                vehicleSection.parentNode.insertBefore(suvWarning, vehicleSection);
+        if (passengers > 2 && vehicleSection) {
+            if (!capacityWarning) {
+                capacityWarning = document.createElement('div');
+                capacityWarning.id = 'suvOnlyWarning';
+                capacityWarning.className = 'capacity-warning';
+                vehicleSection.parentNode.insertBefore(capacityWarning, vehicleSection);
             }
-            suvWarning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + ' passengers, only SUV/Minivan is available';
-            suvWarning.style.display = 'block';
-        } else if (suvWarning) {
-            suvWarning.style.display = 'none';
+
+            if (passengers >= 6) {
+                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + ' passengers, only Van is available';
+            } else {
+                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + ' passengers, SUV or Van recommended';
+            }
+            capacityWarning.style.display = 'block';
+        } else if (capacityWarning) {
+            capacityWarning.style.display = 'none';
         }
     }
 
@@ -695,7 +708,8 @@
         const basePrices = {
             standard: 30,
             executive: 45,
-            suv: 63,
+            suv: 55,
+            van: 63,
             luxury: 87
         };
 
@@ -713,7 +727,8 @@
         const prices = {
             standard: { usd: 30, multiplier: 1 },
             executive: { usd: 45, multiplier: 1.5 },
-            suv: { usd: 63, multiplier: 2.1 },
+            suv: { usd: 55, multiplier: 1.83 },
+            van: { usd: 63, multiplier: 2.1 },
             luxury: { usd: 87, multiplier: 2.9 }
         };
 
@@ -737,42 +752,60 @@
             updateFallbackPricing();
         }
 
-        // Transfer details
-        document.getElementById('summaryType').textContent =
-            bookingData.type === 'arrival' ? 'Airport Pickup' : 'Airport Drop-off';
+        // Transfer details - with null checks
+        const summaryType = document.getElementById('summaryType');
+        if (summaryType) {
+            summaryType.textContent = bookingData.type === 'arrival' ? 'Airport Pickup' : 'Airport Drop-off';
+        }
 
         const flightNumber = document.getElementById('flightNumber')?.value?.trim();
-        document.getElementById('summaryFlight').textContent = flightNumber || 'Not provided';
+        const summaryFlight = document.getElementById('summaryFlight');
+        if (summaryFlight) {
+            summaryFlight.textContent = flightNumber || 'Not provided';
+        }
 
         const date = bookingData.date;
         const time = bookingData.time;
-        document.getElementById('summaryDateTime').textContent =
-            date && time ? `${formatDate(date)} at ${time}` : '-';
+        const summaryDateTime = document.getElementById('summaryDateTime');
+        if (summaryDateTime) {
+            summaryDateTime.textContent = date && time ? `${formatDate(date)} at ${time}` : '-';
+        }
 
         const location = bookingData.customAddress || bookingData.destination;
-        document.getElementById('summaryRoute').textContent =
-            bookingData.type === 'arrival'
+        const summaryRoute = document.getElementById('summaryRoute');
+        if (summaryRoute) {
+            summaryRoute.textContent = bookingData.type === 'arrival'
                 ? `Airport → ${location || 'Destination'}`
                 : `${location || 'Pickup'} → Airport`;
+        }
 
-        // Vehicle
+        // Vehicle - updated with van
         const vehicleNames = {
             standard: 'Standard Sedan',
             executive: 'Executive Sedan',
-            suv: 'SUV / Minivan',
+            suv: 'SUV',
+            van: 'Van',
             luxury: 'Luxury Class'
         };
-        document.getElementById('summaryVehicle').textContent =
-            vehicleNames[bookingData.vehicleClass] || 'Standard';
+        const summaryVehicle = document.getElementById('summaryVehicle');
+        if (summaryVehicle) {
+            summaryVehicle.textContent = vehicleNames[bookingData.vehicleClass] || 'Standard';
+        }
 
-        document.getElementById('summaryPassengers').textContent =
-            `${bookingData.passengers} passenger(s), ${bookingData.luggage} bag(s)`;
+        const summaryPassengers = document.getElementById('summaryPassengers');
+        if (summaryPassengers) {
+            summaryPassengers.textContent = `${bookingData.passengers} passenger(s), ${bookingData.luggage} bag(s)`;
+        }
 
         // Contact
-        document.getElementById('summaryName').textContent =
-            document.getElementById('contactName')?.value || '-';
-        document.getElementById('summaryPhone').textContent =
-            document.getElementById('contactPhone')?.value || '-';
+        const summaryName = document.getElementById('summaryName');
+        if (summaryName) {
+            summaryName.textContent = document.getElementById('contactName')?.value || '-';
+        }
+        const summaryPhone = document.getElementById('summaryPhone');
+        if (summaryPhone) {
+            summaryPhone.textContent = document.getElementById('contactPhone')?.value || '-';
+        }
 
         // Special Requests
         const specialRequests = document.getElementById('specialRequests')?.value?.trim();
@@ -787,8 +820,10 @@
 
         // Pricing
         if (bookingData.pricing) {
-            document.getElementById('summaryBaseFare').textContent =
-                `$${bookingData.pricing.baseFare}`;
+            const summaryBaseFare = document.getElementById('summaryBaseFare');
+            if (summaryBaseFare) {
+                summaryBaseFare.textContent = `$${bookingData.pricing.baseFare}`;
+            }
 
             const childSeatRow = document.getElementById('summaryChildSeatRow');
             const meetGreetRow = document.getElementById('summaryMeetGreetRow');
@@ -801,8 +836,10 @@
                 meetGreetRow.style.display = bookingData.meetGreet ? 'flex' : 'none';
             }
 
-            document.getElementById('summaryTotal').innerHTML =
-                `$${bookingData.pricing.totalUSD} <small>(${bookingData.pricing.totalETB?.toLocaleString() || '-'} ETB)</small>`;
+            const summaryTotal = document.getElementById('summaryTotal');
+            if (summaryTotal) {
+                summaryTotal.innerHTML = `$${bookingData.pricing.totalUSD} <small>(${bookingData.pricing.totalETB?.toLocaleString() || '-'} ETB)</small>`;
+            }
         }
     }
 

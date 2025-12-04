@@ -368,8 +368,8 @@ function loadEditRouteDataInner(editData) {
         };
         sessionStorage.setItem('quickBookingData', JSON.stringify(quickBookingData));
 
-        // Clear the edit data after loading
-        sessionStorage.removeItem('editRouteData');
+        // DON'T remove editRouteData here - booking.js needs it to restore extras (childSeat, meetGreet)
+        // booking.js will remove it after restoring extras
 
         console.log('[Main] Edit route data loaded successfully, quickBookingData created');
     } catch (error) {
