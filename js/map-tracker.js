@@ -55,7 +55,19 @@
         messageDriver: document.getElementById('messageDriver'),
         shareLocation: document.getElementById('shareLocation'),
         emergencyBtn: document.getElementById('emergencyBtn'),
-        toast: document.getElementById('toast')
+        toast: document.getElementById('toast'),
+        // New elements for post-payment flow
+        receiptCard: document.getElementById('receiptCard'),
+        receiptRef: document.getElementById('receiptRef'),
+        receiptRoute: document.getElementById('receiptRoute'),
+        receiptDateTime: document.getElementById('receiptDateTime'),
+        receiptVehicle: document.getElementById('receiptVehicle'),
+        receiptPayment: document.getElementById('receiptPayment'),
+        receiptTotal: document.getElementById('receiptTotal'),
+        driverSearchState: document.getElementById('driverSearchState'),
+        searchMicrocopy: document.getElementById('searchMicrocopy'),
+        searchEta: document.getElementById('searchEta'),
+        driverSection: document.getElementById('driverSection')
     };
 
     // ========================================
@@ -64,16 +76,243 @@
     async function init() {
         setupEventListeners();
 
-        // Get booking ID from URL
+        // Get booking ID or reference from URL
         const urlParams = new URLSearchParams(window.location.search);
         const bookingId = urlParams.get('id');
+        const bookingRef = urlParams.get('ref');
 
-        if (!bookingId) {
+        // Check for completed booking from payment page
+        const completedBookingData = sessionStorage.getItem('completedBooking');
+
+        if (completedBookingData) {
+            // Coming from payment - show receipt and search for driver
+            await handlePostPaymentFlow(JSON.parse(completedBookingData));
+        } else if (bookingId || bookingRef) {
+            // Direct tracking link
+            await loadBooking(bookingId || bookingRef);
+        } else {
             showNoTracking();
             return;
         }
+    }
 
-        await loadBooking(bookingId);
+    // ========================================
+    // Handle Post-Payment Flow
+    // ========================================
+    async function handlePostPaymentFlow(completedBooking) {
+        // Show receipt card
+        showReceiptCard(completedBooking);
+
+        // Show driver search state
+        showDriverSearchState();
+
+        // Hide bottom sheet and status banner initially
+        if (elements.statusBanner) elements.statusBanner.style.display = 'none';
+        if (elements.bottomSheet) elements.bottomSheet.style.display = 'none';
+
+        // Hide loading
+        hideLoading();
+
+        // Show demo map
+        showDemoMap();
+
+        // Update header booking ref
+        if (elements.bookingRef) {
+            elements.bookingRef.textContent = completedBooking.bookingReference;
+        }
+
+        // Store booking data
+        booking = {
+            bookingReference: completedBooking.bookingReference,
+            status: 'confirmed',
+            pickup: {
+                location: completedBooking.pickup,
+                scheduledTime: completedBooking.pickupTime
+            },
+            dropoff: {
+                location: completedBooking.dropoff
+            },
+            vehicleClass: completedBooking.vehicleClass,
+            pricing: completedBooking.pricing,
+            contact: completedBooking.contact
+        };
+
+        // Start polling for driver assignment
+        startDriverSearch(completedBooking);
+    }
+
+    // ========================================
+    // Show Receipt Card
+    // ========================================
+    function showReceiptCard(data) {
+        if (!elements.receiptCard) return;
+
+        elements.receiptCard.style.display = 'block';
+
+        if (elements.receiptRef) {
+            elements.receiptRef.textContent = data.bookingReference;
+        }
+
+        if (elements.receiptRoute) {
+            const pickup = data.pickup || 'Bole Airport';
+            const dropoff = data.dropoff || 'Destination';
+            elements.receiptRoute.textContent = `${pickup} → ${dropoff}`;
+        }
+
+        if (elements.receiptDateTime) {
+            elements.receiptDateTime.textContent = formatDateTime(data.pickupTime);
+        }
+
+        if (elements.receiptVehicle) {
+            elements.receiptVehicle.textContent = getVehicleLabel(data.vehicleClass);
+        }
+
+        if (elements.receiptPayment) {
+            const methodLabels = {
+                card: 'Card •••• 4242',
+                telebirr: 'Telebirr',
+                cash: 'Cash on arrival'
+            };
+            elements.receiptPayment.textContent = methodLabels[data.paymentMethod] || 'Card';
+        }
+
+        if (elements.receiptTotal && data.pricing) {
+            elements.receiptTotal.textContent = `$${data.pricing.totalUSD?.toFixed(2) || '30.00'}`;
+        }
+    }
+
+    // ========================================
+    // Show Driver Search State
+    // ========================================
+    function showDriverSearchState() {
+        if (!elements.driverSearchState) return;
+
+        elements.driverSearchState.style.display = 'block';
+
+        // Rotate microcopy messages
+        const microcopyMessages = [
+            "We're matching you with the best available driver nearby.",
+            "Checking driver availability in your area...",
+            "Contacting nearby drivers for your ride...",
+            "Almost there! Finding the perfect match...",
+            "Your driver is being notified now..."
+        ];
+
+        let messageIndex = 0;
+        const microcopyInterval = setInterval(() => {
+            if (!elements.searchMicrocopy) {
+                clearInterval(microcopyInterval);
+                return;
+            }
+            messageIndex = (messageIndex + 1) % microcopyMessages.length;
+            elements.searchMicrocopy.textContent = microcopyMessages[messageIndex];
+        }, 4000);
+
+        // Store interval for cleanup
+        window.microcopyInterval = microcopyInterval;
+    }
+
+    // ========================================
+    // Start Driver Search Polling
+    // ========================================
+    function startDriverSearch(completedBooking) {
+        let searchTime = 0;
+        const maxSearchTime = 120; // 2 minutes
+
+        const searchInterval = setInterval(async () => {
+            searchTime += 5;
+
+            // Demo: Assign driver after 15-30 seconds
+            const assignTime = Math.floor(Math.random() * 15) + 15;
+
+            if (searchTime >= assignTime) {
+                clearInterval(searchInterval);
+                if (window.microcopyInterval) {
+                    clearInterval(window.microcopyInterval);
+                }
+
+                // Assign demo driver
+                assignDriver(completedBooking);
+            }
+
+            // Timeout after max search time
+            if (searchTime >= maxSearchTime) {
+                clearInterval(searchInterval);
+                showToast('Still searching for a driver...');
+            }
+        }, 5000);
+    }
+
+    // ========================================
+    // Assign Driver
+    // ========================================
+    function assignDriver(completedBooking) {
+        // Hide search state
+        if (elements.driverSearchState) {
+            elements.driverSearchState.style.display = 'none';
+        }
+
+        // Show status banner
+        if (elements.statusBanner) {
+            elements.statusBanner.style.display = 'flex';
+        }
+
+        // Show bottom sheet
+        if (elements.bottomSheet) {
+            elements.bottomSheet.style.display = 'block';
+        }
+
+        // Update booking with driver info
+        booking.driver = {
+            name: 'Abebe Bekele',
+            phone: '+251911234567',
+            vehicle: getVehicleModel(completedBooking.vehicleClass),
+            vehiclePlate: '3-AA-' + Math.floor(10000 + Math.random() * 90000),
+            rating: 4.9,
+            currentLocation: {
+                lng: BOLE_AIRPORT[0] - 0.02,
+                lat: BOLE_AIRPORT[1] + 0.01
+            }
+        };
+        booking.status = 'driver_assigned';
+
+        // Update UI
+        updateUI();
+
+        // Show notification
+        showToast('Driver assigned! Abebe is on the way.');
+
+        // Start tracking simulation
+        startTracking();
+
+        // Clear completed booking from session
+        sessionStorage.removeItem('completedBooking');
+    }
+
+    // ========================================
+    // Get Vehicle Label
+    // ========================================
+    function getVehicleLabel(vehicleClass) {
+        const labels = {
+            standard: 'Standard Sedan',
+            executive: 'Executive Sedan',
+            suv: 'SUV / Minivan',
+            luxury: 'Luxury Class'
+        };
+        return labels[vehicleClass] || 'Standard Sedan';
+    }
+
+    // ========================================
+    // Get Vehicle Model
+    // ========================================
+    function getVehicleModel(vehicleClass) {
+        const models = {
+            standard: 'Toyota Corolla',
+            executive: 'Toyota Camry',
+            suv: 'Toyota Land Cruiser',
+            luxury: 'Mercedes E-Class'
+        };
+        return models[vehicleClass] || 'Toyota Corolla';
     }
 
     // ========================================

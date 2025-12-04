@@ -107,11 +107,28 @@ function initMobileMenu() {
 // ----------------------------------------
 function initBookingTabs() {
     const tabs = document.querySelectorAll('.tab-btn');
+    const destinationLabel = document.getElementById('destinationLabel');
+    const destinationPlaceholder = document.getElementById('destinationPlaceholder');
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             tabs.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
+
+            // Update labels based on transfer type (arrival vs departure)
+            const isArrival = tab.dataset.tab === 'arrival';
+
+            if (destinationLabel) {
+                destinationLabel.innerHTML = isArrival
+                    ? '<i class="fas fa-map-marker-alt"></i> Drop-off Location'
+                    : '<i class="fas fa-map-marker-alt"></i> Pickup Location';
+            }
+
+            if (destinationPlaceholder) {
+                destinationPlaceholder.textContent = isArrival
+                    ? 'Select destination'
+                    : 'Select pickup location';
+            }
         });
     });
 }
@@ -310,6 +327,23 @@ function loadEditRouteDataInner(editData) {
                     tab.click();
                 }
             });
+
+            // Also update destination label explicitly
+            const destinationLabel = document.getElementById('destinationLabel');
+            const destinationPlaceholder = document.getElementById('destinationPlaceholder');
+            const isArrival = data.transferType === 'arrival';
+
+            if (destinationLabel) {
+                destinationLabel.innerHTML = isArrival
+                    ? '<i class="fas fa-map-marker-alt"></i> Drop-off Location'
+                    : '<i class="fas fa-map-marker-alt"></i> Pickup Location';
+            }
+
+            if (destinationPlaceholder) {
+                destinationPlaceholder.textContent = isArrival
+                    ? 'Select destination'
+                    : 'Select pickup location';
+            }
         }
 
         // Scroll to booking form
@@ -320,10 +354,24 @@ function loadEditRouteDataInner(editData) {
             }, 100);
         }
 
+        // IMPORTANT: Also create quickBookingData so it's ready when user clicks "See Prices"
+        const passengerSelect = inputs[4];
+        const selectedOption = passengerSelect?.options[passengerSelect.selectedIndex];
+        const quickBookingData = {
+            flightNumber: inputs[0]?.value || '',
+            destination: inputs[1]?.value || '',
+            date: inputs[2]?.value || '',
+            time: inputs[3]?.value || '',
+            passengers: inputs[4]?.value || '2',
+            passengersText: selectedOption?.text || '1-2 Passengers, 2 Bags',
+            transferType: data.transferType || 'arrival'
+        };
+        sessionStorage.setItem('quickBookingData', JSON.stringify(quickBookingData));
+
         // Clear the edit data after loading
         sessionStorage.removeItem('editRouteData');
 
-        console.log('[Main] Edit route data loaded successfully');
+        console.log('[Main] Edit route data loaded successfully, quickBookingData created');
     } catch (error) {
         console.error('[Main] Failed to load edit route data:', error);
         sessionStorage.removeItem('editRouteData');

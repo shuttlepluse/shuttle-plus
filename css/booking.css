@@ -3,21 +3,42 @@
    ======================================== */
 
 /* Booking Container */
+/* Fixed navbar for booking pages */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo styling for booking pages - grey "Shuttle" on white background */
+.navbar .logo-text {
+    color: #6b7280;  /* Grey color for better contrast on white */
+}
+
+/* Keep the accent color cyan for ">>" and "Plus" */
+.navbar .logo-accent {
+    color: #00b7e6;
+}
+
 .booking-container {
     min-height: 100vh;
-    padding: 6rem 1rem 2rem;
+    padding: 7rem 1rem 2rem;
     background: var(--gray-50);
 }
 
-/* Progress Steps */
+/* Progress Steps - Gradient Background */
 .booking-progress {
     display: flex;
     align-items: center;
     justify-content: center;
     max-width: 700px;
     margin: 0 auto 2rem;
-    padding: 1.5rem;
-    background: var(--white);
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow);
 }
@@ -27,7 +48,7 @@
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    opacity: 0.4;
+    opacity: 0.6;
     transition: var(--transition);
 }
 
@@ -37,26 +58,30 @@
 }
 
 .step-number {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--gray-200);
-    color: var(--gray-600);
-    font-weight: 600;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
     border-radius: 50%;
     transition: var(--transition);
 }
 
 .progress-step.active .step-number {
-    background: var(--gradient);
-    color: var(--white);
+    background: white;
+    color: var(--primary-dark);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
 }
 
 .progress-step.completed .step-number {
     background: var(--success);
-    color: var(--white);
+    color: white;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.4);
 }
 
 .progress-step.completed .step-number::before {
@@ -66,18 +91,33 @@
 }
 
 .step-label {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 500;
-    color: var(--gray-600);
+    color: rgba(255, 255, 255, 0.7);
     text-align: center;
+}
+
+.progress-step.active .step-label {
+    color: white;
+    font-weight: 600;
+}
+
+.progress-step.completed .step-label {
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .progress-line {
     flex: 1;
-    height: 2px;
-    background: var(--gray-200);
-    margin: 0 0.5rem;
-    max-width: 60px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    margin: 0 0.75rem;
+    max-width: 80px;
+    border-radius: 2px;
+    transition: var(--transition);
+}
+
+.progress-step.completed + .progress-line {
+    background: var(--success);
 }
 
 /* Booking Form */
@@ -240,6 +280,42 @@
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(89, 123, 135, 0.1);
+}
+
+/* Phone Input with Country Code */
+.phone-input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.phone-input-wrapper:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(89, 123, 135, 0.1);
+}
+
+.phone-input-wrapper .country-code {
+    background: var(--gray-100);
+    padding: 0.875rem 1rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    border-right: 2px solid var(--gray-200);
+    white-space: nowrap;
+}
+
+.phone-input-wrapper input {
+    border: none !important;
+    flex: 1;
+    padding: 0.875rem 1rem;
+    box-shadow: none !important;
+}
+
+.phone-input-wrapper input:focus {
+    outline: none;
+    box-shadow: none !important;
 }
 
 .form-hint {
@@ -811,7 +887,7 @@
 
 @media (max-width: 480px) {
     .booking-container {
-        padding: 5rem 0.75rem 1.5rem;
+        padding: 6rem 0.75rem 1.5rem;
     }
 
     .step-header h2 {

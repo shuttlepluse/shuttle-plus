@@ -18,7 +18,8 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Mapbox GL JS -->
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
@@ -50,6 +51,62 @@
             </button>
         </div>
     </header>
+
+    <!-- Receipt Card (shown after payment) -->
+    <div class="receipt-card" id="receiptCard" style="display: none;">
+        <div class="receipt-header">
+            <div class="receipt-check">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="receipt-title">
+                <h2>Booking Confirmed!</h2>
+                <p class="receipt-ref">Ref: <span id="receiptRef">SP-2025-XXXXXX</span></p>
+            </div>
+        </div>
+        <div class="receipt-details">
+            <div class="receipt-row">
+                <span class="receipt-label">Route</span>
+                <span class="receipt-value" id="receiptRoute">Airport → Destination</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Date & Time</span>
+                <span class="receipt-value" id="receiptDateTime">Dec 15, 2025 • 2:30 PM</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Vehicle</span>
+                <span class="receipt-value" id="receiptVehicle">Standard Sedan</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Payment</span>
+                <span class="receipt-value" id="receiptPayment">Card •••• 4242</span>
+            </div>
+            <div class="receipt-row total">
+                <span class="receipt-label">Total Paid</span>
+                <span class="receipt-value" id="receiptTotal">$30.00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Driver Search State (shown while finding driver) -->
+    <div class="driver-search" id="driverSearchState" style="display: none;">
+        <div class="search-animation">
+            <div class="car-pulse">
+                <i class="fas fa-car"></i>
+            </div>
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring delay-1"></div>
+            <div class="pulse-ring delay-2"></div>
+        </div>
+        <h3>Finding your driver...</h3>
+        <p class="search-microcopy" id="searchMicrocopy">We're matching you with the best available driver nearby.</p>
+        <div class="search-eta">
+            <i class="fas fa-clock"></i>
+            <span>Estimated wait: <strong id="searchEta">2-5 minutes</strong></span>
+        </div>
+        <div class="search-tips">
+            <p><i class="fas fa-bell"></i> You'll receive a notification when your driver is assigned</p>
+        </div>
+    </div>
 
     <!-- Map Container -->
     <div class="map-container" id="map"></div>
@@ -233,8 +290,8 @@
     </div>
 
     <!-- Scripts -->
-    <script src="../js/offline-storage.js"></script>
-    <script src="../js/api-client.js"></script>
-    <script src="../js/map-tracker.js"></script>
+    <script src="../js/offline-storage.js?v=5"></script>
+    <script src="../js/api-client.js?v=5"></script>
+    <script src="../js/map-tracker.js?v=5"></script>
 </body>
 </html>

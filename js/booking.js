@@ -489,10 +489,31 @@
         }
 
         if (step === 2) {
-            // Validate phone number (more flexible format)
+            // Validate name
+            const name = document.getElementById('contactName')?.value.trim();
+            if (!name) {
+                showError('Please enter your full name');
+                isValid = false;
+            }
+
+            // Validate email (required and valid format)
+            const email = document.getElementById('contactEmail')?.value.trim();
+            if (!email) {
+                showError('Please enter your email address');
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showError('Please enter a valid email address');
+                isValid = false;
+            }
+
+            // Validate Ethiopian phone number (9 digits starting with 9 or 7)
             const phone = document.getElementById('contactPhone')?.value.trim();
-            if (phone && !/^(\+251|0)?[97]\d{8}$/.test(phone.replace(/\s/g, ''))) {
-                showError('Please enter a valid phone number');
+            const cleanPhone = phone.replace(/[\s-]/g, '');
+            if (!cleanPhone) {
+                showError('Please enter your phone number');
+                isValid = false;
+            } else if (!/^[97]\d{8}$/.test(cleanPhone)) {
+                showError('Please enter a valid Ethiopian phone number (9 digits starting with 9 or 7)');
                 isValid = false;
             }
         }
@@ -558,6 +579,22 @@
                 firstAvailable.checked = true;
                 bookingData.vehicleClass = firstAvailable.value;
                 updatePricing();
+            }
+        }
+
+        // Reset to standard vehicle when passenger count decreases to 3 or less
+        // This handles the case when user edits route and changes from 5-6 passengers to 1-2
+        if (passengers <= 3) {
+            const standardOption = document.querySelector('input[name="vehicleClass"][value="standard"]');
+            const suvOption = document.querySelector('input[name="vehicleClass"][value="suv"]');
+
+            // If SUV is currently selected but standard is now available
+            if (suvOption?.checked && standardOption && !standardOption.disabled) {
+                // Reset to standard (most affordable option)
+                standardOption.checked = true;
+                bookingData.vehicleClass = 'standard';
+                updatePricing();
+                console.log('[Booking] Reset vehicle to standard for', passengers, 'passengers');
             }
         }
 

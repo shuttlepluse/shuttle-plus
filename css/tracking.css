@@ -9,10 +9,10 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
     background: #f5f7fa;
     min-height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* ========================================
@@ -76,6 +76,254 @@ body {
 .booking-ref {
     font-size: 0.75rem;
     opacity: 0.9;
+}
+
+/* ========================================
+   Receipt Card
+   ======================================== */
+.receipt-card {
+    position: relative;
+    z-index: 60;
+    margin: calc(72px + env(safe-area-inset-top) + 1rem) 1rem 1rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: slideDown 0.5s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.receipt-header {
+    background: linear-gradient(135deg, var(--primary-dark, #183251) 0%, var(--primary, #597B87) 100%);
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.receipt-check {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.receipt-check i {
+    font-size: 1.75rem;
+    color: #4ade80;
+}
+
+.receipt-title h2 {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+}
+
+.receipt-title .receipt-ref {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+}
+
+.receipt-title .receipt-ref span {
+    font-weight: 600;
+}
+
+.receipt-details {
+    padding: 1rem 1.25rem;
+}
+
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.625rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.receipt-row:last-child {
+    border-bottom: none;
+}
+
+.receipt-row.total {
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 2px dashed #e0e0e0;
+    border-bottom: none;
+}
+
+.receipt-label {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.receipt-value {
+    color: var(--primary-dark, #183251);
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-align: right;
+    max-width: 60%;
+}
+
+.receipt-row.total .receipt-label {
+    font-weight: 600;
+    color: var(--primary-dark, #183251);
+}
+
+.receipt-row.total .receipt-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary, #597B87);
+}
+
+/* ========================================
+   Driver Search State
+   ======================================== */
+.driver-search {
+    position: relative;
+    z-index: 55;
+    margin: 0 1rem 1rem;
+    background: white;
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.search-animation {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.car-pulse {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary-dark, #183251) 0%, var(--primary, #597B87) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    position: relative;
+}
+
+.car-pulse i {
+    font-size: 1.5rem;
+    color: white;
+    animation: carBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes carBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.pulse-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid var(--primary, #597B87);
+    border-radius: 50%;
+    animation: pulseRing 2s ease-out infinite;
+    opacity: 0;
+}
+
+.pulse-ring.delay-1 {
+    animation-delay: 0.6s;
+}
+
+.pulse-ring.delay-2 {
+    animation-delay: 1.2s;
+}
+
+@keyframes pulseRing {
+    0% {
+        transform: scale(0.5);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.driver-search h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-dark, #183251);
+    margin-bottom: 0.5rem;
+}
+
+.search-microcopy {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.search-eta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #f0f7f9 0%, #e8f0f2 100%);
+    padding: 0.75rem 1.25rem;
+    border-radius: 50px;
+    color: var(--primary-dark, #183251);
+    font-size: 0.9rem;
+}
+
+.search-eta i {
+    color: var(--primary, #597B87);
+}
+
+.search-eta strong {
+    font-weight: 600;
+}
+
+.search-tips {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.search-tips p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.search-tips i {
+    color: var(--primary, #597B87);
+}
+
+/* When driver is found, hide search state */
+.driver-search.hidden {
+    display: none;
 }
 
 /* ========================================

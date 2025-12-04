@@ -685,8 +685,24 @@
     // Show Success/Error Modals
     // ========================================
     function showSuccess(bookingRef) {
-        elements.bookingReference.textContent = bookingRef;
-        elements.successModal.classList.add('open');
+        // Store completed booking data for tracking page
+        const completedBooking = {
+            bookingReference: bookingRef,
+            pickup: bookingData.pickup || 'Bole International Airport',
+            dropoff: bookingData.dropoff || 'Destination',
+            pickupTime: bookingData.pickupTime,
+            vehicleClass: bookingData.vehicleClass,
+            passengers: bookingData.passengers,
+            pricing: bookingData.pricing,
+            contact: bookingData.contact,
+            paymentMethod: selectedMethod,
+            confirmedAt: new Date().toISOString()
+        };
+
+        sessionStorage.setItem('completedBooking', JSON.stringify(completedBooking));
+
+        // Redirect to tracking page instead of showing modal
+        window.location.href = 'tracking.html?ref=' + bookingRef;
     }
 
     function showError(message) {

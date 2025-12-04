@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/booking.css">
+    <link rel="stylesheet" href="../css/style.css?v=6">
+    <link rel="stylesheet" href="../css/booking.css?v=6">
 </head>
 <body>
     <!-- Navigation -->
@@ -249,8 +249,11 @@
                         <label for="contactPhone">
                             <i class="fas fa-phone"></i> Phone Number
                         </label>
-                        <input type="tel" id="contactPhone" name="contactPhone"
-                               placeholder="+251 9XX XXX XXX" required>
+                        <div class="phone-input-wrapper">
+                            <span class="country-code">+251</span>
+                            <input type="tel" id="contactPhone" name="contactPhone"
+                                   placeholder="9XX XXX XXX" maxlength="12" required>
+                        </div>
                         <span class="form-hint">We'll send your confirmation via SMS</span>
                     </div>
 
@@ -450,10 +453,10 @@
     </div>
 
     <!-- Scripts -->
-    <script src="../js/main.js?v=5"></script>
-    <script src="../js/app.js?v=5"></script>
-    <script src="../js/offline-storage.js?v=5"></script>
-    <script src="../js/api-client.js?v=5"></script>
-    <script src="../js/booking.js?v=5"></script>
+    <script src="../js/main.js?v=6"></script>
+    <script src="../js/app.js?v=6"></script>
+    <script src="../js/offline-storage.js?v=6"></script>
+    <script src="../js/api-client.js?v=6"></script>
+    <script src="../js/booking.js?v=6"></script>
 </body>
 </html>
