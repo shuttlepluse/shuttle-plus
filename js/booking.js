@@ -132,6 +132,26 @@
                 }
             }
 
+            // Set luggage - parse from passengersText (e.g., "5-6 Passengers, 6 Bags")
+            const textToParse = data.passengersText || data.passengers || '';
+            const luggageMatch = textToParse.match(/(\d+)\s*Bags?/i);
+            if (luggageMatch) {
+                const luggageCount = parseInt(luggageMatch[1]) || 2;
+                const luggageSelect = document.getElementById('luggage');
+                if (luggageSelect) {
+                    // Find matching option or closest
+                    const options = Array.from(luggageSelect.options);
+                    let bestOption = options.find(opt => parseInt(opt.value) === luggageCount);
+                    if (!bestOption && luggageCount >= 4) {
+                        bestOption = options.find(opt => opt.value === '4'); // "4+ Bags"
+                    }
+                    if (bestOption) {
+                        luggageSelect.value = bestOption.value;
+                        bookingData.luggage = parseInt(bestOption.value);
+                    }
+                }
+            }
+
             // Filter vehicles based on passenger count (important for when user goes to step 2)
             if (bookingData.passengers > 3) {
                 // Will be applied when user navigates to step 2
@@ -140,6 +160,9 @@
 
             // Clear the quick booking data after loading
             sessionStorage.removeItem('quickBookingData');
+
+            // Update the route direction display
+            updateRouteDirection();
 
             console.log('[Booking] Quick booking data loaded:', data);
         } catch (error) {
@@ -231,7 +254,7 @@
             });
         }
 
-        // Destination - show custom address field
+        // Destination - show custom address field and update route
         const destinationSelect = document.getElementById('destination');
         if (destinationSelect) {
             destinationSelect.addEventListener('change', (e) => {
@@ -241,8 +264,15 @@
                 } else {
                     customGroup.style.display = 'none';
                 }
+                updateRouteDirection();
                 updatePricing();
             });
+        }
+
+        // Custom address - update route when typed
+        const customAddressInput = document.getElementById('customAddress');
+        if (customAddressInput) {
+            customAddressInput.addEventListener('input', debounce(updateRouteDirection, 300));
         }
 
         // Vehicle class
@@ -300,7 +330,20 @@
         if (dateInput) {
             const today = new Date().toISOString().split('T')[0];
             dateInput.min = today;
-            dateInput.value = today;
+            if (!dateInput.value) {
+                dateInput.value = today;
+            }
+        }
+
+        // Set default time if empty (2 hours from now, rounded)
+        const timeInput = document.getElementById('flightTimeInput');
+        if (timeInput && !timeInput.value) {
+            const now = new Date();
+            now.setHours(now.getHours() + 2);
+            now.setMinutes(Math.ceil(now.getMinutes() / 30) * 30); // Round to nearest 30 min
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            timeInput.value = `${hours}:${minutes}`;
         }
     }
 
@@ -402,9 +445,9 @@
                 }
             }
 
-            // Validate flight number format if provided
+            // Validate flight number format if provided (more flexible pattern)
             const flightNumber = document.getElementById('flightNumber')?.value.trim();
-            if (flightNumber && !/^[A-Za-z]{2}\s?\d{1,4}$/.test(flightNumber)) {
+            if (flightNumber && !/^[A-Za-z]{2,3}\s?\d{1,4}[A-Za-z]?$/.test(flightNumber)) {
                 showError('Please enter a valid flight number (e.g., ET 500)');
                 isValid = false;
             }
@@ -510,15 +553,36 @@
         const dateLabel = document.getElementById('dateLabel');
         const timeLabel = document.getElementById('timeLabel');
         const destLabel = document.getElementById('destinationLabel');
+        const routeDirection = document.getElementById('routeDirectionText');
 
         if (type === 'arrival') {
-            dateLabel.textContent = 'Arrival Date';
-            timeLabel.textContent = 'Arrival Time';
-            destLabel.textContent = 'Drop-off Location';
+            if (dateLabel) dateLabel.textContent = 'Arrival Date';
+            if (timeLabel) timeLabel.textContent = 'Arrival Time';
+            if (destLabel) destLabel.textContent = 'Drop-off Location';
         } else {
-            dateLabel.textContent = 'Departure Date';
-            timeLabel.textContent = 'Pickup Time';
-            destLabel.textContent = 'Pickup Location';
+            if (dateLabel) dateLabel.textContent = 'Departure Date';
+            if (timeLabel) timeLabel.textContent = 'Pickup Time';
+            if (destLabel) destLabel.textContent = 'Pickup Location';
+        }
+
+        // Update route direction banner
+        updateRouteDirection();
+    }
+
+    // Update route direction banner in step 1
+    function updateRouteDirection() {
+        const routeDirection = document.getElementById('routeDirectionText');
+        if (!routeDirection) return;
+
+        const destination = document.getElementById('destination')?.value;
+        const customAddress = document.getElementById('customAddress')?.value;
+        const location = destination === 'other' ? customAddress : destination;
+        const displayLocation = location || 'Your Destination';
+
+        if (bookingData.type === 'arrival') {
+            routeDirection.textContent = `Bole Airport → ${displayLocation}`;
+        } else {
+            routeDirection.textContent = `${displayLocation} → Bole Airport`;
         }
     }
 

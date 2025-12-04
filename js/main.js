@@ -210,12 +210,16 @@ function initFormHandlers() {
 
             // Get form data and store in sessionStorage for the booking page
             const inputs = bookingForm.querySelectorAll('input, select');
+            const passengerSelect = inputs[4];
+            const selectedOption = passengerSelect?.options[passengerSelect.selectedIndex];
+
             const quickBookingData = {
                 flightNumber: inputs[0]?.value || '',
                 destination: inputs[1]?.value || '',
                 date: inputs[2]?.value || '',
                 time: inputs[3]?.value || '',
-                passengers: inputs[4]?.value || '1-2 Passengers, 2 Bags',
+                passengers: inputs[4]?.value || '2',
+                passengersText: selectedOption?.text || '1-2 Passengers, 2 Bags',
                 transferType: document.querySelector('.tab-btn.active')?.dataset.tab || 'arrival'
             };
 
