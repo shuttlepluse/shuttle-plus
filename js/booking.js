@@ -133,20 +133,31 @@
         setupFormListeners();
         fetchExchangeRate();
 
-        // First try to restore existing booking state (for hard refresh)
-        const stateRestored = restoreBookingState();
+        // PRIORITY: If quickBookingData exists, use it (fresh from home page)
+        // Only use bookingState for hard refresh recovery (when no quickBookingData)
+        const quickData = sessionStorage.getItem('quickBookingData');
 
-        if (!stateRestored) {
-            // No saved state - load fresh data from home page
+        if (quickData) {
+            // Fresh data from home page - clear any old state to start fresh
+            console.log('[Booking] Fresh booking data detected - using it');
+            sessionStorage.removeItem('bookingState');
+
             const dataLoaded = loadQuickBookingData();
             if (dataLoaded) {
                 filterVehiclesByCapacity(bookingData.passengers);
-                saveBookingState(); // Save initial state
+                saveBookingState();
             }
         } else {
-            // State was restored - filter vehicles and update display
-            filterVehiclesByCapacity(bookingData.passengers);
-            updateRouteSummaryCard();
+            // No fresh data - try to restore saved state (hard refresh case)
+            const stateRestored = restoreBookingState();
+
+            if (stateRestored) {
+                filterVehiclesByCapacity(bookingData.passengers);
+                updateRouteSummaryCard();
+            } else {
+                // No state at all - show error
+                showMissingDataError();
+            }
         }
     }
 
