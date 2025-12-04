@@ -695,6 +695,17 @@
         document.getElementById('summaryPhone').textContent =
             document.getElementById('contactPhone')?.value || '-';
 
+        // Special Requests
+        const specialRequests = document.getElementById('specialRequests')?.value?.trim();
+        const specialRequestsRow = document.getElementById('summarySpecialRequestsRow');
+        const summarySpecialRequests = document.getElementById('summarySpecialRequests');
+        if (specialRequests && specialRequestsRow && summarySpecialRequests) {
+            specialRequestsRow.style.display = 'flex';
+            summarySpecialRequests.textContent = specialRequests;
+        } else if (specialRequestsRow) {
+            specialRequestsRow.style.display = 'none';
+        }
+
         // Pricing
         if (bookingData.pricing) {
             document.getElementById('summaryBaseFare').textContent =
