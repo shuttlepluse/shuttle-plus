@@ -44,10 +44,14 @@
         setupNavigationButtons();
         setupFormListeners();
         fetchExchangeRate();
-        loadQuickBookingData(); // Load data from home page form
 
-        // Filter vehicles based on loaded passenger count
-        filterVehiclesByCapacity(bookingData.passengers);
+        // Load data from home page form
+        const dataLoaded = loadQuickBookingData();
+
+        // Only filter vehicles if data was loaded successfully
+        if (dataLoaded) {
+            filterVehiclesByCapacity(bookingData.passengers);
+        }
     }
 
     // ========================================
@@ -56,10 +60,10 @@
     function loadQuickBookingData() {
         const quickData = sessionStorage.getItem('quickBookingData');
         if (!quickData) {
-            // No data from home page - redirect back
-            console.log('[Booking] No booking data found, redirecting to home');
-            window.location.href = '../index.html';
-            return;
+            // No data from home page - show error instead of redirect
+            console.log('[Booking] No booking data found');
+            showMissingDataError();
+            return false;
         }
 
         try {
@@ -116,14 +120,32 @@
             // Update the route summary card display
             updateRouteSummaryCard();
 
-            // Clear the quick booking data after loading
-            sessionStorage.removeItem('quickBookingData');
+            // DON'T clear sessionStorage here - it will be cleared on successful form submit
+            // This allows the page to survive hard refreshes
 
             console.log('[Booking] Data loaded successfully:', bookingData);
+            return true;
         } catch (error) {
             console.error('[Booking] Failed to load quick booking data:', error);
-            sessionStorage.removeItem('quickBookingData');
-            window.location.href = '../index.html';
+            showMissingDataError();
+            return false;
+        }
+    }
+
+    // ========================================
+    // Show Missing Data Error
+    // ========================================
+    function showMissingDataError() {
+        const container = document.querySelector('.booking-container');
+        if (container) {
+            container.innerHTML = `
+                <div class="error-card" style="text-align: center; padding: 3rem;">
+                    <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
+                    <h2 style="margin-bottom: 1rem;">Booking Data Not Found</h2>
+                    <p style="color: #6b7280; margin-bottom: 2rem;">Please start your booking from the home page.</p>
+                    <a href="../index.html" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 2rem; background: var(--primary); color: white; text-decoration: none; border-radius: 8px;">Go to Home Page</a>
+                </div>
+            `;
         }
     }
 
@@ -610,6 +632,8 @@
         }
 
         sessionStorage.setItem('pendingBooking', JSON.stringify(formData));
+        // Clear quickBookingData only on successful form submission
+        sessionStorage.removeItem('quickBookingData');
         hideLoading();
         window.location.href = 'payment.html';
     }

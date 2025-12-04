@@ -242,10 +242,31 @@ function loadEditRouteData() {
     const editData = sessionStorage.getItem('editRouteData');
     if (!editData) return;
 
+    // Use setTimeout to ensure DOM is fully ready
+    setTimeout(() => {
+        try {
+            const data = JSON.parse(editData);
+            console.log('[Main] Loading edit route data:', data);
+
+            const bookingForm = document.getElementById('bookingForm');
+            if (!bookingForm) {
+                console.log('[Main] Booking form not found, retrying...');
+                // Retry once more after another delay
+                setTimeout(() => loadEditRouteDataInner(editData), 200);
+                return;
+            }
+
+            loadEditRouteDataInner(editData);
+        } catch (error) {
+            console.error('[Main] Failed to load edit route data:', error);
+            sessionStorage.removeItem('editRouteData');
+        }
+    }, 100);
+}
+
+function loadEditRouteDataInner(editData) {
     try {
         const data = JSON.parse(editData);
-        console.log('[Main] Loading edit route data:', data);
-
         const bookingForm = document.getElementById('bookingForm');
         if (!bookingForm) return;
 
@@ -294,7 +315,9 @@ function loadEditRouteData() {
         // Scroll to booking form
         const bookingSection = document.getElementById('booking');
         if (bookingSection) {
-            bookingSection.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                bookingSection.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
         }
 
         // Clear the edit data after loading
