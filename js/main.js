@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCounterAnimation();
     initSmoothScroll();
     initFormHandlers();
+    initContactForm();
     initScrollAnimations();
 });
 
@@ -205,6 +206,9 @@ function initFormHandlers() {
     // Booking Form (Home page quick form)
     const bookingForm = document.getElementById('bookingForm');
     if (bookingForm && window.location.pathname === '/' || window.location.pathname.endsWith('index.html')) {
+        // Check if user is returning from booking page to edit route
+        loadEditRouteData();
+
         bookingForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -229,7 +233,84 @@ function initFormHandlers() {
             window.location.href = 'pages/booking.html';
         });
     }
+}
 
+// ----------------------------------------
+// Load Edit Route Data (when returning from booking page)
+// ----------------------------------------
+function loadEditRouteData() {
+    const editData = sessionStorage.getItem('editRouteData');
+    if (!editData) return;
+
+    try {
+        const data = JSON.parse(editData);
+        console.log('[Main] Loading edit route data:', data);
+
+        const bookingForm = document.getElementById('bookingForm');
+        if (!bookingForm) return;
+
+        const inputs = bookingForm.querySelectorAll('input, select');
+
+        // Set flight number
+        if (inputs[0] && data.flightNumber) {
+            inputs[0].value = data.flightNumber;
+        }
+
+        // Set destination
+        if (inputs[1] && data.destination) {
+            inputs[1].value = data.destination;
+        }
+
+        // Set date
+        if (inputs[2] && data.date) {
+            inputs[2].value = data.date;
+        }
+
+        // Set time
+        if (inputs[3] && data.time) {
+            inputs[3].value = data.time;
+        }
+
+        // Set passengers
+        if (inputs[4] && data.passengers) {
+            const passengerValue = String(data.passengers);
+            const options = Array.from(inputs[4].options);
+            const matchingOption = options.find(opt => opt.value === passengerValue);
+            if (matchingOption) {
+                inputs[4].value = passengerValue;
+            }
+        }
+
+        // Set transfer type tab
+        if (data.transferType) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => {
+                if (tab.dataset.tab === data.transferType) {
+                    tab.click();
+                }
+            });
+        }
+
+        // Scroll to booking form
+        const bookingSection = document.getElementById('booking');
+        if (bookingSection) {
+            bookingSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Clear the edit data after loading
+        sessionStorage.removeItem('editRouteData');
+
+        console.log('[Main] Edit route data loaded successfully');
+    } catch (error) {
+        console.error('[Main] Failed to load edit route data:', error);
+        sessionStorage.removeItem('editRouteData');
+    }
+}
+
+// ----------------------------------------
+// Contact Form Handler
+// ----------------------------------------
+function initContactForm() {
     // Contact Form
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {

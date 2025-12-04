@@ -1,5 +1,5 @@
 // ========================================
-// SHUTTLE PLUS - Booking Flow
+// SHUTTLE PLUS - Booking Flow (Simplified 3-Step)
 // ========================================
 
 (function() {
@@ -12,6 +12,10 @@
         flight: {},
         pickup: {},
         dropoff: {},
+        destination: '',
+        customAddress: '',
+        date: '',
+        time: '',
         vehicleClass: 'standard',
         passengers: 2,
         luggage: 2,
@@ -22,7 +26,7 @@
     };
 
     let exchangeRate = 158; // Default, will be fetched
-    const TOTAL_STEPS = 4; // Updated from 5 to 4
+    const TOTAL_STEPS = 3; // Simplified from 4 to 3
 
     // Elements
     const form = document.getElementById('bookingForm');
@@ -39,10 +43,11 @@
 
         setupNavigationButtons();
         setupFormListeners();
-        setupDateDefaults();
         fetchExchangeRate();
-        loadDraftBooking();
         loadQuickBookingData(); // Load data from home page form
+
+        // Filter vehicles based on loaded passenger count
+        filterVehiclesByCapacity(bookingData.passengers);
     }
 
     // ========================================
@@ -50,126 +55,143 @@
     // ========================================
     function loadQuickBookingData() {
         const quickData = sessionStorage.getItem('quickBookingData');
-        if (!quickData) return;
+        if (!quickData) {
+            // No data from home page - redirect back
+            console.log('[Booking] No booking data found, redirecting to home');
+            window.location.href = '../index.html';
+            return;
+        }
 
         try {
             const data = JSON.parse(quickData);
+            console.log('[Booking] Loading quick booking data:', data);
 
-            // Set transfer type
-            if (data.transferType) {
-                const typeInput = document.querySelector(`input[name="transferType"][value="${data.transferType}"]`);
-                if (typeInput) {
-                    typeInput.checked = true;
-                    bookingData.type = data.transferType;
-                    updateLabelsForType(data.transferType);
-                }
+            // Store transfer type
+            bookingData.type = data.transferType || 'arrival';
+            document.getElementById('transferType').value = bookingData.type;
+
+            // Store flight number
+            if (data.flightNumber) {
+                document.getElementById('flightNumber').value = data.flightNumber;
+                bookingData.flight.number = data.flightNumber;
             }
 
-            // Set flight number
-            const flightInput = document.getElementById('flightNumber');
-            if (flightInput && data.flightNumber) {
-                flightInput.value = data.flightNumber;
-            }
+            // Store destination
+            bookingData.destination = data.destination || '';
+            document.getElementById('destination').value = bookingData.destination;
 
-            // Set date
-            const dateInput = document.getElementById('flightDate');
-            if (dateInput && data.date) {
-                dateInput.value = data.date;
-            }
+            // Store date
+            bookingData.date = data.date || '';
+            document.getElementById('flightDate').value = bookingData.date;
 
-            // Set time
-            const timeInput = document.getElementById('flightTimeInput');
-            if (timeInput && data.time) {
-                timeInput.value = data.time;
-            }
+            // Store time
+            bookingData.time = data.time || '';
+            document.getElementById('flightTimeInput').value = bookingData.time;
 
-            // Set destination
-            const destInput = document.getElementById('destination');
-            if (destInput && data.destination) {
-                // Check if destination exists in the select options
-                const options = Array.from(destInput.options);
-                const matchingOption = options.find(opt => opt.value === data.destination || opt.text === data.destination);
-                if (matchingOption) {
-                    destInput.value = matchingOption.value;
-                } else if (data.destination) {
-                    // Set to "other" and fill custom address
-                    destInput.value = 'other';
-                    const customGroup = document.getElementById('customAddressGroup');
-                    const customInput = document.getElementById('customAddress');
-                    if (customGroup) customGroup.style.display = 'block';
-                    if (customInput) customInput.value = data.destination;
-                }
-            }
-
-            // Set passengers - handle both numeric values ("6") and text format ("5-6 Passengers, 6 Bags")
+            // Parse and store passengers
+            let passengerCount = 2;
             if (data.passengers) {
-                let passengerCount = 2; // default
-
-                // Check if it's a plain number
                 if (/^\d+$/.test(data.passengers)) {
                     passengerCount = parseInt(data.passengers) || 2;
                 } else {
-                    // Try to parse text format "5-6 Passengers, 6 Bags"
                     const match = data.passengers.match(/(\d+)(?:-(\d+))?\s*Passengers?/i);
                     if (match) {
-                        // Use the higher number if range (e.g., "5-6" -> 6)
                         passengerCount = parseInt(match[2] || match[1]) || 2;
                     }
                 }
-
-                const passengersSelect = document.getElementById('passengers');
-                if (passengersSelect) {
-                    // Find best matching option
-                    const options = Array.from(passengersSelect.options);
-                    let bestOption = options.find(opt => parseInt(opt.value) === passengerCount);
-                    if (!bestOption && passengerCount >= 6) {
-                        bestOption = options.find(opt => parseInt(opt.value) >= 6);
-                    }
-                    if (bestOption) {
-                        passengersSelect.value = bestOption.value;
-                        bookingData.passengers = parseInt(bestOption.value);
-                    }
-                }
             }
+            bookingData.passengers = passengerCount;
+            document.getElementById('passengers').value = passengerCount;
 
-            // Set luggage - parse from passengersText (e.g., "5-6 Passengers, 6 Bags")
+            // Parse and store luggage
+            let luggageCount = 2;
             const textToParse = data.passengersText || data.passengers || '';
             const luggageMatch = textToParse.match(/(\d+)\s*Bags?/i);
             if (luggageMatch) {
-                const luggageCount = parseInt(luggageMatch[1]) || 2;
-                const luggageSelect = document.getElementById('luggage');
-                if (luggageSelect) {
-                    // Find matching option or closest
-                    const options = Array.from(luggageSelect.options);
-                    let bestOption = options.find(opt => parseInt(opt.value) === luggageCount);
-                    if (!bestOption && luggageCount >= 4) {
-                        bestOption = options.find(opt => opt.value === '4'); // "4+ Bags"
-                    }
-                    if (bestOption) {
-                        luggageSelect.value = bestOption.value;
-                        bookingData.luggage = parseInt(bestOption.value);
-                    }
-                }
+                luggageCount = parseInt(luggageMatch[1]) || 2;
             }
+            bookingData.luggage = luggageCount;
+            document.getElementById('luggage').value = luggageCount;
 
-            // Filter vehicles based on passenger count (important for when user goes to step 2)
-            if (bookingData.passengers > 3) {
-                // Will be applied when user navigates to step 2
-                console.log('[Booking] Passenger count requires vehicle filtering:', bookingData.passengers);
-            }
+            // Update the route summary card display
+            updateRouteSummaryCard();
 
             // Clear the quick booking data after loading
             sessionStorage.removeItem('quickBookingData');
 
-            // Update the route direction display
-            updateRouteDirection();
-
-            console.log('[Booking] Quick booking data loaded:', data);
+            console.log('[Booking] Data loaded successfully:', bookingData);
         } catch (error) {
             console.error('[Booking] Failed to load quick booking data:', error);
             sessionStorage.removeItem('quickBookingData');
+            window.location.href = '../index.html';
         }
     }
+
+    // ========================================
+    // Update Route Summary Card Display
+    // ========================================
+    function updateRouteSummaryCard() {
+        const routeText = document.getElementById('routeText');
+        const routeIcon = document.getElementById('routeIcon');
+        const routeDate = document.getElementById('routeDate');
+        const routeTime = document.getElementById('routeTime');
+        const routePassengers = document.getElementById('routePassengers');
+        const routeLuggage = document.getElementById('routeLuggage');
+
+        // Update route direction
+        const location = bookingData.customAddress || bookingData.destination || 'Your Destination';
+        if (bookingData.type === 'arrival') {
+            if (routeText) routeText.textContent = `Bole Airport → ${location}`;
+            if (routeIcon) {
+                routeIcon.classList.remove('fa-plane-departure');
+                routeIcon.classList.add('fa-plane-arrival');
+            }
+        } else {
+            if (routeText) routeText.textContent = `${location} → Bole Airport`;
+            if (routeIcon) {
+                routeIcon.classList.remove('fa-plane-arrival');
+                routeIcon.classList.add('fa-plane-departure');
+            }
+        }
+
+        // Update date
+        if (routeDate && bookingData.date) {
+            routeDate.textContent = formatDate(bookingData.date);
+        }
+
+        // Update time
+        if (routeTime && bookingData.time) {
+            routeTime.textContent = bookingData.time;
+        }
+
+        // Update passengers
+        if (routePassengers) {
+            routePassengers.textContent = `${bookingData.passengers} passenger${bookingData.passengers > 1 ? 's' : ''}`;
+        }
+
+        // Update luggage
+        if (routeLuggage) {
+            routeLuggage.textContent = `${bookingData.luggage} bag${bookingData.luggage > 1 ? 's' : ''}`;
+        }
+    }
+
+    // ========================================
+    // Edit Route - Return to Home Page
+    // ========================================
+    window.editRoute = function() {
+        // Save current booking data back to sessionStorage for home page to load
+        const editData = {
+            flightNumber: bookingData.flight?.number || document.getElementById('flightNumber')?.value || '',
+            destination: bookingData.destination || document.getElementById('destination')?.value || '',
+            date: bookingData.date || document.getElementById('flightDate')?.value || '',
+            time: bookingData.time || document.getElementById('flightTimeInput')?.value || '',
+            passengers: bookingData.passengers,
+            transferType: bookingData.type
+        };
+
+        sessionStorage.setItem('editRouteData', JSON.stringify(editData));
+        window.location.href = '../index.html#booking';
+    };
 
     // ========================================
     // Fetch Exchange Rate
@@ -198,7 +220,7 @@
             btn.addEventListener('click', () => {
                 try {
                     const nextStep = parseInt(btn.dataset.next);
-                    console.log('[Booking] Next button clicked, current step:', currentStep, 'next step:', nextStep);
+                    console.log('[Booking] Next button clicked, current:', currentStep, 'next:', nextStep);
                     if (validateStep(currentStep)) {
                         goToStep(nextStep);
                     }
@@ -230,51 +252,6 @@
     // Form Listeners
     // ========================================
     function setupFormListeners() {
-        // Transfer type
-        document.querySelectorAll('input[name="transferType"]').forEach(input => {
-            input.addEventListener('change', (e) => {
-                bookingData.type = e.target.value;
-                updateLabelsForType(e.target.value);
-            });
-        });
-
-        // Flight number - lookup flight
-        const flightInput = document.getElementById('flightNumber');
-        if (flightInput) {
-            let debounceTimer;
-            flightInput.addEventListener('input', (e) => {
-                clearTimeout(debounceTimer);
-                const value = e.target.value.trim();
-
-                if (value.length >= 4) {
-                    debounceTimer = setTimeout(() => lookupFlight(value), 500);
-                } else {
-                    hideFlightInfo();
-                }
-            });
-        }
-
-        // Destination - show custom address field and update route
-        const destinationSelect = document.getElementById('destination');
-        if (destinationSelect) {
-            destinationSelect.addEventListener('change', (e) => {
-                const customGroup = document.getElementById('customAddressGroup');
-                if (e.target.value === 'other') {
-                    customGroup.style.display = 'block';
-                } else {
-                    customGroup.style.display = 'none';
-                }
-                updateRouteDirection();
-                updatePricing();
-            });
-        }
-
-        // Custom address - update route when typed
-        const customAddressInput = document.getElementById('customAddress');
-        if (customAddressInput) {
-            customAddressInput.addEventListener('input', debounce(updateRouteDirection, 300));
-        }
-
         // Vehicle class
         document.querySelectorAll('input[name="vehicleClass"]').forEach(input => {
             input.addEventListener('change', (e) => {
@@ -282,23 +259,6 @@
                 updatePricing();
             });
         });
-
-        // Passengers - filter vehicles by capacity
-        const passengersSelect = document.getElementById('passengers');
-        if (passengersSelect) {
-            passengersSelect.addEventListener('change', (e) => {
-                bookingData.passengers = parseInt(e.target.value) || 2;
-                filterVehiclesByCapacity(bookingData.passengers);
-            });
-        }
-
-        // Luggage
-        const luggageSelect = document.getElementById('luggage');
-        if (luggageSelect) {
-            luggageSelect.addEventListener('change', (e) => {
-                bookingData.luggage = parseInt(e.target.value) || 2;
-            });
-        }
 
         // Child seat
         const childSeatCheckbox = document.getElementById('childSeat');
@@ -316,34 +276,6 @@
                 bookingData.meetGreet = e.target.checked;
                 updatePricing();
             });
-        }
-
-        // Auto-save on input changes
-        form.addEventListener('input', debounce(saveDraftBooking, 1000));
-    }
-
-    // ========================================
-    // Date Defaults
-    // ========================================
-    function setupDateDefaults() {
-        const dateInput = document.getElementById('flightDate');
-        if (dateInput) {
-            const today = new Date().toISOString().split('T')[0];
-            dateInput.min = today;
-            if (!dateInput.value) {
-                dateInput.value = today;
-            }
-        }
-
-        // Set default time if empty (2 hours from now, rounded)
-        const timeInput = document.getElementById('flightTimeInput');
-        if (timeInput && !timeInput.value) {
-            const now = new Date();
-            now.setHours(now.getHours() + 2);
-            now.setMinutes(Math.ceil(now.getMinutes() / 30) * 30); // Round to nearest 30 min
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            timeInput.value = `${hours}:${minutes}`;
         }
     }
 
@@ -373,43 +305,18 @@
 
         currentStep = step;
 
-        // Update route summary banner on step 2 and filter vehicles
-        if (step === 2) {
-            updateRouteSummary();
+        // Filter vehicles on step 1
+        if (step === 1) {
             filterVehiclesByCapacity(bookingData.passengers);
         }
 
-        // Update summary on step 4 (final step)
-        if (step === 4) {
+        // Update summary on step 3 (final step)
+        if (step === 3) {
             updateSummary();
         }
 
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // Update route summary banner in step 2
-    function updateRouteSummary() {
-        const destination = document.getElementById('destination')?.value;
-        const customAddress = document.getElementById('customAddress')?.value;
-        const date = document.getElementById('flightDate')?.value;
-        const time = document.getElementById('flightTimeInput')?.value;
-
-        const routeText = document.getElementById('routeSummaryText');
-        const dateText = document.getElementById('dateSummaryText');
-
-        if (routeText) {
-            const location = destination === 'other' ? customAddress : destination;
-            if (bookingData.type === 'arrival') {
-                routeText.textContent = `Bole Airport → ${location || 'Destination'}`;
-            } else {
-                routeText.textContent = `${location || 'Pickup'} → Bole Airport`;
-            }
-        }
-
-        if (dateText && date && time) {
-            dateText.textContent = `${formatDate(date)} at ${time}`;
-        }
     }
 
     // ========================================
@@ -429,31 +336,6 @@
 
         // Custom validations per step
         if (step === 1) {
-            // Validate destination is selected
-            const destination = document.getElementById('destination')?.value;
-            if (!destination) {
-                showError('Please select a destination');
-                isValid = false;
-            }
-
-            // If "other" selected, validate custom address
-            if (destination === 'other') {
-                const customAddress = document.getElementById('customAddress')?.value.trim();
-                if (!customAddress) {
-                    showError('Please enter your address');
-                    isValid = false;
-                }
-            }
-
-            // Validate flight number format if provided (more flexible pattern)
-            const flightNumber = document.getElementById('flightNumber')?.value.trim();
-            if (flightNumber && !/^[A-Za-z]{2,3}\s?\d{1,4}[A-Za-z]?$/.test(flightNumber)) {
-                showError('Please enter a valid flight number (e.g., ET 500)');
-                isValid = false;
-            }
-        }
-
-        if (step === 2) {
             // Validate that a vehicle is selected
             const selectedVehicle = document.querySelector('input[name="vehicleClass"]:checked:not(:disabled)');
             if (!selectedVehicle) {
@@ -462,7 +344,7 @@
             }
         }
 
-        if (step === 3) {
+        if (step === 2) {
             // Validate phone number (more flexible format)
             const phone = document.getElementById('contactPhone')?.value.trim();
             if (phone && !/^(\+251|0)?[97]\d{8}$/.test(phone.replace(/\s/g, ''))) {
@@ -471,7 +353,7 @@
             }
         }
 
-        if (step === 4) {
+        if (step === 3) {
             // Validate terms accepted
             if (!document.getElementById('termsAccepted')?.checked) {
                 showError('Please accept the terms and conditions');
@@ -483,118 +365,12 @@
     }
 
     // ========================================
-    // Flight Lookup
-    // ========================================
-    async function lookupFlight(flightNumber) {
-        const infoGroup = document.getElementById('flightInfoGroup');
-
-        try {
-            const response = await fetch(`/api/flights/${encodeURIComponent(flightNumber)}`);
-
-            if (response.ok) {
-                const data = await response.json();
-                if (data.success && data.data) {
-                    showFlightInfo(data.data);
-                    bookingData.flight = data.data;
-
-                    // Auto-fill date and time
-                    if (data.data.scheduledTime) {
-                        const date = new Date(data.data.scheduledTime);
-                        document.getElementById('flightDate').value = date.toISOString().split('T')[0];
-                        document.getElementById('flightTimeInput').value = date.toTimeString().substring(0, 5);
-                    }
-                } else {
-                    hideFlightInfo();
-                }
-            } else {
-                hideFlightInfo();
-            }
-        } catch (error) {
-            console.error('[Booking] Flight lookup error:', error);
-            hideFlightInfo();
-        }
-    }
-
-    function showFlightInfo(flight) {
-        const infoGroup = document.getElementById('flightInfoGroup');
-        if (!infoGroup) return;
-
-        document.getElementById('airlineName').textContent = flight.airline?.name || 'Unknown Airline';
-        document.getElementById('flightStatus').textContent = flight.status || 'Scheduled';
-        document.getElementById('flightOrigin').textContent = flight.origin?.city || 'Origin';
-
-        const time = flight.scheduledTime ? new Date(flight.scheduledTime).toLocaleString('en-GB', {
-            dateStyle: 'medium',
-            timeStyle: 'short'
-        }) : 'TBD';
-        document.getElementById('flightTime').textContent = time;
-
-        // Update status color
-        const statusEl = document.getElementById('flightStatus');
-        statusEl.classList.remove('delayed');
-        if (flight.status === 'delayed') {
-            statusEl.classList.add('delayed');
-        }
-
-        infoGroup.style.display = 'block';
-    }
-
-    function hideFlightInfo() {
-        const infoGroup = document.getElementById('flightInfoGroup');
-        if (infoGroup) {
-            infoGroup.style.display = 'none';
-        }
-    }
-
-    // ========================================
-    // Update Labels for Transfer Type
-    // ========================================
-    function updateLabelsForType(type) {
-        const dateLabel = document.getElementById('dateLabel');
-        const timeLabel = document.getElementById('timeLabel');
-        const destLabel = document.getElementById('destinationLabel');
-        const routeDirection = document.getElementById('routeDirectionText');
-
-        if (type === 'arrival') {
-            if (dateLabel) dateLabel.textContent = 'Arrival Date';
-            if (timeLabel) timeLabel.textContent = 'Arrival Time';
-            if (destLabel) destLabel.textContent = 'Drop-off Location';
-        } else {
-            if (dateLabel) dateLabel.textContent = 'Departure Date';
-            if (timeLabel) timeLabel.textContent = 'Pickup Time';
-            if (destLabel) destLabel.textContent = 'Pickup Location';
-        }
-
-        // Update route direction banner
-        updateRouteDirection();
-    }
-
-    // Update route direction banner in step 1
-    function updateRouteDirection() {
-        const routeDirection = document.getElementById('routeDirectionText');
-        if (!routeDirection) return;
-
-        const destination = document.getElementById('destination')?.value;
-        const customAddress = document.getElementById('customAddress')?.value;
-        const location = destination === 'other' ? customAddress : destination;
-        const displayLocation = location || 'Your Destination';
-
-        if (bookingData.type === 'arrival') {
-            routeDirection.textContent = `Bole Airport → ${displayLocation}`;
-        } else {
-            routeDirection.textContent = `${displayLocation} → Bole Airport`;
-        }
-    }
-
-    // ========================================
     // Filter Vehicles by Passenger Capacity
     // ========================================
     function filterVehiclesByCapacity(passengers) {
-        // Ensure passengers is a number
         passengers = parseInt(passengers) || 2;
         console.log('[Booking] Filtering vehicles for', passengers, 'passengers');
 
-        // Vehicle capacities: standard=3, executive=3, suv=6, luxury=3
         const vehicleCapacities = {
             standard: 3,
             executive: 3,
@@ -614,18 +390,14 @@
             const capacity = vehicleCapacities[vehicleType] || 3;
 
             if (passengers > capacity) {
-                // Hide vehicles that can't accommodate passenger count
                 option.style.display = 'none';
                 option.classList.add('capacity-hidden');
-                // Also disable the input to prevent selection
                 input.disabled = true;
                 if (input.checked) {
                     input.checked = false;
                 }
                 hiddenCount++;
-                console.log('[Booking] Hiding vehicle:', vehicleType, '(capacity:', capacity, ')');
             } else {
-                // Show available vehicles
                 option.style.display = '';
                 option.classList.remove('capacity-hidden');
                 input.disabled = false;
@@ -635,20 +407,17 @@
             }
         });
 
-        console.log('[Booking] Hidden', hiddenCount, 'vehicles, first available:', firstAvailable?.value);
-
-        // Select first available vehicle if current selection is hidden
+        // Auto-select first available vehicle if current selection is hidden
         const currentSelected = document.querySelector('input[name="vehicleClass"]:checked');
         if (!currentSelected || currentSelected.disabled) {
             if (firstAvailable) {
                 firstAvailable.checked = true;
                 bookingData.vehicleClass = firstAvailable.value;
-                console.log('[Booking] Auto-selected vehicle:', firstAvailable.value);
                 updatePricing();
             }
         }
 
-        // Show warning if only SUV available (passengers > 3)
+        // Show warning if only SUV available
         const vehicleSection = document.querySelector('.vehicle-options');
         let suvWarning = document.getElementById('suvOnlyWarning');
 
@@ -670,7 +439,7 @@
     // Pricing
     // ========================================
     async function updatePricing() {
-        const destination = document.getElementById('destination')?.value;
+        const destination = bookingData.destination;
         if (!destination) return;
 
         try {
@@ -695,7 +464,6 @@
             }
         } catch (error) {
             console.error('[Booking] Pricing error:', error);
-            // Use fallback pricing
             updateFallbackPricing();
         }
     }
@@ -708,7 +476,6 @@
             luxury: 87
         };
 
-        // Update vehicle prices
         Object.keys(basePrices).forEach(cls => {
             const priceEl = document.getElementById(`price-${cls}`);
             if (priceEl) {
@@ -743,7 +510,6 @@
     // Summary
     // ========================================
     function updateSummary() {
-        // Ensure pricing is calculated
         if (!bookingData.pricing) {
             updateFallbackPricing();
         }
@@ -755,14 +521,12 @@
         const flightNumber = document.getElementById('flightNumber')?.value?.trim();
         document.getElementById('summaryFlight').textContent = flightNumber || 'Not provided';
 
-        const date = document.getElementById('flightDate')?.value;
-        const time = document.getElementById('flightTimeInput')?.value;
+        const date = bookingData.date;
+        const time = bookingData.time;
         document.getElementById('summaryDateTime').textContent =
             date && time ? `${formatDate(date)} at ${time}` : '-';
 
-        const destination = document.getElementById('destination')?.value;
-        const customAddress = document.getElementById('customAddress')?.value;
-        const location = destination === 'other' ? customAddress : destination;
+        const location = bookingData.customAddress || bookingData.destination;
         document.getElementById('summaryRoute').textContent =
             bookingData.type === 'arrival'
                 ? `Airport → ${location || 'Destination'}`
@@ -814,14 +578,12 @@
     async function handleSubmit(e) {
         e.preventDefault();
 
-        if (!validateStep(4)) return;
+        if (!validateStep(3)) return;
 
         showLoading();
 
-        // Collect form data
         const formData = collectFormData();
 
-        // Calculate pricing
         try {
             const pricingResponse = await fetch('/api/pricing/calculate', {
                 method: 'POST',
@@ -840,7 +602,6 @@
                 const pricingData = await pricingResponse.json();
                 formData.pricing = pricingData.data;
             } else {
-                // Use current bookingData pricing if API fails
                 formData.pricing = bookingData.pricing;
             }
         } catch (error) {
@@ -848,30 +609,21 @@
             formData.pricing = bookingData.pricing;
         }
 
-        // Store booking data for payment page
         sessionStorage.setItem('pendingBooking', JSON.stringify(formData));
-
-        // Clear draft
-        localStorage.removeItem('booking_draft');
-
         hideLoading();
-
-        // Redirect to payment page
         window.location.href = 'payment.html';
     }
 
     function collectFormData() {
-        const date = document.getElementById('flightDate').value;
-        const time = document.getElementById('flightTimeInput').value;
+        const date = bookingData.date;
+        const time = bookingData.time;
         const flightDateTime = new Date(`${date}T${time}`);
 
-        // Calculate pickup time (arrival + 60 min buffer for arrivals)
         const pickupTime = bookingData.type === 'arrival'
             ? new Date(flightDateTime.getTime() + 60 * 60 * 1000)
             : flightDateTime;
 
-        const destination = document.getElementById('destination').value;
-        const customAddress = document.getElementById('customAddress')?.value;
+        const destination = bookingData.customAddress || bookingData.destination;
         const flightNumber = document.getElementById('flightNumber')?.value?.trim() || '';
 
         return {
@@ -881,11 +633,11 @@
                 scheduledTime: flightDateTime.toISOString()
             },
             pickup: {
-                location: bookingData.type === 'arrival' ? 'Bole International Airport' : (destination === 'other' ? customAddress : destination),
+                location: bookingData.type === 'arrival' ? 'Bole International Airport' : destination,
                 scheduledTime: pickupTime.toISOString()
             },
             dropoff: {
-                location: bookingData.type === 'arrival' ? (destination === 'other' ? customAddress : destination) : 'Bole International Airport'
+                location: bookingData.type === 'arrival' ? destination : 'Bole International Airport'
             },
             vehicleClass: bookingData.vehicleClass,
             passengers: bookingData.passengers,
@@ -909,15 +661,10 @@
     // ========================================
     function showSuccess(booking) {
         hideLoading();
-
-        // Hide form
         form.style.display = 'none';
         document.querySelector('.booking-progress').style.display = 'none';
-
-        // Show success section
         successSection.style.display = 'block';
 
-        // Populate success details
         document.getElementById('bookingRef').textContent = booking.bookingReference;
 
         const pickupDate = new Date(booking.pickup.scheduledTime);
@@ -934,125 +681,6 @@
             luxury: 'Luxury Class'
         };
         document.getElementById('successVehicle').textContent = vehicleNames[booking.vehicleClass] || 'Vehicle';
-
-        // Update ticket link
-        const ticketLink = successSection.querySelector('a[href="tickets.html"]');
-        if (ticketLink) {
-            ticketLink.href = `tickets.html?id=${booking.bookingReference}`;
-        }
-    }
-
-    // ========================================
-    // Draft Booking (Local Storage)
-    // ========================================
-    function saveDraftBooking() {
-        const draft = {
-            type: bookingData.type,
-            vehicleClass: bookingData.vehicleClass,
-            childSeat: bookingData.childSeat,
-            meetGreet: bookingData.meetGreet,
-            flightNumber: document.getElementById('flightNumber')?.value,
-            flightDate: document.getElementById('flightDate')?.value,
-            flightTime: document.getElementById('flightTimeInput')?.value,
-            destination: document.getElementById('destination')?.value,
-            customAddress: document.getElementById('customAddress')?.value,
-            passengers: document.getElementById('passengers')?.value,
-            luggage: document.getElementById('luggage')?.value,
-            contactName: document.getElementById('contactName')?.value,
-            contactPhone: document.getElementById('contactPhone')?.value,
-            contactEmail: document.getElementById('contactEmail')?.value,
-            specialRequests: document.getElementById('specialRequests')?.value,
-            savedAt: new Date().toISOString()
-        };
-
-        localStorage.setItem('booking_draft', JSON.stringify(draft));
-    }
-
-    function loadDraftBooking() {
-        const draft = localStorage.getItem('booking_draft');
-        if (!draft) return;
-
-        try {
-            const data = JSON.parse(draft);
-
-            // Check if draft is less than 24 hours old
-            const savedAt = new Date(data.savedAt);
-            const now = new Date();
-            if ((now - savedAt) > 24 * 60 * 60 * 1000) {
-                localStorage.removeItem('booking_draft');
-                return;
-            }
-
-            // Restore form values
-            if (data.type) {
-                const typeInput = document.querySelector(`input[name="transferType"][value="${data.type}"]`);
-                if (typeInput) {
-                    typeInput.checked = true;
-                    bookingData.type = data.type;
-                    updateLabelsForType(data.type);
-                }
-            }
-
-            if (data.flightNumber) {
-                const flightInput = document.getElementById('flightNumber');
-                if (flightInput) flightInput.value = data.flightNumber;
-            }
-            if (data.flightDate) document.getElementById('flightDate').value = data.flightDate;
-            if (data.flightTime) document.getElementById('flightTimeInput').value = data.flightTime;
-            if (data.destination) {
-                document.getElementById('destination').value = data.destination;
-                if (data.destination === 'other' && data.customAddress) {
-                    document.getElementById('customAddressGroup').style.display = 'block';
-                    document.getElementById('customAddress').value = data.customAddress;
-                }
-            }
-            if (data.passengers) {
-                document.getElementById('passengers').value = data.passengers;
-                bookingData.passengers = parseInt(data.passengers) || 2;
-            }
-            if (data.luggage) {
-                const luggageInput = document.getElementById('luggage');
-                if (luggageInput) {
-                    luggageInput.value = data.luggage;
-                    bookingData.luggage = parseInt(data.luggage) || 2;
-                }
-            }
-
-            if (data.vehicleClass) {
-                const vehicleInput = document.querySelector(`input[name="vehicleClass"][value="${data.vehicleClass}"]`);
-                if (vehicleInput) {
-                    vehicleInput.checked = true;
-                    bookingData.vehicleClass = data.vehicleClass;
-                }
-            }
-
-            if (data.childSeat) {
-                const childSeatInput = document.getElementById('childSeat');
-                if (childSeatInput) {
-                    childSeatInput.checked = true;
-                    bookingData.childSeat = true;
-                }
-            }
-
-            if (data.meetGreet) {
-                const meetGreetInput = document.getElementById('meetGreet');
-                if (meetGreetInput) {
-                    meetGreetInput.checked = true;
-                    bookingData.meetGreet = true;
-                }
-            }
-
-            if (data.contactName) document.getElementById('contactName').value = data.contactName;
-            if (data.contactPhone) document.getElementById('contactPhone').value = data.contactPhone;
-            if (data.contactEmail) document.getElementById('contactEmail').value = data.contactEmail;
-            if (data.specialRequests) document.getElementById('specialRequests').value = data.specialRequests;
-
-            console.log('[Booking] Draft restored');
-
-        } catch (error) {
-            console.error('[Booking] Failed to load draft:', error);
-            localStorage.removeItem('booking_draft');
-        }
     }
 
     // ========================================
@@ -1071,7 +699,6 @@
     }
 
     function showError(message) {
-        // Use existing notification system if available
         if (window.showNotification) {
             window.showNotification('error', message);
         } else {
@@ -1086,18 +713,6 @@
             month: 'short',
             year: 'numeric'
         });
-    }
-
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
     }
 
     // ========================================
