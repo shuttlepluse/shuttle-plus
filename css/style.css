@@ -1602,6 +1602,8 @@ section {
     border-radius: var(--radius-xl);
     padding: 1.5rem;
     transition: var(--transition);
+    min-width: 0;
+    overflow: visible;
 }
 
 .destination-card:hover {
@@ -1659,6 +1661,7 @@ section {
 .destination-price {
     text-align: right;
     flex-shrink: 0;
+    min-width: 90px;
 }
 
 .destination-price .price-label {
@@ -1799,6 +1802,18 @@ section {
 
     .destinations-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .destination-card {
+        flex-wrap: wrap;
+    }
+
+    .destination-price {
+        width: 100%;
+        text-align: left;
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--gray-200);
     }
 
     .corporate-content {
