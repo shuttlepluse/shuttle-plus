@@ -101,10 +101,47 @@
                 }
             }
 
+            // Set passengers - handle both numeric values ("6") and text format ("5-6 Passengers, 6 Bags")
+            if (data.passengers) {
+                let passengerCount = 2; // default
+
+                // Check if it's a plain number
+                if (/^\d+$/.test(data.passengers)) {
+                    passengerCount = parseInt(data.passengers) || 2;
+                } else {
+                    // Try to parse text format "5-6 Passengers, 6 Bags"
+                    const match = data.passengers.match(/(\d+)(?:-(\d+))?\s*Passengers?/i);
+                    if (match) {
+                        // Use the higher number if range (e.g., "5-6" -> 6)
+                        passengerCount = parseInt(match[2] || match[1]) || 2;
+                    }
+                }
+
+                const passengersSelect = document.getElementById('passengers');
+                if (passengersSelect) {
+                    // Find best matching option
+                    const options = Array.from(passengersSelect.options);
+                    let bestOption = options.find(opt => parseInt(opt.value) === passengerCount);
+                    if (!bestOption && passengerCount >= 6) {
+                        bestOption = options.find(opt => parseInt(opt.value) >= 6);
+                    }
+                    if (bestOption) {
+                        passengersSelect.value = bestOption.value;
+                        bookingData.passengers = parseInt(bestOption.value);
+                    }
+                }
+            }
+
+            // Filter vehicles based on passenger count (important for when user goes to step 2)
+            if (bookingData.passengers > 3) {
+                // Will be applied when user navigates to step 2
+                console.log('[Booking] Passenger count requires vehicle filtering:', bookingData.passengers);
+            }
+
             // Clear the quick booking data after loading
             sessionStorage.removeItem('quickBookingData');
 
-            console.log('[Booking] Quick booking data loaded');
+            console.log('[Booking] Quick booking data loaded:', data);
         } catch (error) {
             console.error('[Booking] Failed to load quick booking data:', error);
             sessionStorage.removeItem('quickBookingData');
@@ -136,9 +173,15 @@
         // Next buttons
         document.querySelectorAll('.btn-next').forEach(btn => {
             btn.addEventListener('click', () => {
-                const nextStep = parseInt(btn.dataset.next);
-                if (validateStep(currentStep)) {
-                    goToStep(nextStep);
+                try {
+                    const nextStep = parseInt(btn.dataset.next);
+                    console.log('[Booking] Next button clicked, current step:', currentStep, 'next step:', nextStep);
+                    if (validateStep(currentStep)) {
+                        goToStep(nextStep);
+                    }
+                } catch (error) {
+                    console.error('[Booking] Navigation error:', error);
+                    showError('An error occurred. Please try again.');
                 }
             });
         });
@@ -146,8 +189,13 @@
         // Previous buttons
         document.querySelectorAll('.btn-prev').forEach(btn => {
             btn.addEventListener('click', () => {
-                const prevStep = parseInt(btn.dataset.prev);
-                goToStep(prevStep);
+                try {
+                    const prevStep = parseInt(btn.dataset.prev);
+                    console.log('[Booking] Back button clicked, going to step:', prevStep);
+                    goToStep(prevStep);
+                } catch (error) {
+                    console.error('[Booking] Navigation error:', error);
+                }
             });
         });
 
@@ -362,6 +410,15 @@
             }
         }
 
+        if (step === 2) {
+            // Validate that a vehicle is selected
+            const selectedVehicle = document.querySelector('input[name="vehicleClass"]:checked:not(:disabled)');
+            if (!selectedVehicle) {
+                showError('Please select a vehicle');
+                isValid = false;
+            }
+        }
+
         if (step === 3) {
             // Validate phone number (more flexible format)
             const phone = document.getElementById('contactPhone')?.value.trim();
@@ -469,6 +526,10 @@
     // Filter Vehicles by Passenger Capacity
     // ========================================
     function filterVehiclesByCapacity(passengers) {
+        // Ensure passengers is a number
+        passengers = parseInt(passengers) || 2;
+        console.log('[Booking] Filtering vehicles for', passengers, 'passengers');
+
         // Vehicle capacities: standard=3, executive=3, suv=6, luxury=3
         const vehicleCapacities = {
             standard: 3,
@@ -479,6 +540,7 @@
 
         const vehicleOptions = document.querySelectorAll('.vehicle-option');
         let firstAvailable = null;
+        let hiddenCount = 0;
 
         vehicleOptions.forEach(option => {
             const input = option.querySelector('input[name="vehicleClass"]');
@@ -491,45 +553,50 @@
                 // Hide vehicles that can't accommodate passenger count
                 option.style.display = 'none';
                 option.classList.add('capacity-hidden');
+                // Also disable the input to prevent selection
+                input.disabled = true;
                 if (input.checked) {
                     input.checked = false;
                 }
+                hiddenCount++;
+                console.log('[Booking] Hiding vehicle:', vehicleType, '(capacity:', capacity, ')');
             } else {
                 // Show available vehicles
                 option.style.display = '';
                 option.classList.remove('capacity-hidden');
+                input.disabled = false;
                 if (!firstAvailable) {
                     firstAvailable = input;
                 }
             }
         });
 
+        console.log('[Booking] Hidden', hiddenCount, 'vehicles, first available:', firstAvailable?.value);
+
         // Select first available vehicle if current selection is hidden
         const currentSelected = document.querySelector('input[name="vehicleClass"]:checked');
-        if (!currentSelected || currentSelected.closest('.vehicle-option').classList.contains('capacity-hidden')) {
+        if (!currentSelected || currentSelected.disabled) {
             if (firstAvailable) {
                 firstAvailable.checked = true;
                 bookingData.vehicleClass = firstAvailable.value;
+                console.log('[Booking] Auto-selected vehicle:', firstAvailable.value);
                 updatePricing();
             }
         }
 
-        // Show warning if only SUV available
-        const suvWarning = document.getElementById('suvOnlyWarning');
-        if (passengers > 3) {
+        // Show warning if only SUV available (passengers > 3)
+        const vehicleSection = document.querySelector('.vehicle-options');
+        let suvWarning = document.getElementById('suvOnlyWarning');
+
+        if (passengers > 3 && vehicleSection) {
             if (!suvWarning) {
-                const warning = document.createElement('div');
-                warning.id = 'suvOnlyWarning';
-                warning.className = 'capacity-warning';
-                warning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + '+ passengers, only SUV/Minivan is available';
-                const vehicleSection = document.querySelector('.vehicle-options');
-                if (vehicleSection) {
-                    vehicleSection.parentNode.insertBefore(warning, vehicleSection);
-                }
-            } else {
-                suvWarning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + '+ passengers, only SUV/Minivan is available';
-                suvWarning.style.display = 'block';
+                suvWarning = document.createElement('div');
+                suvWarning.id = 'suvOnlyWarning';
+                suvWarning.className = 'capacity-warning';
+                vehicleSection.parentNode.insertBefore(suvWarning, vehicleSection);
             }
+            suvWarning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + ' passengers, only SUV/Minivan is available';
+            suvWarning.style.display = 'block';
         } else if (suvWarning) {
             suvWarning.style.display = 'none';
         }
