@@ -160,30 +160,13 @@
                                 <input type="time" required>
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label><i class="fas fa-users"></i> Passengers</label>
-                                <select id="homePassengers">
-                                    <option value="1">1 Passenger</option>
-                                    <option value="2" selected>2 Passengers</option>
-                                    <option value="3">3 Passengers</option>
-                                    <option value="4">4 Passengers</option>
-                                    <option value="5">5 Passengers</option>
-                                    <option value="6">6 Passengers</option>
-                                    <option value="7">7 Passengers</option>
-                                    <option value="8">8 Passengers</option>
-                                    <option value="9">9 Passengers</option>
-                                    <option value="10">10 Passengers</option>
-                                    <option value="11">11 Passengers</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-suitcase"></i> Luggage</label>
-                                <select id="homeLuggage">
-                                    <option value="1">1 Bag</option>
-                                    <option value="2" selected>2 Bags</option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-users"></i> Passengers & Luggage</label>
+                            <select id="homePassengers">
+                                <option value="2" data-luggage="2">1-2 Passengers, 1-2 Bags</option>
+                                <option value="5" data-luggage="5">3-5 Passengers, 3-5 Bags</option>
+                                <option value="11" data-luggage="11">6-11 Passengers, 6-11 Bags</option>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary btn-block">
                             <span>See Prices</span>
