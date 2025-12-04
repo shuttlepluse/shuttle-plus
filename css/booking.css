@@ -802,3 +802,188 @@
         font-size: 1.5rem;
     }
 }
+
+/* ========================================
+   NEW: Enhanced Booking Flow Styles
+   ======================================== */
+
+/* Compact Transfer Options */
+.transfer-options.compact {
+    margin-bottom: 0;
+}
+
+.transfer-options.compact .option-card {
+    padding: 1.25rem;
+}
+
+.transfer-options.compact .option-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.transfer-options.compact .option-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.transfer-options.compact .option-card p {
+    font-size: 0.8rem;
+}
+
+/* Route Summary Banner */
+.route-summary-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: var(--radius-lg);
+    color: var(--white);
+    margin-bottom: 1.5rem;
+}
+
+.route-summary-banner .route-info,
+.route-summary-banner .route-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+}
+
+.route-summary-banner i {
+    opacity: 0.9;
+}
+
+/* Enhanced Vehicle Options */
+.vehicle-options.enhanced .vehicle-card {
+    border-width: 2px;
+    position: relative;
+    overflow: visible;
+}
+
+.vehicle-options.enhanced .vehicle-option.recommended .vehicle-card {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(89, 123, 135, 0.15);
+}
+
+.popular-badge {
+    position: absolute;
+    top: -10px;
+    left: 1rem;
+    padding: 0.25rem 0.75rem;
+    background: var(--primary);
+    color: var(--white);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.5px;
+}
+
+/* Enhanced Vehicle Pricing */
+.vehicle-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.125rem;
+}
+
+.price-amount {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    line-height: 1;
+}
+
+.price-label {
+    font-size: 0.7rem;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Price Guarantee Box */
+.price-guarantee {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+    color: #065f46;
+}
+
+.price-guarantee i {
+    font-size: 1.25rem;
+    color: #10b981;
+}
+
+/* Form Section Headers */
+.form-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    padding: 0.75rem 0;
+    margin-top: 0.5rem;
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.form-section-header i {
+    color: var(--primary);
+}
+
+/* Large Button Variant */
+.btn-large {
+    padding: 1rem 2rem !important;
+    font-size: 1.0625rem !important;
+}
+
+/* Extras Section Improvements */
+.extras-section .checkbox-option {
+    padding: 0.5rem 0;
+}
+
+.extras-section .checkbox-option + .checkbox-option {
+    border-top: 1px solid var(--gray-200);
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .route-summary-banner {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+
+    .price-amount {
+        font-size: 1.5rem;
+    }
+
+    .vehicle-options.enhanced .vehicle-card {
+        padding-top: 1.5rem;
+    }
+
+    .popular-badge {
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 480px) {
+    .transfer-options.compact {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}

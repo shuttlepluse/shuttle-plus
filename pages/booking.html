@@ -29,7 +29,7 @@
     <nav class="navbar scrolled" id="navbar">
         <div class="nav-container">
             <a href="../index.html" class="logo">
-                <span class="logo-text">Shuttle<span class="logo-accent">Plus</span></span>
+                <span class="logo-text"><span class="logo-accent">>></span>Shuttle<span class="logo-accent">Plus</span></span>
             </a>
             <div class="nav-buttons">
                 <a href="tickets.html" class="btn btn-outline">
@@ -41,44 +41,39 @@
 
     <!-- Booking Container -->
     <main class="booking-container">
-        <!-- Progress Steps -->
+        <!-- Progress Steps (4 steps for better UX) -->
         <div class="booking-progress">
             <div class="progress-step active" data-step="1">
                 <span class="step-number">1</span>
-                <span class="step-label">Transfer</span>
+                <span class="step-label">Route</span>
             </div>
             <div class="progress-line"></div>
             <div class="progress-step" data-step="2">
                 <span class="step-number">2</span>
-                <span class="step-label">Flight</span>
+                <span class="step-label">Vehicle</span>
             </div>
             <div class="progress-line"></div>
             <div class="progress-step" data-step="3">
                 <span class="step-number">3</span>
-                <span class="step-label">Vehicle</span>
+                <span class="step-label">Details</span>
             </div>
             <div class="progress-line"></div>
             <div class="progress-step" data-step="4">
                 <span class="step-number">4</span>
-                <span class="step-label">Details</span>
-            </div>
-            <div class="progress-line"></div>
-            <div class="progress-step" data-step="5">
-                <span class="step-number">5</span>
-                <span class="step-label">Payment</span>
+                <span class="step-label">Confirm</span>
             </div>
         </div>
 
         <!-- Booking Form -->
         <form id="bookingForm" class="booking-form">
-            <!-- Step 1: Transfer Type -->
+            <!-- Step 1: Route & Date (Combined for quick quote) -->
             <div class="booking-step active" data-step="1">
                 <div class="step-header">
-                    <h2>Select Transfer Type</h2>
-                    <p>Where are you going?</p>
+                    <h2>Where & When?</h2>
+                    <p>Tell us your route to see prices instantly</p>
                 </div>
 
-                <div class="transfer-options">
+                <div class="transfer-options compact">
                     <label class="transfer-option">
                         <input type="radio" name="transferType" value="arrival" checked>
                         <div class="option-card">
@@ -86,7 +81,7 @@
                                 <i class="fas fa-plane-arrival"></i>
                             </div>
                             <h3>Airport Pickup</h3>
-                            <p>From Bole International Airport to your destination</p>
+                            <p>From airport to your destination</p>
                         </div>
                     </label>
 
@@ -97,34 +92,267 @@
                                 <i class="fas fa-plane-departure"></i>
                             </div>
                             <h3>Airport Drop-off</h3>
-                            <p>From your location to Bole International Airport</p>
+                            <p>From your location to airport</p>
                         </div>
                     </label>
                 </div>
 
+                <div class="form-grid" style="margin-top: 1.5rem;">
+                    <div class="form-group full-width">
+                        <label for="destination">
+                            <i class="fas fa-map-marker-alt"></i> <span id="destinationLabel">Your Destination</span>
+                        </label>
+                        <select id="destination" name="destination" required>
+                            <option value="">Select location...</option>
+                            <optgroup label="Hotels Near Airport (Zone 1 - from $25)">
+                                <option value="Ethiopian Skylight Hotel">Ethiopian Skylight Hotel</option>
+                                <option value="Golden Tulip Hotel">Golden Tulip Hotel</option>
+                                <option value="Capital Hotel & Spa">Capital Hotel & Spa</option>
+                            </optgroup>
+                            <optgroup label="Bole Area (Zone 2 - from $30)">
+                                <option value="Bole District">Bole District</option>
+                                <option value="Bole Medhanialem">Bole Medhanialem</option>
+                                <option value="Bole Atlas">Bole Atlas</option>
+                            </optgroup>
+                            <optgroup label="City Center (Zone 3 - from $35)">
+                                <option value="Sheraton Addis">Sheraton Addis</option>
+                                <option value="Radisson Blu">Radisson Blu Hotel</option>
+                                <option value="Hyatt Regency">Hyatt Regency</option>
+                                <option value="Best Western Plus">Best Western Plus</option>
+                            </optgroup>
+                            <optgroup label="Business Districts (Zone 3 - from $35)">
+                                <option value="Kazanchis">Kazanchis Business</option>
+                                <option value="African Union HQ">African Union HQ</option>
+                                <option value="UN ECA">UN ECA</option>
+                            </optgroup>
+                            <optgroup label="Other Areas (Zone 4 - from $40)">
+                                <option value="Merkato">Merkato Market</option>
+                                <option value="Piazza">Piazza / City Center</option>
+                                <option value="Entoto">Entoto Hill Area</option>
+                                <option value="other">Other Address...</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width" id="customAddressGroup" style="display: none;">
+                        <label for="customAddress">
+                            <i class="fas fa-location-dot"></i> Enter Address
+                        </label>
+                        <input type="text" id="customAddress" name="customAddress"
+                               placeholder="Full address or landmark">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="flightDate">
+                            <i class="fas fa-calendar"></i> <span id="dateLabel">Date</span>
+                        </label>
+                        <input type="date" id="flightDate" name="flightDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="flightTime">
+                            <i class="fas fa-clock"></i> <span id="timeLabel">Time</span>
+                        </label>
+                        <input type="time" id="flightTimeInput" name="flightTime" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passengers">
+                            <i class="fas fa-users"></i> Passengers
+                        </label>
+                        <select id="passengers" name="passengers" required>
+                            <option value="1">1 Passenger</option>
+                            <option value="2" selected>2 Passengers</option>
+                            <option value="3">3 Passengers</option>
+                            <option value="4">4 Passengers</option>
+                            <option value="5">5 Passengers</option>
+                            <option value="6">6+ Passengers</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="luggage">
+                            <i class="fas fa-suitcase"></i> Luggage
+                        </label>
+                        <select id="luggage" name="luggage">
+                            <option value="1">1 Bag</option>
+                            <option value="2" selected>2 Bags</option>
+                            <option value="3">3 Bags</option>
+                            <option value="4">4+ Bags</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="step-actions">
-                    <button type="button" class="btn btn-primary btn-next" data-next="2">
+                    <button type="button" class="btn btn-primary btn-next btn-large" data-next="2">
+                        See Prices <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Vehicle Selection with Prominent Pricing -->
+            <div class="booking-step" data-step="2">
+                <div class="step-header">
+                    <h2>Choose Your Ride</h2>
+                    <p>Fixed prices, no hidden fees</p>
+                </div>
+
+                <!-- Route Summary Banner -->
+                <div class="route-summary-banner">
+                    <div class="route-info">
+                        <i class="fas fa-route"></i>
+                        <span id="routeSummaryText">Bole Airport → Your Destination</span>
+                    </div>
+                    <div class="route-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span id="dateSummaryText">Select date</span>
+                    </div>
+                </div>
+
+                <div class="vehicle-options enhanced">
+                    <label class="vehicle-option recommended">
+                        <input type="radio" name="vehicleClass" value="standard" checked>
+                        <div class="vehicle-card">
+                            <span class="popular-badge">Most Popular</span>
+                            <div class="vehicle-image">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <div class="vehicle-info">
+                                <h3>Standard Sedan</h3>
+                                <p>Toyota Corolla or similar</p>
+                                <div class="vehicle-features">
+                                    <span><i class="fas fa-user"></i> Up to 3</span>
+                                    <span><i class="fas fa-suitcase"></i> 3 bags</span>
+                                    <span><i class="fas fa-snowflake"></i> AC</span>
+                                </div>
+                            </div>
+                            <div class="vehicle-price">
+                                <span class="price-amount" id="price-standard">$30</span>
+                                <span class="price-label">fixed price</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="vehicle-option">
+                        <input type="radio" name="vehicleClass" value="executive">
+                        <div class="vehicle-card">
+                            <div class="vehicle-image">
+                                <i class="fas fa-car-side"></i>
+                            </div>
+                            <div class="vehicle-info">
+                                <h3>Executive Sedan</h3>
+                                <p>Toyota Camry, Mercedes E-Class</p>
+                                <div class="vehicle-features">
+                                    <span><i class="fas fa-user"></i> Up to 3</span>
+                                    <span><i class="fas fa-suitcase"></i> 3 bags</span>
+                                    <span><i class="fas fa-wifi"></i> WiFi</span>
+                                </div>
+                            </div>
+                            <div class="vehicle-price">
+                                <span class="price-amount" id="price-executive">$45</span>
+                                <span class="price-label">fixed price</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="vehicle-option">
+                        <input type="radio" name="vehicleClass" value="suv">
+                        <div class="vehicle-card">
+                            <div class="vehicle-image">
+                                <i class="fas fa-shuttle-van"></i>
+                            </div>
+                            <div class="vehicle-info">
+                                <h3>SUV / Minivan</h3>
+                                <p>Toyota Land Cruiser, Hiace</p>
+                                <div class="vehicle-features">
+                                    <span><i class="fas fa-user"></i> Up to 6</span>
+                                    <span><i class="fas fa-suitcase"></i> 6 bags</span>
+                                    <span><i class="fas fa-snowflake"></i> AC</span>
+                                </div>
+                            </div>
+                            <div class="vehicle-price">
+                                <span class="price-amount" id="price-suv">$63</span>
+                                <span class="price-label">fixed price</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="vehicle-option">
+                        <input type="radio" name="vehicleClass" value="luxury">
+                        <div class="vehicle-card premium">
+                            <span class="premium-badge">Premium</span>
+                            <div class="vehicle-image">
+                                <i class="fas fa-gem"></i>
+                            </div>
+                            <div class="vehicle-info">
+                                <h3>Luxury Class</h3>
+                                <p>Mercedes S-Class, BMW 7-Series</p>
+                                <div class="vehicle-features">
+                                    <span><i class="fas fa-user"></i> Up to 3</span>
+                                    <span><i class="fas fa-suitcase"></i> 3 bags</span>
+                                    <span><i class="fas fa-star"></i> VIP</span>
+                                </div>
+                            </div>
+                            <div class="vehicle-price">
+                                <span class="price-amount" id="price-luxury">$87</span>
+                                <span class="price-label">fixed price</span>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="extras-section">
+                    <h4>Extras</h4>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="childSeat" id="childSeat">
+                        <span class="checkbox-label">
+                            <i class="fas fa-baby"></i> Child Seat (+$5)
+                        </span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="meetGreet" id="meetGreet">
+                        <span class="checkbox-label">
+                            <i class="fas fa-sign"></i> Meet & Greet with Name Sign (+$5)
+                        </span>
+                    </label>
+                </div>
+
+                <div class="price-guarantee">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Price guarantee: No surge pricing, ever. What you see is what you pay.</span>
+                </div>
+
+                <div class="step-actions">
+                    <button type="button" class="btn btn-outline btn-prev" data-prev="1">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button type="button" class="btn btn-primary btn-next" data-next="3">
                         Continue <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Step 2: Flight Details -->
-            <div class="booking-step" data-step="2">
+            <!-- Step 3: Flight & Contact Details -->
+            <div class="booking-step" data-step="3">
                 <div class="step-header">
-                    <h2>Flight Information</h2>
-                    <p>Enter your flight details for automatic tracking</p>
+                    <h2>Your Details</h2>
+                    <p>Almost there! Just a few more details</p>
                 </div>
 
                 <div class="form-grid">
+                    <!-- Flight Section -->
+                    <div class="form-section-header full-width">
+                        <i class="fas fa-plane"></i> Flight Information
+                    </div>
+
                     <div class="form-group">
                         <label for="flightNumber">
                             <i class="fas fa-plane"></i> Flight Number
                         </label>
                         <input type="text" id="flightNumber" name="flightNumber"
-                               placeholder="e.g. ET 500, LH 590" required
+                               placeholder="e.g. ET 500, LH 590"
                                pattern="[A-Za-z]{2}\s?\d{1,4}">
-                        <span class="form-hint">We'll track your flight and adjust pickup time automatically</span>
+                        <span class="form-hint">Optional - for flight tracking</span>
                     </div>
 
                     <div class="form-group" id="flightInfoGroup" style="display: none;">
@@ -147,205 +375,11 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="flightDate">
-                            <i class="fas fa-calendar"></i> <span id="dateLabel">Arrival Date</span>
-                        </label>
-                        <input type="date" id="flightDate" name="flightDate" required>
+                    <!-- Contact Section -->
+                    <div class="form-section-header full-width">
+                        <i class="fas fa-user"></i> Contact Information
                     </div>
 
-                    <div class="form-group">
-                        <label for="flightTime">
-                            <i class="fas fa-clock"></i> <span id="timeLabel">Arrival Time</span>
-                        </label>
-                        <input type="time" id="flightTimeInput" name="flightTime" required>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="destination">
-                            <i class="fas fa-map-marker-alt"></i> <span id="destinationLabel">Drop-off Location</span>
-                        </label>
-                        <select id="destination" name="destination" required>
-                            <option value="">Select destination...</option>
-                            <optgroup label="Hotels Near Airport (Zone 1)">
-                                <option value="Ethiopian Skylight Hotel">Ethiopian Skylight Hotel</option>
-                                <option value="Golden Tulip Hotel">Golden Tulip Hotel</option>
-                                <option value="Capital Hotel & Spa">Capital Hotel & Spa</option>
-                            </optgroup>
-                            <optgroup label="Hotels City Center (Zone 3)">
-                                <option value="Sheraton Addis">Sheraton Addis</option>
-                                <option value="Radisson Blu">Radisson Blu Hotel</option>
-                                <option value="Hyatt Regency">Hyatt Regency</option>
-                                <option value="Best Western Plus">Best Western Plus</option>
-                            </optgroup>
-                            <optgroup label="Business Districts">
-                                <option value="Bole District">Bole District</option>
-                                <option value="Kazanchis">Kazanchis Business</option>
-                                <option value="African Union HQ">African Union HQ</option>
-                                <option value="UN ECA">UN ECA</option>
-                            </optgroup>
-                            <optgroup label="Other Areas">
-                                <option value="Merkato">Merkato Market</option>
-                                <option value="Piazza">Piazza / City Center</option>
-                                <option value="Entoto">Entoto Hill Area</option>
-                                <option value="other">Other Address...</option>
-                            </optgroup>
-                        </select>
-                    </div>
-
-                    <div class="form-group full-width" id="customAddressGroup" style="display: none;">
-                        <label for="customAddress">
-                            <i class="fas fa-location-dot"></i> Enter Address
-                        </label>
-                        <input type="text" id="customAddress" name="customAddress"
-                               placeholder="Full address or landmark">
-                    </div>
-                </div>
-
-                <div class="step-actions">
-                    <button type="button" class="btn btn-outline btn-prev" data-prev="1">
-                        <i class="fas fa-arrow-left"></i> Back
-                    </button>
-                    <button type="button" class="btn btn-primary btn-next" data-next="3">
-                        Continue <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Step 3: Vehicle Selection -->
-            <div class="booking-step" data-step="3">
-                <div class="step-header">
-                    <h2>Choose Your Vehicle</h2>
-                    <p>Select the vehicle class that suits your needs</p>
-                </div>
-
-                <div class="form-group">
-                    <label for="passengers">
-                        <i class="fas fa-users"></i> Passengers & Luggage
-                    </label>
-                    <select id="passengers" name="passengers" required>
-                        <option value="1-2">1-2 Passengers, 2 Bags</option>
-                        <option value="3-4">3-4 Passengers, 4 Bags</option>
-                        <option value="5-6">5-6 Passengers, 6 Bags</option>
-                        <option value="7+">7+ Passengers (Group)</option>
-                    </select>
-                </div>
-
-                <div class="vehicle-options">
-                    <label class="vehicle-option">
-                        <input type="radio" name="vehicleClass" value="standard" checked>
-                        <div class="vehicle-card">
-                            <div class="vehicle-image">
-                                <i class="fas fa-car"></i>
-                            </div>
-                            <div class="vehicle-info">
-                                <h3>Standard Sedan</h3>
-                                <p>Toyota Corolla or similar</p>
-                                <div class="vehicle-features">
-                                    <span><i class="fas fa-user"></i> 3</span>
-                                    <span><i class="fas fa-suitcase"></i> 3</span>
-                                    <span><i class="fas fa-snowflake"></i> AC</span>
-                                </div>
-                            </div>
-                            <div class="vehicle-price">
-                                <span class="price" id="price-standard">$30</span>
-                            </div>
-                        </div>
-                    </label>
-
-                    <label class="vehicle-option">
-                        <input type="radio" name="vehicleClass" value="executive">
-                        <div class="vehicle-card">
-                            <div class="vehicle-image">
-                                <i class="fas fa-car-side"></i>
-                            </div>
-                            <div class="vehicle-info">
-                                <h3>Executive Sedan</h3>
-                                <p>Toyota Camry, Mercedes E-Class</p>
-                                <div class="vehicle-features">
-                                    <span><i class="fas fa-user"></i> 3</span>
-                                    <span><i class="fas fa-suitcase"></i> 3</span>
-                                    <span><i class="fas fa-wifi"></i> WiFi</span>
-                                </div>
-                            </div>
-                            <div class="vehicle-price">
-                                <span class="price" id="price-executive">$45</span>
-                            </div>
-                        </div>
-                    </label>
-
-                    <label class="vehicle-option">
-                        <input type="radio" name="vehicleClass" value="suv">
-                        <div class="vehicle-card">
-                            <div class="vehicle-image">
-                                <i class="fas fa-shuttle-van"></i>
-                            </div>
-                            <div class="vehicle-info">
-                                <h3>SUV / Minivan</h3>
-                                <p>Toyota Land Cruiser, Hiace</p>
-                                <div class="vehicle-features">
-                                    <span><i class="fas fa-user"></i> 6</span>
-                                    <span><i class="fas fa-suitcase"></i> 6</span>
-                                    <span><i class="fas fa-snowflake"></i> AC</span>
-                                </div>
-                            </div>
-                            <div class="vehicle-price">
-                                <span class="price" id="price-suv">$63</span>
-                            </div>
-                        </div>
-                    </label>
-
-                    <label class="vehicle-option">
-                        <input type="radio" name="vehicleClass" value="luxury">
-                        <div class="vehicle-card premium">
-                            <span class="premium-badge">Premium</span>
-                            <div class="vehicle-image">
-                                <i class="fas fa-gem"></i>
-                            </div>
-                            <div class="vehicle-info">
-                                <h3>Luxury Class</h3>
-                                <p>Mercedes S-Class, BMW 7-Series</p>
-                                <div class="vehicle-features">
-                                    <span><i class="fas fa-user"></i> 3</span>
-                                    <span><i class="fas fa-suitcase"></i> 3</span>
-                                    <span><i class="fas fa-star"></i> VIP</span>
-                                </div>
-                            </div>
-                            <div class="vehicle-price">
-                                <span class="price" id="price-luxury">$87</span>
-                            </div>
-                        </div>
-                    </label>
-                </div>
-
-                <div class="extras-section">
-                    <h4>Additional Options</h4>
-                    <label class="checkbox-option">
-                        <input type="checkbox" name="childSeat" id="childSeat">
-                        <span class="checkbox-label">
-                            <i class="fas fa-baby"></i> Child Seat (+$5)
-                        </span>
-                    </label>
-                </div>
-
-                <div class="step-actions">
-                    <button type="button" class="btn btn-outline btn-prev" data-prev="2">
-                        <i class="fas fa-arrow-left"></i> Back
-                    </button>
-                    <button type="button" class="btn btn-primary btn-next" data-next="4">
-                        Continue <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Step 4: Contact Details -->
-            <div class="booking-step" data-step="4">
-                <div class="step-header">
-                    <h2>Your Details</h2>
-                    <p>We'll send your booking confirmation here</p>
-                </div>
-
-                <div class="form-grid">
                     <div class="form-group">
                         <label for="contactName">
                             <i class="fas fa-user"></i> Full Name
@@ -359,9 +393,8 @@
                             <i class="fas fa-phone"></i> Phone Number
                         </label>
                         <input type="tel" id="contactPhone" name="contactPhone"
-                               placeholder="+251 9X XXX XXXX" required
-                               pattern="\+251\d{9}">
-                        <span class="form-hint">Ethiopian format: +251...</span>
+                               placeholder="+251 9XX XXX XXX" required>
+                        <span class="form-hint">We'll send your confirmation via SMS</span>
                     </div>
 
                     <div class="form-group full-width">
@@ -376,23 +409,23 @@
                         <label for="specialRequests">
                             <i class="fas fa-comment"></i> Special Requests (Optional)
                         </label>
-                        <textarea id="specialRequests" name="specialRequests" rows="3"
+                        <textarea id="specialRequests" name="specialRequests" rows="2"
                                   placeholder="Any special requirements or notes for the driver..."></textarea>
                     </div>
                 </div>
 
                 <div class="step-actions">
-                    <button type="button" class="btn btn-outline btn-prev" data-prev="3">
+                    <button type="button" class="btn btn-outline btn-prev" data-prev="2">
                         <i class="fas fa-arrow-left"></i> Back
                     </button>
-                    <button type="button" class="btn btn-primary btn-next" data-next="5">
-                        Review Booking <i class="fas fa-arrow-right"></i>
+                    <button type="button" class="btn btn-primary btn-next" data-next="4">
+                        Review & Confirm <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Step 5: Summary & Payment -->
-            <div class="booking-step" data-step="5">
+            <!-- Step 4: Review & Confirm -->
+            <div class="booking-step" data-step="4">
                 <div class="step-header">
                     <h2>Review & Pay</h2>
                     <p>Please confirm your booking details</p>
@@ -453,6 +486,10 @@
                             <span>Child Seat</span>
                             <span>+$5</span>
                         </div>
+                        <div class="summary-row" id="summaryMeetGreetRow" style="display: none;">
+                            <span>Meet & Greet</span>
+                            <span>+$5</span>
+                        </div>
                         <div class="summary-row total">
                             <span>Total</span>
                             <span id="summaryTotal">$30 <small>(1,560 ETB)</small></span>
@@ -500,7 +537,7 @@
                 </div>
 
                 <div class="step-actions">
-                    <button type="button" class="btn btn-outline btn-prev" data-prev="4">
+                    <button type="button" class="btn btn-outline btn-prev" data-prev="3">
                         <i class="fas fa-arrow-left"></i> Back
                     </button>
                     <button type="submit" class="btn btn-primary btn-submit">

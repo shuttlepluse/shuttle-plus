@@ -13,13 +13,16 @@
         pickup: {},
         dropoff: {},
         vehicleClass: 'standard',
-        passengers: '1-2',
+        passengers: 2,
+        luggage: 2,
         childSeat: false,
+        meetGreet: false,
         contact: {},
         pricing: null
     };
 
     let exchangeRate = 158; // Default, will be fetched
+    const TOTAL_STEPS = 4; // Updated from 5 to 4
 
     // Elements
     const form = document.getElementById('bookingForm');
@@ -139,7 +142,15 @@
         const passengersSelect = document.getElementById('passengers');
         if (passengersSelect) {
             passengersSelect.addEventListener('change', (e) => {
-                bookingData.passengers = e.target.value;
+                bookingData.passengers = parseInt(e.target.value) || 2;
+            });
+        }
+
+        // Luggage
+        const luggageSelect = document.getElementById('luggage');
+        if (luggageSelect) {
+            luggageSelect.addEventListener('change', (e) => {
+                bookingData.luggage = parseInt(e.target.value) || 2;
             });
         }
 
@@ -148,6 +159,15 @@
         if (childSeatCheckbox) {
             childSeatCheckbox.addEventListener('change', (e) => {
                 bookingData.childSeat = e.target.checked;
+                updatePricing();
+            });
+        }
+
+        // Meet & Greet
+        const meetGreetCheckbox = document.getElementById('meetGreet');
+        if (meetGreetCheckbox) {
+            meetGreetCheckbox.addEventListener('change', (e) => {
+                bookingData.meetGreet = e.target.checked;
                 updatePricing();
             });
         }
@@ -194,13 +214,42 @@
 
         currentStep = step;
 
-        // Update summary on step 5
-        if (step === 5) {
+        // Update route summary banner on step 2
+        if (step === 2) {
+            updateRouteSummary();
+        }
+
+        // Update summary on step 4 (final step)
+        if (step === 4) {
             updateSummary();
         }
 
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Update route summary banner in step 2
+    function updateRouteSummary() {
+        const destination = document.getElementById('destination')?.value;
+        const customAddress = document.getElementById('customAddress')?.value;
+        const date = document.getElementById('flightDate')?.value;
+        const time = document.getElementById('flightTimeInput')?.value;
+
+        const routeText = document.getElementById('routeSummaryText');
+        const dateText = document.getElementById('dateSummaryText');
+
+        if (routeText) {
+            const location = destination === 'other' ? customAddress : destination;
+            if (bookingData.type === 'arrival') {
+                routeText.textContent = `Bole Airport → ${location || 'Destination'}`;
+            } else {
+                routeText.textContent = `${location || 'Pickup'} → Bole Airport`;
+            }
+        }
+
+        if (dateText && date && time) {
+            dateText.textContent = `${formatDate(date)} at ${time}`;
+        }
     }
 
     // ========================================
@@ -218,20 +267,45 @@
             }
         });
 
-        // Custom validations
-        if (step === 2) {
-            // Validate phone format
-            const flightNumber = document.getElementById('flightNumber').value.trim();
-            if (!/^[A-Za-z]{2}\s?\d{1,4}$/.test(flightNumber)) {
+        // Custom validations per step
+        if (step === 1) {
+            // Validate destination is selected
+            const destination = document.getElementById('destination')?.value;
+            if (!destination) {
+                showError('Please select a destination');
+                isValid = false;
+            }
+
+            // If "other" selected, validate custom address
+            if (destination === 'other') {
+                const customAddress = document.getElementById('customAddress')?.value.trim();
+                if (!customAddress) {
+                    showError('Please enter your address');
+                    isValid = false;
+                }
+            }
+        }
+
+        if (step === 3) {
+            // Validate phone number (more flexible format)
+            const phone = document.getElementById('contactPhone')?.value.trim();
+            if (phone && !/^(\+251|0)?[97]\d{8}$/.test(phone.replace(/\s/g, ''))) {
+                showError('Please enter a valid phone number');
+                isValid = false;
+            }
+
+            // Validate flight number format if provided
+            const flightNumber = document.getElementById('flightNumber')?.value.trim();
+            if (flightNumber && !/^[A-Za-z]{2}\s?\d{1,4}$/.test(flightNumber)) {
                 showError('Please enter a valid flight number (e.g., ET 500)');
                 isValid = false;
             }
         }
 
         if (step === 4) {
-            const phone = document.getElementById('contactPhone').value.trim();
-            if (!/^\+251\d{9}$/.test(phone)) {
-                showError('Please enter a valid Ethiopian phone number (+251...)');
+            // Validate terms accepted
+            if (!document.getElementById('termsAccepted')?.checked) {
+                showError('Please accept the terms and conditions');
                 isValid = false;
             }
         }
@@ -384,11 +458,13 @@
         };
 
         const selected = prices[bookingData.vehicleClass];
+        const extras = (bookingData.childSeat ? 5 : 0) + (bookingData.meetGreet ? 5 : 0);
         bookingData.pricing = {
             baseFare: selected.usd,
             baseFareETB: Math.round(selected.usd * exchangeRate),
-            totalUSD: selected.usd + (bookingData.childSeat ? 5 : 0),
-            totalETB: Math.round((selected.usd + (bookingData.childSeat ? 5 : 0)) * exchangeRate),
+            extras: extras,
+            totalUSD: selected.usd + extras,
+            totalETB: Math.round((selected.usd + extras) * exchangeRate),
             exchangeRate
         };
     }
@@ -397,12 +473,17 @@
     // Summary
     // ========================================
     function updateSummary() {
+        // Ensure pricing is calculated
+        if (!bookingData.pricing) {
+            updateFallbackPricing();
+        }
+
         // Transfer details
         document.getElementById('summaryType').textContent =
             bookingData.type === 'arrival' ? 'Airport Pickup' : 'Airport Drop-off';
 
-        document.getElementById('summaryFlight').textContent =
-            document.getElementById('flightNumber')?.value || '-';
+        const flightNumber = document.getElementById('flightNumber')?.value?.trim();
+        document.getElementById('summaryFlight').textContent = flightNumber || 'Not provided';
 
         const date = document.getElementById('flightDate')?.value;
         const time = document.getElementById('flightTimeInput')?.value;
@@ -410,10 +491,12 @@
             date && time ? `${formatDate(date)} at ${time}` : '-';
 
         const destination = document.getElementById('destination')?.value;
+        const customAddress = document.getElementById('customAddress')?.value;
+        const location = destination === 'other' ? customAddress : destination;
         document.getElementById('summaryRoute').textContent =
             bookingData.type === 'arrival'
-                ? `Airport → ${destination || 'Destination'}`
-                : `${destination || 'Pickup'} → Airport`;
+                ? `Airport → ${location || 'Destination'}`
+                : `${location || 'Pickup'} → Airport`;
 
         // Vehicle
         const vehicleNames = {
@@ -426,7 +509,7 @@
             vehicleNames[bookingData.vehicleClass] || 'Standard';
 
         document.getElementById('summaryPassengers').textContent =
-            document.getElementById('passengers')?.value || '1-2 Passengers';
+            `${bookingData.passengers} passenger(s), ${bookingData.luggage} bag(s)`;
 
         // Contact
         document.getElementById('summaryName').textContent =
@@ -440,10 +523,14 @@
                 `$${bookingData.pricing.baseFare}`;
 
             const childSeatRow = document.getElementById('summaryChildSeatRow');
-            if (bookingData.childSeat) {
-                childSeatRow.style.display = 'flex';
-            } else {
-                childSeatRow.style.display = 'none';
+            const meetGreetRow = document.getElementById('summaryMeetGreetRow');
+
+            if (childSeatRow) {
+                childSeatRow.style.display = bookingData.childSeat ? 'flex' : 'none';
+            }
+
+            if (meetGreetRow) {
+                meetGreetRow.style.display = bookingData.meetGreet ? 'flex' : 'none';
             }
 
             document.getElementById('summaryTotal').innerHTML =
@@ -457,13 +544,7 @@
     async function handleSubmit(e) {
         e.preventDefault();
 
-        if (!validateStep(5)) return;
-
-        // Check terms
-        if (!document.getElementById('termsAccepted')?.checked) {
-            showError('Please accept the terms and conditions');
-            return;
-        }
+        if (!validateStep(4)) return;
 
         showLoading();
 
@@ -521,11 +602,12 @@
 
         const destination = document.getElementById('destination').value;
         const customAddress = document.getElementById('customAddress')?.value;
+        const flightNumber = document.getElementById('flightNumber')?.value?.trim() || '';
 
         return {
             type: bookingData.type,
             flight: {
-                number: document.getElementById('flightNumber').value.toUpperCase().replace(/\s/g, ''),
+                number: flightNumber ? flightNumber.toUpperCase().replace(/\s/g, '') : null,
                 scheduledTime: flightDateTime.toISOString()
             },
             pickup: {
@@ -536,8 +618,10 @@
                 location: bookingData.type === 'arrival' ? (destination === 'other' ? customAddress : destination) : 'Bole International Airport'
             },
             vehicleClass: bookingData.vehicleClass,
-            passengers: parseInt(bookingData.passengers.split('-')[0]) || 1,
+            passengers: bookingData.passengers,
+            luggage: bookingData.luggage,
             childSeat: bookingData.childSeat,
+            meetGreet: bookingData.meetGreet,
             contact: {
                 name: document.getElementById('contactName').value.trim(),
                 phone: document.getElementById('contactPhone').value.trim(),
@@ -596,12 +680,14 @@
             type: bookingData.type,
             vehicleClass: bookingData.vehicleClass,
             childSeat: bookingData.childSeat,
+            meetGreet: bookingData.meetGreet,
             flightNumber: document.getElementById('flightNumber')?.value,
             flightDate: document.getElementById('flightDate')?.value,
             flightTime: document.getElementById('flightTimeInput')?.value,
             destination: document.getElementById('destination')?.value,
             customAddress: document.getElementById('customAddress')?.value,
             passengers: document.getElementById('passengers')?.value,
+            luggage: document.getElementById('luggage')?.value,
             contactName: document.getElementById('contactName')?.value,
             contactPhone: document.getElementById('contactPhone')?.value,
             contactEmail: document.getElementById('contactEmail')?.value,
@@ -637,7 +723,10 @@
                 }
             }
 
-            if (data.flightNumber) document.getElementById('flightNumber').value = data.flightNumber;
+            if (data.flightNumber) {
+                const flightInput = document.getElementById('flightNumber');
+                if (flightInput) flightInput.value = data.flightNumber;
+            }
             if (data.flightDate) document.getElementById('flightDate').value = data.flightDate;
             if (data.flightTime) document.getElementById('flightTimeInput').value = data.flightTime;
             if (data.destination) {
@@ -647,7 +736,17 @@
                     document.getElementById('customAddress').value = data.customAddress;
                 }
             }
-            if (data.passengers) document.getElementById('passengers').value = data.passengers;
+            if (data.passengers) {
+                document.getElementById('passengers').value = data.passengers;
+                bookingData.passengers = parseInt(data.passengers) || 2;
+            }
+            if (data.luggage) {
+                const luggageInput = document.getElementById('luggage');
+                if (luggageInput) {
+                    luggageInput.value = data.luggage;
+                    bookingData.luggage = parseInt(data.luggage) || 2;
+                }
+            }
 
             if (data.vehicleClass) {
                 const vehicleInput = document.querySelector(`input[name="vehicleClass"][value="${data.vehicleClass}"]`);
@@ -658,8 +757,19 @@
             }
 
             if (data.childSeat) {
-                document.getElementById('childSeat').checked = true;
-                bookingData.childSeat = true;
+                const childSeatInput = document.getElementById('childSeat');
+                if (childSeatInput) {
+                    childSeatInput.checked = true;
+                    bookingData.childSeat = true;
+                }
+            }
+
+            if (data.meetGreet) {
+                const meetGreetInput = document.getElementById('meetGreet');
+                if (meetGreetInput) {
+                    meetGreetInput.checked = true;
+                    bookingData.meetGreet = true;
+                }
             }
 
             if (data.contactName) document.getElementById('contactName').value = data.contactName;
