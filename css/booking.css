@@ -129,10 +129,11 @@
 .booking-step {
     display: none;
     background: var(--white);
-    border-radius: var(--radius-2xl);
+    border-radius: 24px;
     padding: 2.5rem;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     animation: fadeIn 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 .booking-step.active {
@@ -153,21 +154,21 @@
 .step-header {
     text-align: center;
     margin-bottom: 2rem;
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-    color: white;
-    padding: 1.5rem;
-    border-radius: var(--radius-lg);
+    padding: 0;
+    background: none;
 }
 
 .step-header h2 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: white;
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: var(--dark);
     margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
 }
 
 .step-header p {
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--gray-500);
+    font-size: 1rem;
 }
 
 /* Transfer Options */
@@ -383,7 +384,7 @@
     color: var(--primary);
 }
 
-/* Vehicle Options */
+/* Vehicle Options - Modern Design */
 .vehicle-options {
     display: grid;
     gap: 1rem;
@@ -396,104 +397,135 @@
 
 .vehicle-card {
     display: grid;
-    grid-template-columns: 80px 1fr auto;
+    grid-template-columns: 72px 1fr auto;
     align-items: center;
     gap: 1.25rem;
-    padding: 1.25rem;
-    border: 2px solid var(--gray-200);
-    border-radius: var(--radius-xl);
+    padding: 1.25rem 1.5rem;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
     cursor: pointer;
-    transition: var(--transition);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .vehicle-card:hover {
     border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(89, 123, 135, 0.12);
+    transform: translateY(-2px);
 }
 
 .vehicle-option input:checked + .vehicle-card {
     border-color: var(--primary);
-    background: linear-gradient(135deg, rgba(89, 123, 135, 0.12) 0%, rgba(24, 50, 81, 0.08) 100%);
-    box-shadow: 0 4px 15px rgba(89, 123, 135, 0.25);
-    transform: scale(1.02);
+    border-width: 2px;
+    background: linear-gradient(135deg, rgba(89, 123, 135, 0.06) 0%, rgba(255, 255, 255, 1) 100%);
+    box-shadow: 0 8px 24px rgba(89, 123, 135, 0.18);
+    transform: translateY(-2px);
 }
 
 /* Checkmark for selected vehicle */
 .vehicle-option input:checked + .vehicle-card::after {
-    content: '✓';
+    content: '';
     position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 26px;
-    height: 26px;
-    background: var(--primary);
-    color: white;
+    top: 14px;
+    right: 14px;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    font-weight: bold;
-    box-shadow: 0 2px 6px rgba(89, 123, 135, 0.4);
+    box-shadow: 0 2px 8px rgba(89, 123, 135, 0.4);
+}
+
+.vehicle-option input:checked + .vehicle-card::before {
+    content: '✓';
+    position: absolute;
+    top: 17px;
+    right: 19px;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    z-index: 1;
 }
 
 .vehicle-card.premium {
-    border-color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.4);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.03) 0%, var(--white) 100%);
 }
 
 .vehicle-option input:checked + .vehicle-card.premium {
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(89, 123, 135, 0.05));
+    border-color: #d4af37;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(255, 255, 255, 1) 100%);
+    box-shadow: 0 8px 24px rgba(212, 175, 55, 0.2);
 }
 
 .premium-badge {
     position: absolute;
-    top: -8px;
+    top: -10px;
     right: 1rem;
-    padding: 0.25rem 0.75rem;
-    background: linear-gradient(135deg, #d4af37, #b8960c);
+    padding: 0.3rem 0.85rem;
+    background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
     color: var(--white);
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size: 0.65rem;
+    font-weight: 700;
     text-transform: uppercase;
-    border-radius: var(--radius-full);
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
 }
 
 .vehicle-image {
-    width: 80px;
-    height: 60px;
+    width: 72px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--gray-100);
-    border-radius: var(--radius-lg);
-    font-size: 2rem;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    border-radius: 12px;
+    font-size: 1.75rem;
     color: var(--primary);
+    transition: all 0.25s ease;
+}
+
+.vehicle-option input:checked + .vehicle-card .vehicle-image {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(89, 123, 135, 0.3);
 }
 
 .vehicle-info h3 {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.0625rem;
+    font-weight: 700;
     color: var(--dark);
     margin-bottom: 0.25rem;
+    letter-spacing: -0.01em;
 }
 
 .vehicle-info p {
     font-size: 0.8125rem;
     color: var(--gray-500);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.625rem;
 }
 
 .vehicle-features {
     display: flex;
-    gap: 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .vehicle-features span {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.3rem;
     font-size: 0.75rem;
+    font-weight: 500;
     color: var(--gray-600);
+    background: var(--gray-50);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
 }
 
 .vehicle-features i {
@@ -503,6 +535,7 @@
 
 .vehicle-price {
     text-align: right;
+    min-width: 80px;
 }
 
 .vehicle-price .price {
@@ -511,49 +544,82 @@
     color: var(--primary-dark);
 }
 
-/* Extras Section */
+/* Extras Section - Modern Design */
 .extras-section {
     padding: 1.5rem;
-    background: var(--gray-50);
-    border-radius: var(--radius-lg);
-    margin-bottom: 2rem;
+    background: linear-gradient(135deg, var(--gray-50) 0%, #f8fafc 100%);
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--gray-100);
 }
 
 .extras-section h4 {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--gray-700);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--dark);
     margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.extras-section h4::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border-radius: 2px;
 }
 
 .checkbox-option {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.875rem;
     cursor: pointer;
+    padding: 0.875rem 1rem;
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--gray-200);
+    transition: all 0.2s ease;
+}
+
+.checkbox-option:hover {
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(89, 123, 135, 0.08);
+}
+
+.checkbox-option:has(input:checked) {
+    border-color: var(--primary);
+    background: rgba(89, 123, 135, 0.04);
 }
 
 .checkbox-option input {
     width: 20px;
     height: 20px;
     accent-color: var(--primary);
+    cursor: pointer;
 }
 
 .checkbox-label {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.625rem;
     font-size: 0.9375rem;
+    font-weight: 500;
     color: var(--gray-700);
 }
 
 .checkbox-label i {
     color: var(--primary);
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
 }
 
 .checkbox-label a {
     color: var(--primary);
     text-decoration: underline;
+    font-weight: 500;
 }
 
 /* Booking Summary */
@@ -691,12 +757,38 @@
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--gray-200);
+    padding-top: 2rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--gray-100);
 }
 
 .step-actions .btn {
     min-width: 150px;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 0.875rem 1.5rem;
+    transition: all 0.25s ease;
+}
+
+.step-actions .btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    box-shadow: 0 4px 14px rgba(89, 123, 135, 0.35);
+}
+
+.step-actions .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(89, 123, 135, 0.45);
+}
+
+.step-actions .btn-outline {
+    border: 2px solid var(--gray-200);
+    color: var(--gray-600);
+}
+
+.step-actions .btn-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(89, 123, 135, 0.04);
 }
 
 .step-actions .btn-next,
@@ -842,21 +934,35 @@
     }
 
     .vehicle-card {
-        grid-template-columns: 60px 1fr;
+        grid-template-columns: 56px 1fr;
         gap: 1rem;
+        padding: 1rem 1.25rem;
     }
 
     .vehicle-image {
-        width: 60px;
-        height: 50px;
+        width: 56px;
+        height: 48px;
         font-size: 1.5rem;
+        border-radius: 10px;
     }
 
     .vehicle-price {
         grid-column: span 2;
         text-align: left;
-        padding-top: 0.75rem;
-        border-top: 1px solid var(--gray-200);
+        padding-top: 0.875rem;
+        margin-top: 0.5rem;
+        border-top: 1px solid var(--gray-100);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .vehicle-price .price-amount {
+        font-size: 1.5rem;
+    }
+
+    .vehicle-price .price-label {
+        font-size: 0.75rem;
     }
 
     .payment-options {
@@ -975,15 +1081,15 @@
     position: absolute;
     top: -10px;
     left: 1rem;
-    padding: 0.3rem 0.85rem;
-    background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
+    padding: 0.35rem 0.9rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: var(--white);
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size: 0.65rem;
+    font-weight: 700;
     text-transform: uppercase;
-    border-radius: var(--radius-full);
+    border-radius: 20px;
     letter-spacing: 0.5px;
-    box-shadow: 0 2px 8px rgba(0, 180, 216, 0.4);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
 }
 
 /* Enhanced Vehicle Pricing */
@@ -1012,19 +1118,21 @@
 .price-guarantee {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.875rem;
     padding: 1rem 1.25rem;
-    background: #ecfdf5;
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
     border: 1px solid #a7f3d0;
-    border-radius: var(--radius-lg);
+    border-radius: 12px;
     margin-bottom: 2rem;
     font-size: 0.875rem;
+    font-weight: 500;
     color: #065f46;
 }
 
 .price-guarantee i {
-    font-size: 1.25rem;
+    font-size: 1.375rem;
     color: #10b981;
+    flex-shrink: 0;
 }
 
 /* Form Section Headers */
@@ -1051,14 +1159,8 @@
 }
 
 /* Extras Section Improvements */
-.extras-section .checkbox-option {
-    padding: 0.5rem 0;
-}
-
 .extras-section .checkbox-option + .checkbox-option {
-    border-top: 1px solid var(--gray-200);
-    padding-top: 0.75rem;
-    margin-top: 0.25rem;
+    margin-top: 0.75rem;
 }
 
 /* Responsive Adjustments */
@@ -1093,21 +1195,23 @@
 
 /* Capacity Warning */
 .capacity-warning {
-    background: #fef3c7;
-    border: 1px solid #f59e0b;
-    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #fbbf24;
+    border-radius: 12px;
     padding: 1rem 1.25rem;
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.875rem;
     color: #92400e;
     font-size: 0.9375rem;
+    font-weight: 500;
 }
 
 .capacity-warning i {
     font-size: 1.25rem;
     color: #f59e0b;
+    flex-shrink: 0;
 }
 
 /* Hidden vehicles due to capacity */

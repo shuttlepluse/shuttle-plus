@@ -704,10 +704,10 @@
             }
 
             if (passengers >= 6) {
-                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + ' passengers, only Van is available';
+                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For 6 and above passengers, only Van is available';
                 capacityWarning.style.display = 'block';
             } else if (passengers >= 3) {
-                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For ' + passengers + ' passengers, SUV is recommended';
+                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For 3-5 passengers, SUV is recommended';
                 capacityWarning.style.display = 'block';
             } else {
                 capacityWarning.style.display = 'none';
