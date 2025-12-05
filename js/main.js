@@ -322,17 +322,26 @@ function initPassengerPopup() {
         }
     }
 
-    // Show popup when dropdown changes
-    passengerSelect.addEventListener('change', showPopupForSelection);
+    // Track if popup was already confirmed (to allow re-editing)
+    let popupConfirmed = false;
 
-    // Also show popup on click (for re-editing same selection)
-    passengerSelect.addEventListener('click', function(e) {
-        // Small delay to let the change event fire first if applicable
-        setTimeout(() => {
-            if (!popup.classList.contains('active')) {
-                showPopupForSelection();
-            }
-        }, 100);
+    // Show popup when dropdown changes
+    passengerSelect.addEventListener('change', function() {
+        popupConfirmed = false; // Reset on change
+        showPopupForSelection();
+    });
+
+    // Also show popup on focus (for re-editing same selection)
+    passengerSelect.addEventListener('focus', function(e) {
+        // Only show popup if user explicitly clicks to re-edit after confirming
+        if (popupConfirmed && !popup.classList.contains('active')) {
+            // Small delay to prevent immediate trigger
+            setTimeout(() => {
+                if (!popup.classList.contains('active')) {
+                    showPopupForSelection();
+                }
+            }, 200);
+        }
     });
 
     // Close popup
@@ -406,6 +415,7 @@ function initPassengerPopup() {
             selectedOption.textContent = `${currentValue} Passenger${currentValue > 1 ? 's' : ''}, ${currentValue} Bag${currentValue > 1 ? 's' : ''} (${groupLabel})`;
         }
 
+        popupConfirmed = true; // Mark as confirmed for re-edit detection
         popup.classList.remove('active');
     });
 
