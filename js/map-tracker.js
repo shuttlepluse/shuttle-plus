@@ -164,17 +164,25 @@
             elements.bookingRef.textContent = completedBooking.bookingReference;
         }
 
+        // Extract location strings properly (handle both string and object formats)
+        const pickupLocation = typeof completedBooking.pickup === 'object'
+            ? completedBooking.pickup?.location || 'Bole International Airport'
+            : completedBooking.pickup || 'Bole International Airport';
+        const dropoffLocation = typeof completedBooking.dropoff === 'object'
+            ? completedBooking.dropoff?.location || 'Destination'
+            : completedBooking.dropoff || 'Destination';
+
         // Store booking data
         booking = {
             bookingReference: completedBooking.bookingReference,
             status: 'confirmed',
             pickup: {
-                location: completedBooking.pickup,
+                location: pickupLocation,
                 scheduledTime: completedBooking.pickupTime,
                 coordinates: BOLE_AIRPORT
             },
             dropoff: {
-                location: completedBooking.dropoff,
+                location: dropoffLocation,
                 coordinates: [9.0107, 38.7467] // Default: Sheraton
             },
             vehicleClass: completedBooking.vehicleClass,
@@ -199,8 +207,13 @@
         }
 
         if (elements.receiptRoute) {
-            const pickup = data.pickup || 'Bole Airport';
-            const dropoff = data.dropoff || 'Destination';
+            // Handle both string and object formats for pickup/dropoff
+            const pickup = typeof data.pickup === 'object'
+                ? data.pickup?.location || 'Bole Airport'
+                : data.pickup || 'Bole Airport';
+            const dropoff = typeof data.dropoff === 'object'
+                ? data.dropoff?.location || 'Destination'
+                : data.dropoff || 'Destination';
             elements.receiptRoute.textContent = `${pickup} → ${dropoff}`;
         }
 

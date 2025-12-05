@@ -132,21 +132,30 @@
             if (completedBookingData && typeof OfflineStorage !== 'undefined') {
                 const completedBooking = JSON.parse(completedBookingData);
 
+                // Extract location strings properly (handle both string and object formats)
+                const pickupLocation = typeof completedBooking.pickup === 'object'
+                    ? completedBooking.pickup?.location || 'Bole International Airport'
+                    : completedBooking.pickup || 'Bole International Airport';
+                const dropoffLocation = typeof completedBooking.dropoff === 'object'
+                    ? completedBooking.dropoff?.location || 'Destination'
+                    : completedBooking.dropoff || 'Destination';
+
                 // Transform to ticket format expected by BookingStorage
                 const ticket = {
                     bookingReference: completedBooking.bookingReference,
                     status: 'confirmed',
                     pickup: {
-                        location: completedBooking.pickup,
+                        location: pickupLocation,
                         scheduledTime: completedBooking.pickupTime
                     },
                     dropoff: {
-                        location: completedBooking.dropoff,
-                        zone: completedBooking.dropoff
+                        location: dropoffLocation,
+                        zone: dropoffLocation
                     },
                     vehicle: {
                         class: completedBooking.vehicleClass
                     },
+                    vehicleClass: completedBooking.vehicleClass,
                     passengers: completedBooking.passengers,
                     pricing: completedBooking.pricing,
                     contact: completedBooking.contact,
@@ -299,6 +308,14 @@
         const isPast = pickupTime <= new Date() || ticket.status === 'completed' || ticket.status === 'cancelled';
         const statusLabel = getStatusLabel(ticket.status);
 
+        // Extract location strings properly (handle both string and object formats)
+        const pickupLocation = typeof ticket.pickup === 'object'
+            ? ticket.pickup?.location || 'Bole International Airport'
+            : ticket.pickup || 'Bole International Airport';
+        const dropoffLocation = typeof ticket.dropoff === 'object'
+            ? ticket.dropoff?.location || ticket.dropoff?.zone || 'Destination'
+            : ticket.dropoff || 'Destination';
+
         return `
             <article class="ticket-card ${isPast ? 'past' : ''}" data-id="${ticket._id || ticket.bookingReference}">
                 <div class="ticket-header">
@@ -321,11 +338,11 @@
                         <div class="route-points">
                             <div class="route-point">
                                 <span class="point-label">Pickup</span>
-                                <span class="point-value">${ticket.pickup?.location || 'Bole International Airport'}</span>
+                                <span class="point-value">${pickupLocation}</span>
                             </div>
                             <div class="route-point">
                                 <span class="point-label">Drop-off</span>
-                                <span class="point-value">${ticket.dropoff?.location || ticket.dropoff?.zone || 'Destination'}</span>
+                                <span class="point-value">${dropoffLocation}</span>
                             </div>
                         </div>
                     </div>
@@ -398,6 +415,14 @@
         const statusLabel = getStatusLabel(selectedTicket.status);
         const hasDriver = selectedTicket.driver?.name;
 
+        // Extract location strings properly (handle both string and object formats)
+        const pickupLocation = typeof selectedTicket.pickup === 'object'
+            ? selectedTicket.pickup?.location || 'Bole International Airport'
+            : selectedTicket.pickup || 'Bole International Airport';
+        const dropoffLocation = typeof selectedTicket.dropoff === 'object'
+            ? selectedTicket.dropoff?.location || selectedTicket.dropoff?.zone || 'Destination'
+            : selectedTicket.dropoff || 'Destination';
+
         elements.ticketDetail.innerHTML = `
             <div class="detail-header">
                 <div class="detail-logo">Shuttle+</div>
@@ -435,12 +460,12 @@
                     <div class="route-points">
                         <div class="route-point">
                             <span class="point-label">Pickup</span>
-                            <span class="point-value">${selectedTicket.pickup?.location || 'Bole International Airport'}</span>
+                            <span class="point-value">${pickupLocation}</span>
                             <span class="point-time">${formatDate(pickupTime)} at ${formatTime(pickupTime)}</span>
                         </div>
                         <div class="route-point">
                             <span class="point-label">Drop-off</span>
-                            <span class="point-value">${selectedTicket.dropoff?.location || selectedTicket.dropoff?.zone || 'Destination'}</span>
+                            <span class="point-value">${dropoffLocation}</span>
                         </div>
                     </div>
                 </div>

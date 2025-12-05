@@ -81,6 +81,7 @@
         setupEventListeners();
         await initStripe();
         updateSummary();
+        applyPreselectedPaymentMethod();
         updatePayButton();
     }
 
@@ -295,6 +296,55 @@
 
         // Update pay button text
         updatePayButton();
+    }
+
+    // ========================================
+    // Apply Preselected Payment Method from Review Page
+    // ========================================
+    function applyPreselectedPaymentMethod() {
+        // Get preselected method from booking data
+        const preselectedMethod = bookingData?.payment?.method;
+        if (!preselectedMethod) return;
+
+        const methodTabs = document.querySelector('.method-tabs');
+        if (!methodTabs) return;
+
+        // Get all tabs
+        const tabs = Array.from(methodTabs.querySelectorAll('.method-tab'));
+        const selectedTab = tabs.find(tab => tab.dataset.method === preselectedMethod);
+
+        if (!selectedTab) return;
+
+        // Remove existing "other options" label if any
+        const existingLabel = methodTabs.querySelector('.other-options-label');
+        if (existingLabel) existingLabel.remove();
+
+        // Reorder: put selected tab first, then add "OTHER OPTIONS" label, then rest
+        const otherTabs = tabs.filter(tab => tab.dataset.method !== preselectedMethod);
+
+        // Clear and rebuild
+        methodTabs.innerHTML = '';
+
+        // Add selected tab first
+        selectedTab.classList.add('preselected');
+        methodTabs.appendChild(selectedTab);
+
+        // Add "OTHER OPTIONS" label if there are other methods
+        if (otherTabs.length > 0) {
+            const otherOptionsLabel = document.createElement('div');
+            otherOptionsLabel.className = 'other-options-label';
+            otherOptionsLabel.textContent = 'OTHER OPTIONS';
+            methodTabs.appendChild(otherOptionsLabel);
+
+            // Add other tabs
+            otherTabs.forEach(tab => {
+                tab.classList.remove('preselected');
+                methodTabs.appendChild(tab);
+            });
+        }
+
+        // Select the preselected method
+        selectPaymentMethod(preselectedMethod);
     }
 
     // ========================================
@@ -768,12 +818,23 @@
     // Show Success/Error Modals
     // ========================================
     function showSuccess(bookingRef) {
+        // Extract location strings properly (handle both object and string formats)
+        const pickupLocation = typeof bookingData.pickup === 'object'
+            ? bookingData.pickup?.location || 'Bole International Airport'
+            : bookingData.pickup || 'Bole International Airport';
+        const dropoffLocation = typeof bookingData.dropoff === 'object'
+            ? bookingData.dropoff?.location || 'Destination'
+            : bookingData.dropoff || 'Destination';
+        const pickupTime = typeof bookingData.pickup === 'object'
+            ? bookingData.pickup?.scheduledTime
+            : bookingData.pickupTime;
+
         // Store completed booking data for tracking page
         const completedBooking = {
             bookingReference: bookingRef,
-            pickup: bookingData.pickup || 'Bole International Airport',
-            dropoff: bookingData.dropoff || 'Destination',
-            pickupTime: bookingData.pickupTime,
+            pickup: pickupLocation,
+            dropoff: dropoffLocation,
+            pickupTime: pickupTime,
             vehicleClass: bookingData.vehicleClass,
             passengers: bookingData.passengers,
             pricing: bookingData.pricing,
