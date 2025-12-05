@@ -300,11 +300,12 @@
 /* Phone Input with Country Code */
 .phone-input-wrapper {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     border: 2px solid var(--gray-200);
     border-radius: var(--radius-lg);
     overflow: hidden;
     transition: var(--transition);
+    height: calc(1rem * 1.5 + 0.875rem * 2 + 4px); /* Match regular input height */
 }
 
 .phone-input-wrapper:focus-within {
@@ -314,11 +315,14 @@
 
 .phone-input-wrapper .country-code {
     background: var(--gray-100);
-    padding: 0.875rem 1rem;
+    padding: 0.875rem 0.75rem;
     font-weight: 600;
+    font-size: 0.9375rem;
     color: var(--primary-dark);
     border-right: 2px solid var(--gray-200);
     white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 
 .phone-input-wrapper input {
@@ -326,6 +330,7 @@
     flex: 1;
     padding: 0.875rem 1rem;
     box-shadow: none !important;
+    min-width: 0;
 }
 
 .phone-input-wrapper input:focus {

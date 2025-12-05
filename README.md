@@ -2,6 +2,26 @@
 
 Premium airport transfer service platform for Addis Ababa, Ethiopia. A full-stack Progressive Web Application (PWA) built with Express.js, MongoDB, and vanilla JavaScript.
 
+## Recent Updates (December 2025)
+
+### Booking Flow Redesign
+- **Modern Dark Theme**: Booking pages now feature a dark gradient background matching the home page hero section
+- **Simplified 3-Step Process**: Vehicle Selection → Contact Details → Confirmation
+
+### Passenger & Vehicle System
+- **New Passenger Groups**: Restructured from 1-2, 3-5, 6-11 to **1-3, 4-5, 6-11** for better vehicle matching
+- **Floating Popup Form**: Interactive popup for selecting exact passenger and luggage counts with +/- controls
+- **Smart Vehicle Recommendations**:
+  - 1-3 passengers: Sedan recommended (all vehicles available)
+  - 4-5 passengers: SUV or Van recommended (sedans hidden)
+  - 6-11 passengers: Van only
+- **Luggage Matching**: Default 1 bag per passenger with flexible adjustment
+
+### Technical Improvements
+- **Edit Route Flow**: Preserved extras (child seat, meet & greet) when returning from route edit
+- **State Persistence**: Session storage for booking data survives navigation
+- **Cache Busting**: Version parameters on CSS/JS files for reliable updates
+
 ## Branch Structure
 
 | Branch | Purpose | Key Files |

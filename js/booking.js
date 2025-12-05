@@ -560,28 +560,49 @@
 
         if (step === 2) {
             // Validate name
-            const name = document.getElementById('contactName')?.value.trim();
+            const nameInput = document.getElementById('contactName');
+            const name = nameInput?.value?.trim() || '';
             if (!name) {
                 showError('Please enter your full name');
+                if (nameInput) nameInput.focus();
                 isValid = false;
+            } else {
+                // Store contact name
+                bookingData.contact = bookingData.contact || {};
+                bookingData.contact.name = name;
             }
 
             // Validate email (optional, but if provided must be valid format)
-            const email = document.getElementById('contactEmail')?.value.trim();
-            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showError('Please enter a valid email address');
-                isValid = false;
+            const emailInput = document.getElementById('contactEmail');
+            const email = emailInput?.value?.trim() || '';
+            if (email) {
+                // Check for valid email format (must have @ and a domain)
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                if (!emailRegex.test(email)) {
+                    showError('Please enter a valid email address (e.g., name@gmail.com)');
+                    if (emailInput) emailInput.focus();
+                    isValid = false;
+                } else {
+                    bookingData.contact = bookingData.contact || {};
+                    bookingData.contact.email = email;
+                }
             }
 
             // Validate Ethiopian phone number (9 digits starting with 9 or 7)
-            const phone = document.getElementById('contactPhone')?.value.trim();
+            const phoneInput = document.getElementById('contactPhone');
+            const phone = phoneInput?.value?.trim() || '';
             const cleanPhone = phone.replace(/[\s-]/g, '');
             if (!cleanPhone) {
                 showError('Please enter your phone number');
+                if (phoneInput) phoneInput.focus();
                 isValid = false;
             } else if (!/^[97]\d{8}$/.test(cleanPhone)) {
                 showError('Please enter a valid Ethiopian phone number (9 digits starting with 9 or 7)');
+                if (phoneInput) phoneInput.focus();
                 isValid = false;
+            } else {
+                bookingData.contact = bookingData.contact || {};
+                bookingData.contact.phone = cleanPhone;
             }
         }
 
