@@ -204,6 +204,7 @@
                     // Save booking state in the format booking.js expects
                     const bookingState = {
                         currentStep: 3,  // Return to Review & Confirm step
+                        returningFromPayment: true,  // Flag to distinguish from fresh bookings
                         bookingData: {
                             vehicleClass: bookingData.vehicleClass,
                             childSeat: bookingData.childSeat,

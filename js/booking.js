@@ -141,7 +141,8 @@
         if (savedState) {
             try {
                 const state = JSON.parse(savedState);
-                returningFromPayment = state.currentStep === 3;
+                // Check for explicit flag, not just step number
+                returningFromPayment = state.returningFromPayment === true;
             } catch (e) {}
         }
 
@@ -151,10 +152,12 @@
             const dataLoaded = loadQuickBookingData();
             if (dataLoaded) {
                 filterVehiclesByCapacity(bookingData.passengers);
-                // Now restore the saved state (contact details)
+                // Restore the saved state (contact details)
                 restoreBookingState();
                 // Go to step 3 immediately (don't wait for setTimeout in restoreBookingState)
                 goToStep(3);
+                // Clear the flag so future fresh bookings start at step 1
+                sessionStorage.removeItem('bookingState');
             }
         } else if (quickData) {
             // Fresh data from home page - clear any old state to start fresh
