@@ -400,6 +400,11 @@ body {
     font-size: 0.875rem;
 }
 
+/* Hide Leaflet Routing Machine instructions panel - we only need the route line */
+.leaflet-routing-container {
+    display: none !important;
+}
+
 .mapboxgl-canvas {
     outline: none;
 }

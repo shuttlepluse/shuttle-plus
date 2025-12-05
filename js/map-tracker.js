@@ -26,6 +26,7 @@
     let dropoffMarker = null;
     let userLocationMarker = null;
     let routeLine = null;
+    let routeControl = null;  // OSRM routing control
     let booking = null;
     let updateInterval = null;
     let isExpanded = false;
@@ -675,22 +676,121 @@
             lng: BOLE_AIRPORT[1] - 0.02
         };
 
-        // Remove existing route
-        if (routeLine) {
-            map.removeLayer(routeLine);
+        // Remove existing route control
+        if (routeControl) {
+            map.removeControl(routeControl);
+            routeControl = null;
         }
 
-        // Create route line
-        routeLine = L.polyline([
-            [driverLocation.lat, driverLocation.lng],
-            pickupCoords,
-            dropoffCoords
-        ], {
-            color: '#597B87',
-            weight: 4,
-            opacity: 0.8,
-            dashArray: '10, 10'
-        }).addTo(map);
+        // Remove legacy polyline if exists
+        if (routeLine) {
+            map.removeLayer(routeLine);
+            routeLine = null;
+        }
+
+        // Check if Leaflet Routing Machine is available
+        if (typeof L.Routing === 'undefined') {
+            // Fallback to simple polyline if routing library not loaded
+            routeLine = L.polyline([
+                [driverLocation.lat, driverLocation.lng],
+                pickupCoords,
+                dropoffCoords
+            ], {
+                color: '#597B87',
+                weight: 4,
+                opacity: 0.8,
+                dashArray: '10, 10'
+            }).addTo(map);
+            return;
+        }
+
+        // Create OSRM route with real roads
+        try {
+            routeControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(driverLocation.lat, driverLocation.lng),
+                    L.latLng(pickupCoords[0], pickupCoords[1]),
+                    L.latLng(dropoffCoords[0], dropoffCoords[1])
+                ],
+                router: L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1',
+                    profile: 'driving'
+                }),
+                lineOptions: {
+                    styles: [{ color: '#597B87', weight: 5, opacity: 0.8 }],
+                    extendToWaypoints: true,
+                    missingRouteTolerance: 0
+                },
+                show: false,  // Hide turn-by-turn instructions panel
+                addWaypoints: false,
+                draggableWaypoints: false,
+                fitSelectedRoutes: false,
+                createMarker: () => null  // We use our own custom markers
+            }).addTo(map);
+
+            // Listen for route found to update ETA
+            routeControl.on('routesfound', (e) => {
+                const route = e.routes[0];
+                if (route && route.summary) {
+                    const durationMinutes = Math.round(route.summary.totalTime / 60);
+                    const distanceKm = (route.summary.totalDistance / 1000).toFixed(1);
+                    updateETADisplay(durationMinutes, distanceKm);
+                }
+            });
+
+            // Handle routing errors gracefully
+            routeControl.on('routingerror', (e) => {
+                console.warn('[Map] Routing error, falling back to straight line:', e.error);
+                // Fallback to polyline on error
+                if (routeControl) {
+                    map.removeControl(routeControl);
+                    routeControl = null;
+                }
+                routeLine = L.polyline([
+                    [driverLocation.lat, driverLocation.lng],
+                    pickupCoords,
+                    dropoffCoords
+                ], {
+                    color: '#597B87',
+                    weight: 4,
+                    opacity: 0.8,
+                    dashArray: '10, 10'
+                }).addTo(map);
+            });
+        } catch (error) {
+            console.error('[Map] Error creating route:', error);
+            // Fallback to simple polyline
+            routeLine = L.polyline([
+                [driverLocation.lat, driverLocation.lng],
+                pickupCoords,
+                dropoffCoords
+            ], {
+                color: '#597B87',
+                weight: 4,
+                opacity: 0.8,
+                dashArray: '10, 10'
+            }).addTo(map);
+        }
+    }
+
+    // ========================================
+    // Update ETA Display
+    // ========================================
+    function updateETADisplay(minutes, distanceKm) {
+        // Update ETA in driver card if available
+        if (elements.driverETA) {
+            elements.driverETA.textContent = `${minutes} min`;
+        }
+        // Update any other ETA displays
+        const etaElements = document.querySelectorAll('.eta-value, .driver-eta');
+        etaElements.forEach(el => {
+            if (el.classList.contains('distance')) {
+                el.textContent = `${distanceKm} km`;
+            } else {
+                el.textContent = `${minutes} min`;
+            }
+        });
+        console.log(`[Map] Route: ${distanceKm} km, ETA: ${minutes} min`);
     }
 
     // ========================================
