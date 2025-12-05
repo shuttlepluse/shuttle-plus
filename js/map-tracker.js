@@ -1,5 +1,5 @@
 // ========================================
-// Map Tracker - Mapbox Integration
+// Map Tracker - Leaflet + OpenStreetMap Integration
 // ========================================
 
 (function() {
@@ -8,17 +8,14 @@
     // ========================================
     // Configuration
     // ========================================
-    // Note: Replace with your Mapbox token from https://mapbox.com
-    const MAPBOX_TOKEN = 'YOUR_MAPBOX_TOKEN'; // Will be loaded from API
-
     // Addis Ababa coordinates
     const ADDIS_ABABA = {
-        center: [38.7578, 8.9806],
-        zoom: 12
+        center: [8.9806, 38.7578], // [lat, lng] for Leaflet
+        zoom: 13
     };
 
-    // Bole Airport coordinates
-    const BOLE_AIRPORT = [38.7993, 8.9778];
+    // Bole Airport coordinates [lat, lng]
+    const BOLE_AIRPORT = [8.9778, 38.7993];
 
     // ========================================
     // State
@@ -71,6 +68,39 @@
     };
 
     // ========================================
+    // Custom Marker Icons
+    // ========================================
+    const driverIcon = L.divIcon({
+        className: 'driver-marker',
+        html: `<div class="driver-marker-inner">
+            <svg viewBox="0 0 24 24" fill="#183251">
+                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+            </svg>
+        </div>`,
+        iconSize: [48, 48],
+        iconAnchor: [24, 24]
+    });
+
+    const pickupIcon = L.divIcon({
+        className: 'pickup-marker',
+        html: '<div class="pickup-marker-inner"></div>',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+    });
+
+    const dropoffIcon = L.divIcon({
+        className: 'dropoff-marker',
+        html: `<div class="dropoff-marker-inner">
+            <svg viewBox="0 0 24 24" fill="#597B87">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3" fill="white"/>
+            </svg>
+        </div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32]
+    });
+
+    // ========================================
     // Initialize
     // ========================================
     async function init() {
@@ -113,8 +143,8 @@
         // Hide loading
         hideLoading();
 
-        // Show demo map
-        showDemoMap();
+        // Initialize map
+        initMap();
 
         // Update header booking ref
         if (elements.bookingRef) {
@@ -127,10 +157,12 @@
             status: 'confirmed',
             pickup: {
                 location: completedBooking.pickup,
-                scheduledTime: completedBooking.pickupTime
+                scheduledTime: completedBooking.pickupTime,
+                coordinates: BOLE_AIRPORT
             },
             dropoff: {
-                location: completedBooking.dropoff
+                location: completedBooking.dropoff,
+                coordinates: [9.0107, 38.7467] // Default: Sheraton
             },
             vehicleClass: completedBooking.vehicleClass,
             pricing: completedBooking.pricing,
@@ -270,14 +302,17 @@
             vehiclePlate: '3-AA-' + Math.floor(10000 + Math.random() * 90000),
             rating: 4.9,
             currentLocation: {
-                lng: BOLE_AIRPORT[0] - 0.02,
-                lat: BOLE_AIRPORT[1] + 0.01
+                lat: BOLE_AIRPORT[0] + 0.01,
+                lng: BOLE_AIRPORT[1] - 0.02
             }
         };
         booking.status = 'driver_assigned';
 
         // Update UI
         updateUI();
+
+        // Add markers now that driver is assigned
+        addMarkers();
 
         // Show notification
         showToast('Driver assigned! Abebe is on the way.');
@@ -296,7 +331,8 @@
         const labels = {
             standard: 'Standard Sedan',
             executive: 'Executive Sedan',
-            suv: 'SUV / Minivan',
+            suv: 'SUV',
+            van: 'Van / Minibus',
             luxury: 'Luxury Class'
         };
         return labels[vehicleClass] || 'Standard Sedan';
@@ -310,6 +346,7 @@
             standard: 'Toyota Corolla',
             executive: 'Toyota Camry',
             suv: 'Toyota Land Cruiser',
+            van: 'Toyota HiAce',
             luxury: 'Mercedes E-Class'
         };
         return models[vehicleClass] || 'Toyota Corolla';
@@ -319,8 +356,12 @@
     // Event Listeners
     // ========================================
     function setupEventListeners() {
+        if (!elements.bottomSheet) return;
+
         // Bottom sheet drag
         const sheetHandle = elements.bottomSheet.querySelector('.sheet-handle');
+        if (!sheetHandle) return;
+
         let startY = 0;
         let startTransform = 0;
 
@@ -357,10 +398,10 @@
         });
 
         // Driver actions
-        elements.callDriver.addEventListener('click', callDriver);
-        elements.messageDriver.addEventListener('click', messageDriver);
-        elements.shareLocation.addEventListener('click', shareLocation);
-        elements.emergencyBtn.addEventListener('click', showEmergencyOptions);
+        if (elements.callDriver) elements.callDriver.addEventListener('click', callDriver);
+        if (elements.messageDriver) elements.messageDriver.addEventListener('click', messageDriver);
+        if (elements.shareLocation) elements.shareLocation.addEventListener('click', shareLocation);
+        if (elements.emergencyBtn) elements.emergencyBtn.addEventListener('click', showEmergencyOptions);
     }
 
     // ========================================
@@ -393,205 +434,135 @@
             }
 
             // Initialize map and UI
-            await initMap();
+            initMap();
+            addMarkers();
             updateUI();
             startTracking();
 
         } catch (error) {
             console.error('[Tracker] Error loading booking:', error);
             showNoTracking();
+        } finally {
+            hideLoading();
         }
     }
 
     // ========================================
-    // Initialize Map
+    // Initialize Map (Leaflet + OpenStreetMap)
     // ========================================
-    async function initMap() {
-        // Try to get Mapbox token from backend
-        let token = MAPBOX_TOKEN;
+    function initMap() {
+        if (map) return; // Already initialized
 
-        if (token === 'YOUR_MAPBOX_TOKEN' && navigator.onLine) {
-            try {
-                const response = await fetch('/api/config/mapbox');
-                if (response.ok) {
-                    const data = await response.json();
-                    token = data.token;
-                }
-            } catch (e) {
-                console.log('[Tracker] Using demo mode without Mapbox token');
-            }
-        }
+        // Create map centered on Addis Ababa
+        map = L.map('map', {
+            zoomControl: false // We'll add custom position
+        }).setView(ADDIS_ABABA.center, ADDIS_ABABA.zoom);
 
-        // If no token, show demo map
-        if (token === 'YOUR_MAPBOX_TOKEN') {
-            showDemoMap();
-            hideLoading();
-            return;
-        }
+        // Add OpenStreetMap tiles (completely free)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            maxZoom: 19
+        }).addTo(map);
 
-        mapboxgl.accessToken = token;
+        // Add zoom control to top-right
+        L.control.zoom({
+            position: 'topright'
+        }).addTo(map);
 
-        map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v12',
-            center: ADDIS_ABABA.center,
-            zoom: ADDIS_ABABA.zoom
-        });
-
-        map.on('load', () => {
-            hideLoading();
-            addMarkers();
-            drawRoute();
-            fitBounds();
-        });
-
-        // Add navigation controls
-        map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-        // Add geolocation control
-        map.addControl(new mapboxgl.GeolocateControl({
-            positionOptions: { enableHighAccuracy: true },
-            trackUserLocation: true
-        }), 'top-right');
-    }
-
-    // ========================================
-    // Demo Map (when no Mapbox token)
-    // ========================================
-    function showDemoMap() {
-        elements.map.innerHTML = `
-            <div style="
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(135deg, #e8f4f8 0%, #f0f7f9 100%);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                padding: 2rem;
-                text-align: center;
-            ">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#597B87" stroke-width="1.5" style="width: 80px; height: 80px; margin-bottom: 1rem; opacity: 0.5;">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                    <circle cx="12" cy="10" r="3"/>
-                </svg>
-                <p style="color: #666; font-size: 0.9rem; max-width: 300px;">
-                    Map preview requires Mapbox configuration.<br>
-                    Driver location updates are simulated.
-                </p>
-            </div>
-        `;
+        console.log('[Tracker] Map initialized with OpenStreetMap');
     }
 
     // ========================================
     // Add Markers
     // ========================================
     function addMarkers() {
-        if (!map) return;
+        if (!map || !booking) return;
 
-        // Driver marker
-        const driverEl = document.createElement('div');
-        driverEl.className = 'driver-marker';
-        driverEl.innerHTML = `
-            <div class="driver-marker-inner">
-                <svg viewBox="0 0 24 24">
-                    <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
-                </svg>
-            </div>
-        `;
-
+        // Get coordinates
+        const pickupCoords = booking.pickup?.coordinates || BOLE_AIRPORT;
+        const dropoffCoords = booking.dropoff?.coordinates || [9.0107, 38.7467];
         const driverLocation = booking.driver?.currentLocation || {
-            lng: BOLE_AIRPORT[0] - 0.02,
-            lat: BOLE_AIRPORT[1] + 0.01
+            lat: BOLE_AIRPORT[0] + 0.01,
+            lng: BOLE_AIRPORT[1] - 0.02
         };
 
-        driverMarker = new mapboxgl.Marker(driverEl)
-            .setLngLat([driverLocation.lng, driverLocation.lat])
-            .addTo(map);
-
         // Pickup marker
-        const pickupEl = document.createElement('div');
-        pickupEl.className = 'pickup-marker';
-        pickupEl.innerHTML = '<div class="pickup-marker-inner"></div>';
-
-        pickupMarker = new mapboxgl.Marker(pickupEl)
-            .setLngLat(booking.pickup?.coordinates || BOLE_AIRPORT)
-            .addTo(map);
+        if (!pickupMarker) {
+            pickupMarker = L.marker(pickupCoords, { icon: pickupIcon }).addTo(map);
+            pickupMarker.bindPopup('<b>Pickup</b><br>' + (booking.pickup?.location || 'Bole Airport'));
+        }
 
         // Dropoff marker
-        const dropoffEl = document.createElement('div');
-        dropoffEl.className = 'dropoff-marker';
-        dropoffEl.innerHTML = '<div class="dropoff-marker-inner"></div>';
+        if (!dropoffMarker) {
+            dropoffMarker = L.marker(dropoffCoords, { icon: dropoffIcon }).addTo(map);
+            dropoffMarker.bindPopup('<b>Drop-off</b><br>' + (booking.dropoff?.location || 'Destination'));
+        }
 
-        const dropoffCoords = booking.dropoff?.coordinates || [38.7467, 9.0107]; // Default: Sheraton
-        dropoffMarker = new mapboxgl.Marker(dropoffEl)
-            .setLngLat(dropoffCoords)
-            .addTo(map);
+        // Driver marker
+        if (!driverMarker) {
+            driverMarker = L.marker([driverLocation.lat, driverLocation.lng], { icon: driverIcon }).addTo(map);
+            driverMarker.bindPopup('<b>' + (booking.driver?.name || 'Driver') + '</b><br>' + (booking.driver?.vehicle || 'Vehicle'));
+        }
+
+        // Draw route line
+        drawRoute();
+
+        // Fit bounds to show all markers
+        fitBounds();
     }
 
     // ========================================
     // Draw Route
     // ========================================
     function drawRoute() {
-        if (!map) return;
-
-        const driverLocation = booking.driver?.currentLocation || {
-            lng: BOLE_AIRPORT[0] - 0.02,
-            lat: BOLE_AIRPORT[1] + 0.01
-        };
+        if (!map || !booking) return;
 
         const pickupCoords = booking.pickup?.coordinates || BOLE_AIRPORT;
-        const dropoffCoords = booking.dropoff?.coordinates || [38.7467, 9.0107];
+        const dropoffCoords = booking.dropoff?.coordinates || [9.0107, 38.7467];
+        const driverLocation = booking.driver?.currentLocation || {
+            lat: BOLE_AIRPORT[0] + 0.01,
+            lng: BOLE_AIRPORT[1] - 0.02
+        };
 
-        // Simple line from driver to pickup to dropoff
-        map.addSource('route', {
-            type: 'geojson',
-            data: {
-                type: 'Feature',
-                geometry: {
-                    type: 'LineString',
-                    coordinates: [
-                        [driverLocation.lng, driverLocation.lat],
-                        pickupCoords,
-                        dropoffCoords
-                    ]
-                }
-            }
-        });
+        // Remove existing route
+        if (routeLine) {
+            map.removeLayer(routeLine);
+        }
 
-        map.addLayer({
-            id: 'route',
-            type: 'line',
-            source: 'route',
-            paint: {
-                'line-color': '#597B87',
-                'line-width': 4,
-                'line-dasharray': [2, 1]
-            }
-        });
+        // Create route line
+        routeLine = L.polyline([
+            [driverLocation.lat, driverLocation.lng],
+            pickupCoords,
+            dropoffCoords
+        ], {
+            color: '#597B87',
+            weight: 4,
+            opacity: 0.8,
+            dashArray: '10, 10'
+        }).addTo(map);
     }
 
     // ========================================
     // Fit Map Bounds
     // ========================================
     function fitBounds() {
-        if (!map) return;
-
-        const driverLocation = booking.driver?.currentLocation || {
-            lng: BOLE_AIRPORT[0] - 0.02,
-            lat: BOLE_AIRPORT[1] + 0.01
-        };
+        if (!map || !booking) return;
 
         const pickupCoords = booking.pickup?.coordinates || BOLE_AIRPORT;
-        const dropoffCoords = booking.dropoff?.coordinates || [38.7467, 9.0107];
+        const dropoffCoords = booking.dropoff?.coordinates || [9.0107, 38.7467];
+        const driverLocation = booking.driver?.currentLocation || {
+            lat: BOLE_AIRPORT[0] + 0.01,
+            lng: BOLE_AIRPORT[1] - 0.02
+        };
 
-        const bounds = new mapboxgl.LngLatBounds();
-        bounds.extend([driverLocation.lng, driverLocation.lat]);
-        bounds.extend(pickupCoords);
-        bounds.extend(dropoffCoords);
+        const bounds = L.latLngBounds([
+            [driverLocation.lat, driverLocation.lng],
+            pickupCoords,
+            dropoffCoords
+        ]);
 
         map.fitBounds(bounds, {
-            padding: { top: 150, bottom: 250, left: 50, right: 50 }
+            padding: [80, 80]
         });
     }
 
@@ -602,18 +573,20 @@
         if (!booking) return;
 
         // Booking reference
-        elements.bookingRef.textContent = booking.bookingReference || 'SP-2025-XXXXXX';
+        if (elements.bookingRef) {
+            elements.bookingRef.textContent = booking.bookingReference || 'SP-2025-XXXXXX';
+        }
 
         // Driver info
-        elements.driverName.textContent = booking.driver?.name || 'Driver';
-        elements.driverAvatar.textContent = getInitials(booking.driver?.name);
-        elements.vehicleModel.textContent = booking.driver?.vehicle || 'Toyota Corolla';
-        elements.vehiclePlate.textContent = booking.driver?.vehiclePlate || '3-AA-XXXXX';
+        if (elements.driverName) elements.driverName.textContent = booking.driver?.name || 'Driver';
+        if (elements.driverAvatar) elements.driverAvatar.textContent = getInitials(booking.driver?.name);
+        if (elements.vehicleModel) elements.vehicleModel.textContent = booking.driver?.vehicle || 'Toyota Corolla';
+        if (elements.vehiclePlate) elements.vehiclePlate.textContent = booking.driver?.vehiclePlate || '3-AA-XXXXX';
 
         // Trip details
-        elements.pickupAddress.textContent = booking.pickup?.location || 'Bole International Airport';
-        elements.dropoffAddress.textContent = booking.dropoff?.location || booking.dropoff?.zone || 'Destination';
-        elements.pickupTime.textContent = formatDateTime(booking.pickup?.scheduledTime);
+        if (elements.pickupAddress) elements.pickupAddress.textContent = booking.pickup?.location || 'Bole International Airport';
+        if (elements.dropoffAddress) elements.dropoffAddress.textContent = booking.dropoff?.location || booking.dropoff?.zone || 'Destination';
+        if (elements.pickupTime) elements.pickupTime.textContent = formatDateTime(booking.pickup?.scheduledTime);
 
         // Status
         updateStatus();
@@ -636,12 +609,13 @@
 
         const status = statusMessages[booking.status] || statusMessages.driver_assigned;
 
-        elements.statusLabel.textContent = status.label;
-        elements.statusETA.textContent = status.eta;
+        if (elements.statusLabel) elements.statusLabel.textContent = status.label;
+        if (elements.statusETA) elements.statusETA.textContent = status.eta;
 
         // Update status icon for arrived
-        if (booking.status === 'arrived_pickup') {
-            elements.statusBanner.querySelector('.status-icon').classList.add('arrived');
+        if (booking.status === 'arrived_pickup' && elements.statusBanner) {
+            const statusIcon = elements.statusBanner.querySelector('.status-icon');
+            if (statusIcon) statusIcon.classList.add('arrived');
         }
 
         // Update timeline
@@ -653,6 +627,8 @@
     // ========================================
     function updateTimeline() {
         const timeline = document.getElementById('timeline');
+        if (!timeline) return;
+
         const items = timeline.querySelectorAll('.timeline-item');
 
         const statusOrder = ['pending', 'confirmed', 'driver_assigned', 'en_route_pickup', 'arrived_pickup', 'completed'];
@@ -701,32 +677,17 @@
     function updateDriverLocation(location) {
         if (!driverMarker || !location) return;
 
-        driverMarker.setLngLat([location.lng, location.lat]);
+        driverMarker.setLatLng([location.lat, location.lng]);
 
         // Update route line
-        if (map && map.getSource('route')) {
-            const pickupCoords = booking.pickup?.coordinates || BOLE_AIRPORT;
-            const dropoffCoords = booking.dropoff?.coordinates || [38.7467, 9.0107];
-
-            map.getSource('route').setData({
-                type: 'Feature',
-                geometry: {
-                    type: 'LineString',
-                    coordinates: [
-                        [location.lng, location.lat],
-                        pickupCoords,
-                        dropoffCoords
-                    ]
-                }
-            });
-        }
+        drawRoute();
     }
 
     // ========================================
     // Update ETA
     // ========================================
     function updateETA(eta) {
-        if (eta && eta.minutes) {
+        if (eta && eta.minutes && elements.statusETA) {
             elements.statusETA.textContent = `Arriving in ~${eta.minutes} min`;
         }
     }
@@ -738,17 +699,22 @@
     function simulateDriverMovement() {
         simulationStep++;
 
-        const startLng = BOLE_AIRPORT[0] - 0.02;
-        const startLat = BOLE_AIRPORT[1] + 0.01;
-        const endLng = BOLE_AIRPORT[0];
-        const endLat = BOLE_AIRPORT[1];
+        const startLat = BOLE_AIRPORT[0] + 0.01;
+        const startLng = BOLE_AIRPORT[1] - 0.02;
+        const endLat = BOLE_AIRPORT[0];
+        const endLng = BOLE_AIRPORT[1];
 
         // Move towards pickup over 30 steps
         const progress = Math.min(simulationStep / 30, 1);
-        const currentLng = startLng + (endLng - startLng) * progress;
         const currentLat = startLat + (endLat - startLat) * progress;
+        const currentLng = startLng + (endLng - startLng) * progress;
 
-        updateDriverLocation({ lng: currentLng, lat: currentLat });
+        // Update booking driver location
+        if (booking.driver) {
+            booking.driver.currentLocation = { lat: currentLat, lng: currentLng };
+        }
+
+        updateDriverLocation({ lat: currentLat, lng: currentLng });
 
         const eta = Math.max(1, Math.round(15 * (1 - progress)));
         updateETA({ minutes: eta });
@@ -764,7 +730,7 @@
     // Driver Actions
     // ========================================
     function callDriver() {
-        const phone = booking.driver?.phone;
+        const phone = booking?.driver?.phone;
         if (phone) {
             window.location.href = `tel:${phone}`;
         } else {
@@ -773,7 +739,7 @@
     }
 
     function messageDriver() {
-        const phone = booking.driver?.phone;
+        const phone = booking?.driver?.phone;
         if (phone) {
             // Try WhatsApp
             const whatsappUrl = `https://wa.me/${phone.replace(/[^0-9]/g, '')}`;
@@ -786,7 +752,7 @@
     async function shareLocation() {
         const shareData = {
             title: 'Track my Shuttle Plus ride',
-            text: `Track my airport transfer: ${booking.bookingReference}`,
+            text: `Track my airport transfer: ${booking?.bookingReference}`,
             url: window.location.href
         };
 
@@ -814,18 +780,22 @@
     // Helper Functions
     // ========================================
     function hideLoading() {
-        elements.trackingLoading.style.display = 'none';
+        if (elements.trackingLoading) {
+            elements.trackingLoading.style.display = 'none';
+        }
     }
 
     function showNoTracking() {
-        elements.trackingLoading.style.display = 'none';
-        elements.noTracking.style.display = 'flex';
-        elements.bottomSheet.style.display = 'none';
-        elements.statusBanner.style.display = 'none';
+        if (elements.trackingLoading) elements.trackingLoading.style.display = 'none';
+        if (elements.noTracking) elements.noTracking.style.display = 'flex';
+        if (elements.bottomSheet) elements.bottomSheet.style.display = 'none';
+        if (elements.statusBanner) elements.statusBanner.style.display = 'none';
     }
 
     function showToast(message) {
-        elements.toast.querySelector('.toast-message').textContent = message;
+        if (!elements.toast) return;
+        const messageEl = elements.toast.querySelector('.toast-message');
+        if (messageEl) messageEl.textContent = message;
         elements.toast.classList.add('show');
         setTimeout(() => elements.toast.classList.remove('show'), 3000);
     }
@@ -883,7 +853,7 @@
             dropoff: {
                 location: 'Sheraton Addis',
                 zone: 'City Center',
-                coordinates: [38.7467, 9.0107]
+                coordinates: [9.0107, 38.7467]
             },
             driver: {
                 name: 'Abebe Bekele',
@@ -891,8 +861,8 @@
                 vehicle: 'Toyota Camry',
                 vehiclePlate: '3-AA-12345',
                 currentLocation: {
-                    lng: BOLE_AIRPORT[0] - 0.02,
-                    lat: BOLE_AIRPORT[1] + 0.01
+                    lat: BOLE_AIRPORT[0] + 0.01,
+                    lng: BOLE_AIRPORT[1] - 0.02
                 }
             }
         };
@@ -904,6 +874,9 @@
     window.addEventListener('beforeunload', () => {
         if (updateInterval) {
             clearInterval(updateInterval);
+        }
+        if (window.microcopyInterval) {
+            clearInterval(window.microcopyInterval);
         }
     });
 
