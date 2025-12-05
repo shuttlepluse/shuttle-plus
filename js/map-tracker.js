@@ -24,10 +24,12 @@
     let driverMarker = null;
     let pickupMarker = null;
     let dropoffMarker = null;
+    let userLocationMarker = null;
     let routeLine = null;
     let booking = null;
     let updateInterval = null;
     let isExpanded = false;
+    let isReceiptCollapsed = false;
 
     // ========================================
     // DOM Elements
@@ -64,8 +66,19 @@
         driverSearchState: document.getElementById('driverSearchState'),
         searchMicrocopy: document.getElementById('searchMicrocopy'),
         searchEta: document.getElementById('searchEta'),
-        driverSection: document.getElementById('driverSection')
+        driverSection: document.getElementById('driverSection'),
+        // New elements
+        receiptToggle: document.getElementById('receiptToggle'),
+        myLocationBtn: document.getElementById('myLocationBtn')
     };
+
+    // User location icon for Leaflet
+    const userLocationIcon = L.divIcon({
+        className: 'user-location-marker',
+        html: `<div class="user-location-marker-pulse"></div><div class="user-location-marker-inner"></div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+    });
 
     // ========================================
     // Custom Marker Icons
@@ -356,38 +369,83 @@
     // Event Listeners
     // ========================================
     function setupEventListeners() {
+        // Receipt toggle
+        if (elements.receiptToggle) {
+            elements.receiptToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleReceipt();
+            });
+        }
+
+        // Receipt header click to toggle
+        const receiptHeader = document.querySelector('.receipt-header');
+        if (receiptHeader) {
+            receiptHeader.addEventListener('click', toggleReceipt);
+        }
+
+        // My location button
+        if (elements.myLocationBtn) {
+            elements.myLocationBtn.addEventListener('click', goToMyLocation);
+        }
+
         if (!elements.bottomSheet) return;
 
-        // Bottom sheet drag
+        // Bottom sheet drag (improved touch handling)
         const sheetHandle = elements.bottomSheet.querySelector('.sheet-handle');
         if (!sheetHandle) return;
 
         let startY = 0;
-        let startTransform = 0;
+        let currentY = 0;
+        let isDragging = false;
 
         sheetHandle.addEventListener('touchstart', (e) => {
+            isDragging = true;
             startY = e.touches[0].clientY;
-            const transform = window.getComputedStyle(elements.bottomSheet).transform;
-            const matrix = new DOMMatrix(transform);
-            startTransform = matrix.m42;
-        });
+            currentY = startY;
+            elements.bottomSheet.style.transition = 'none';
+        }, { passive: true });
 
         sheetHandle.addEventListener('touchmove', (e) => {
-            const deltaY = e.touches[0].clientY - startY;
-            const newTransform = Math.max(0, startTransform + deltaY);
-            elements.bottomSheet.style.transform = `translateY(${newTransform}px)`;
-        });
+            if (!isDragging) return;
+            currentY = e.touches[0].clientY;
+            const deltaY = currentY - startY;
+
+            // Get current position
+            const sheetHeight = elements.bottomSheet.offsetHeight;
+            const viewportHeight = window.innerHeight;
+            const minShow = 180; // Show at least this much
+            const maxTranslate = sheetHeight - minShow;
+
+            // Calculate new position
+            let newTranslate;
+            if (elements.bottomSheet.classList.contains('expanded')) {
+                newTranslate = Math.max(0, Math.min(maxTranslate, deltaY));
+            } else {
+                const baseTranslate = sheetHeight - minShow;
+                newTranslate = Math.max(0, Math.min(maxTranslate, baseTranslate + deltaY));
+            }
+
+            elements.bottomSheet.style.transform = `translateY(${newTranslate}px)`;
+        }, { passive: true });
 
         sheetHandle.addEventListener('touchend', () => {
-            const transform = window.getComputedStyle(elements.bottomSheet).transform;
-            const matrix = new DOMMatrix(transform);
-            const translateY = matrix.m42;
+            if (!isDragging) return;
+            isDragging = false;
+            elements.bottomSheet.style.transition = '';
 
-            if (translateY > 100) {
+            const deltaY = currentY - startY;
+            const threshold = 50;
+
+            if (deltaY > threshold) {
+                // Swiped down - collapse
                 elements.bottomSheet.classList.remove('expanded');
-            } else {
+                isExpanded = false;
+            } else if (deltaY < -threshold) {
+                // Swiped up - expand
                 elements.bottomSheet.classList.add('expanded');
+                isExpanded = true;
             }
+
             elements.bottomSheet.style.transform = '';
         });
 
@@ -402,6 +460,86 @@
         if (elements.messageDriver) elements.messageDriver.addEventListener('click', messageDriver);
         if (elements.shareLocation) elements.shareLocation.addEventListener('click', shareLocation);
         if (elements.emergencyBtn) elements.emergencyBtn.addEventListener('click', showEmergencyOptions);
+    }
+
+    // ========================================
+    // Toggle Receipt Card
+    // ========================================
+    function toggleReceipt() {
+        if (!elements.receiptCard) return;
+
+        isReceiptCollapsed = !isReceiptCollapsed;
+        elements.receiptCard.classList.toggle('collapsed', isReceiptCollapsed);
+    }
+
+    // ========================================
+    // Go to My Location
+    // ========================================
+    function goToMyLocation() {
+        if (!map) {
+            showToast('Map not ready');
+            return;
+        }
+
+        if (!navigator.geolocation) {
+            showToast('Geolocation not supported');
+            return;
+        }
+
+        // Show loading state
+        if (elements.myLocationBtn) {
+            elements.myLocationBtn.classList.add('locating');
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                // Remove loading state
+                if (elements.myLocationBtn) {
+                    elements.myLocationBtn.classList.remove('locating');
+                }
+
+                // Update or create user location marker
+                if (userLocationMarker) {
+                    userLocationMarker.setLatLng([lat, lng]);
+                } else {
+                    userLocationMarker = L.marker([lat, lng], { icon: userLocationIcon }).addTo(map);
+                    userLocationMarker.bindPopup('<b>You are here</b>');
+                }
+
+                // Zoom to user location
+                map.setView([lat, lng], 16, { animate: true });
+
+                showToast('Showing your location');
+            },
+            (error) => {
+                // Remove loading state
+                if (elements.myLocationBtn) {
+                    elements.myLocationBtn.classList.remove('locating');
+                }
+
+                let message = 'Could not get location';
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        message = 'Location permission denied';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        message = 'Location unavailable';
+                        break;
+                    case error.TIMEOUT:
+                        message = 'Location request timed out';
+                        break;
+                }
+                showToast(message);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 60000
+            }
+        );
     }
 
     // ========================================

@@ -109,6 +109,43 @@ body {
     display: flex;
     align-items: center;
     gap: 1rem;
+    cursor: pointer;
+}
+
+/* Receipt Toggle Button */
+.receipt-toggle {
+    margin-left: auto;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.3s;
+    flex-shrink: 0;
+}
+
+.receipt-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.receipt-toggle svg {
+    width: 18px;
+    height: 18px;
+    stroke: white;
+    transition: transform 0.3s ease;
+}
+
+/* Collapsed State */
+.receipt-card.collapsed .receipt-details {
+    display: none;
+}
+
+.receipt-card.collapsed .receipt-toggle svg {
+    transform: rotate(180deg);
 }
 
 .receipt-check {
@@ -367,6 +404,93 @@ body {
     outline: none;
 }
 
+/* ========================================
+   My Location Button
+   ======================================== */
+.my-location-btn {
+    position: fixed;
+    bottom: 220px;
+    right: 16px;
+    z-index: 50;
+    width: 48px;
+    height: 48px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.my-location-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.my-location-btn:active {
+    transform: scale(0.95);
+}
+
+.my-location-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--primary-navy, #183251);
+}
+
+.my-location-btn.locating {
+    background: var(--accent-teal, #597B87);
+}
+
+.my-location-btn.locating svg {
+    stroke: white;
+    animation: pulse-location 1s ease-in-out infinite;
+}
+
+@keyframes pulse-location {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* User Location Marker */
+.user-location-marker {
+    width: 20px;
+    height: 20px;
+}
+
+.user-location-marker-inner {
+    width: 100%;
+    height: 100%;
+    background: #4285F4;
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.5);
+}
+
+.user-location-marker-pulse {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 40px;
+    height: 40px;
+    background: rgba(66, 133, 244, 0.2);
+    border-radius: 50%;
+    animation: user-pulse 2s ease-out infinite;
+}
+
+@keyframes user-pulse {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
 /* Custom Map Markers */
 .driver-marker {
     width: 48px;
@@ -509,26 +633,31 @@ body {
 }
 
 /* ========================================
-   Bottom Sheet
+   Bottom Sheet (Mobile)
    ======================================== */
 .bottom-sheet {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 100;
+    z-index: 90;
     background: white;
     border-radius: 24px 24px 0 0;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
     max-height: 70vh;
     overflow-y: auto;
-    transform: translateY(calc(100% - 200px));
+    transform: translateY(calc(100% - 180px));
     transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
     padding-bottom: env(safe-area-inset-bottom);
+    touch-action: none;
 }
 
 .bottom-sheet.expanded {
     transform: translateY(0);
+}
+
+.bottom-sheet.minimized {
+    transform: translateY(calc(100% - 80px));
 }
 
 .sheet-handle {
@@ -542,6 +671,22 @@ body {
 
 .sheet-handle:active {
     cursor: grabbing;
+}
+
+/* Drag indicator text */
+.sheet-handle::after {
+    content: 'Drag to expand';
+    display: block;
+    text-align: center;
+    font-size: 0.7rem;
+    color: #999;
+    margin-top: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.bottom-sheet:not(.expanded) .sheet-handle:hover::after {
+    opacity: 1;
 }
 
 /* Driver Section */
@@ -1023,19 +1168,89 @@ body {
    Responsive
    ======================================== */
 @media (min-width: 768px) {
+    /* Desktop: Side Panel for driver section */
     .bottom-sheet {
-        left: 50%;
-        transform: translateX(-50%) translateY(calc(100% - 200px));
-        max-width: 500px;
-        border-radius: 24px 24px 0 0;
+        top: calc(72px + env(safe-area-inset-top) + 1rem);
+        left: 1rem;
+        right: auto;
+        bottom: auto;
+        width: 360px;
+        max-height: calc(100vh - 100px - env(safe-area-inset-top));
+        transform: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        overflow-y: auto;
     }
 
     .bottom-sheet.expanded {
-        transform: translateX(-50%) translateY(0);
+        transform: none;
+    }
+
+    .bottom-sheet.minimized {
+        transform: translateX(-320px);
+    }
+
+    /* Hide drag handle on desktop */
+    .sheet-handle {
+        display: none;
+    }
+
+    /* Add close/minimize button for desktop */
+    .bottom-sheet::before {
+        content: '';
+        display: none;
     }
 
     .status-banner {
         max-width: 400px;
+        left: 400px;
+        transform: none;
+    }
+
+    /* Receipt card positioning */
+    .receipt-card {
+        position: absolute;
+        top: calc(72px + env(safe-area-inset-top) + 1rem);
+        right: 1rem;
+        left: auto;
+        margin: 0;
+        width: 360px;
+        max-width: 360px;
+    }
+
+    /* My location button */
+    .my-location-btn {
+        bottom: 100px;
+        right: 20px;
+    }
+
+    /* Driver search state */
+    .driver-search {
+        position: absolute;
+        top: calc(72px + env(safe-area-inset-top) + 1rem);
+        left: 1rem;
+        right: auto;
+        margin: 0;
+        width: 360px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .bottom-sheet {
+        width: 400px;
+    }
+
+    .receipt-card {
+        width: 400px;
+        max-width: 400px;
+    }
+
+    .driver-search {
+        width: 400px;
+    }
+
+    .status-banner {
+        left: 440px;
     }
 }
 
