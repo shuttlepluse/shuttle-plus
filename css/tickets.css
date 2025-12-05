@@ -473,12 +473,27 @@ body.offline .offline-banner {
     gap: 0.5rem;
     color: var(--accent-teal, #597B87);
     font-size: 0.85rem;
-    font-weight: 500;
+    font-weight: 600;
+    background: linear-gradient(135deg, rgba(89, 123, 135, 0.1) 0%, rgba(24, 50, 81, 0.05) 100%);
+    padding: 0.5rem 0.875rem;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.ticket-card:hover .ticket-action {
+    background: linear-gradient(135deg, var(--accent-teal, #597B87) 0%, var(--primary-navy, #183251) 100%);
+    color: white;
 }
 
 .ticket-action svg {
     width: 18px;
     height: 18px;
+    transition: transform 0.2s ease;
+}
+
+.ticket-card:hover .ticket-action svg {
+    transform: translateX(3px);
 }
 
 /* ========================================
