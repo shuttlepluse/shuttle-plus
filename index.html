@@ -124,11 +124,11 @@
                     <form class="booking-form" id="bookingForm">
                         <div class="form-group">
                             <label><i class="fas fa-plane-arrival"></i> Flight Number</label>
-                            <input type="text" placeholder="e.g. ET 500, LH 590" required>
+                            <input type="text" id="homeFlightNumber" placeholder="e.g. ET 500, LH 590" required>
                         </div>
                         <div class="form-group">
                             <label id="destinationLabel"><i class="fas fa-map-marker-alt"></i> Drop-off Location</label>
-                            <select required>
+                            <select id="homeDestination" required>
                                 <option value="" id="destinationPlaceholder">Select destination</option>
                                 <optgroup label="Hotels - Near Airport">
                                     <option>Ethiopian Skylight Hotel</option>
@@ -153,11 +153,11 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label><i class="fas fa-calendar"></i> Arrival Date</label>
-                                <input type="date" required>
+                                <input type="date" id="homeDate" required>
                             </div>
                             <div class="form-group">
                                 <label><i class="fas fa-clock"></i> Flight Time</label>
-                                <input type="time" required>
+                                <input type="time" id="homeTime" required>
                             </div>
                         </div>
                         <div class="form-group">

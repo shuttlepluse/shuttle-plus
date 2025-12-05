@@ -235,11 +235,11 @@
             // Update the route summary card display
             updateRouteSummaryCard();
 
-            // Restore extras from editRouteData if returning from edit
-            const editData = sessionStorage.getItem('editRouteData');
-            if (editData) {
+            // Restore extras from bookingExtras if returning from edit
+            const extrasData = sessionStorage.getItem('bookingExtras');
+            if (extrasData) {
                 try {
-                    const extras = JSON.parse(editData);
+                    const extras = JSON.parse(extrasData);
                     if (extras.vehicleClass) {
                         bookingData.vehicleClass = extras.vehicleClass;
                     }
@@ -257,7 +257,7 @@
                 } catch (e) {
                     console.error('[Booking] Failed to restore extras:', e);
                 }
-                sessionStorage.removeItem('editRouteData');
+                sessionStorage.removeItem('bookingExtras');
             }
 
             // Clear quickBookingData to prevent stale data on future edits
@@ -359,7 +359,16 @@
             luggage: bookingData.luggage
         };
 
+        // Store in both formats for compatibility
         sessionStorage.setItem('editRouteData', JSON.stringify(editData));
+
+        // Also store extras separately so they survive the edit flow
+        sessionStorage.setItem('bookingExtras', JSON.stringify({
+            vehicleClass: bookingData.vehicleClass,
+            childSeat: bookingData.childSeat,
+            meetGreet: bookingData.meetGreet
+        }));
+
         window.location.href = '../index.html#booking';
     };
 

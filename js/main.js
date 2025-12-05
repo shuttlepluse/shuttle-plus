@@ -230,8 +230,11 @@ function initFormHandlers() {
         bookingForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            // Get form data and store in sessionStorage for the booking page
-            const inputs = bookingForm.querySelectorAll('input, select');
+            // Get form data using IDs for reliable selection
+            const flightInput = document.getElementById('homeFlightNumber');
+            const destinationSelect = document.getElementById('homeDestination');
+            const dateInput = document.getElementById('homeDate');
+            const timeInput = document.getElementById('homeTime');
             const passengerSelect = document.getElementById('homePassengers');
 
             // Use exact passenger count from popup if available, otherwise use dropdown value
@@ -242,10 +245,10 @@ function initFormHandlers() {
             const luggage = exactLuggage || passengers;
 
             const quickBookingData = {
-                flightNumber: inputs[0]?.value || '',
-                destination: inputs[1]?.value || '',
-                date: inputs[2]?.value || '',
-                time: inputs[3]?.value || '',
+                flightNumber: flightInput?.value || '',
+                destination: destinationSelect?.value || '',
+                date: dateInput?.value || '',
+                time: timeInput?.value || '',
                 passengers: passengers,
                 luggage: luggage,
                 transferType: document.querySelector('.tab-btn.active')?.dataset.tab || 'arrival'
@@ -474,31 +477,34 @@ function loadEditRouteDataInner(editData) {
         const bookingForm = document.getElementById('bookingForm');
         if (!bookingForm) return;
 
-        const inputs = bookingForm.querySelectorAll('input, select');
+        // Use IDs for reliable element selection
+        const flightInput = document.getElementById('homeFlightNumber');
+        const destinationSelect = document.getElementById('homeDestination');
+        const dateInput = document.getElementById('homeDate');
+        const timeInput = document.getElementById('homeTime');
+        const passengerSelect = document.getElementById('homePassengers');
 
         // Set flight number
-        if (inputs[0] && data.flightNumber) {
-            inputs[0].value = data.flightNumber;
+        if (flightInput && data.flightNumber) {
+            flightInput.value = data.flightNumber;
         }
 
         // Set destination
-        if (inputs[1] && data.destination) {
-            inputs[1].value = data.destination;
+        if (destinationSelect && data.destination) {
+            destinationSelect.value = data.destination;
         }
 
         // Set date
-        if (inputs[2] && data.date) {
-            inputs[2].value = data.date;
+        if (dateInput && data.date) {
+            dateInput.value = data.date;
         }
 
         // Set time
-        if (inputs[3] && data.time) {
-            inputs[3].value = data.time;
+        if (timeInput && data.time) {
+            timeInput.value = data.time;
         }
 
         // Set passengers using grouped dropdown (new groups: 1-3, 4-5, 6-11)
-        const passengerSelect = document.getElementById('homePassengers');
-
         if (passengerSelect && data.passengers) {
             const passengerCount = parseInt(data.passengers) || 2;
             // Select the appropriate group based on passenger count
@@ -561,18 +567,19 @@ function loadEditRouteDataInner(editData) {
         const exactPassengers = data.passengers || '2';
         const exactLuggage = data.luggage || exactPassengers;
         const quickBookingData = {
-            flightNumber: inputs[0]?.value || '',
-            destination: inputs[1]?.value || '',
-            date: inputs[2]?.value || '',
-            time: inputs[3]?.value || '',
+            flightNumber: flightInput?.value || '',
+            destination: destinationSelect?.value || '',
+            date: dateInput?.value || '',
+            time: timeInput?.value || '',
             passengers: exactPassengers,
             luggage: exactLuggage,
             transferType: data.transferType || 'arrival'
         };
         sessionStorage.setItem('quickBookingData', JSON.stringify(quickBookingData));
 
-        // DON'T remove editRouteData here - booking.js needs it to restore extras (childSeat, meetGreet)
-        // booking.js will remove it after restoring extras
+        // Remove editRouteData after loading to prevent stale data on hard refresh
+        // booking.js should get extras from quickBookingData via a different mechanism
+        sessionStorage.removeItem('editRouteData');
 
         console.log('[Main] Edit route data loaded successfully, quickBookingData created');
     } catch (error) {
