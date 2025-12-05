@@ -288,15 +288,22 @@ function initPassengerPopup() {
         '11': { min: 6, max: 11, hint: 'Recommended for large groups', title: '6-11 Passengers' }
     };
 
-    // Show popup when dropdown changes
-    passengerSelect.addEventListener('change', function() {
-        const selectedValue = this.value;
+    // Function to show popup with current selection
+    function showPopupForSelection() {
+        const selectedValue = passengerSelect.value;
         const config = groupConfig[selectedValue];
 
         if (config) {
             currentMin = config.min;
             currentMax = config.max;
-            currentValue = currentMin;
+
+            // Use existing exact value if within range, otherwise use min
+            const existingValue = parseInt(passengerSelect.dataset.exactPassengers) || 0;
+            if (existingValue >= currentMin && existingValue <= currentMax) {
+                currentValue = existingValue;
+            } else {
+                currentValue = currentMin;
+            }
 
             // Update popup
             popupTitle.textContent = config.title;
@@ -310,10 +317,24 @@ function initPassengerPopup() {
             // Show popup
             popup.classList.add('active');
         }
+    }
+
+    // Show popup when dropdown changes
+    passengerSelect.addEventListener('change', showPopupForSelection);
+
+    // Also show popup on click (for re-editing same selection)
+    passengerSelect.addEventListener('click', function(e) {
+        // Small delay to let the change event fire first if applicable
+        setTimeout(() => {
+            if (!popup.classList.contains('active')) {
+                showPopupForSelection();
+            }
+        }, 100);
     });
 
     // Close popup
-    popupClose?.addEventListener('click', () => {
+    popupClose?.addEventListener('click', (e) => {
+        e.stopPropagation();
         popup.classList.remove('active');
     });
 
@@ -491,6 +512,13 @@ function loadEditRouteDataInner(editData) {
             // Store exact values for popup
             passengerSelect.dataset.exactPassengers = passengerCount;
             passengerSelect.dataset.exactLuggage = passengerCount;
+
+            // Update dropdown text to show exact count
+            const selectedOption = passengerSelect.options[passengerSelect.selectedIndex];
+            if (selectedOption) {
+                const groupLabel = passengerCount <= 3 ? 'Solo/Couples' : passengerCount <= 5 ? 'Small Groups' : 'Large Groups';
+                selectedOption.textContent = `${passengerCount} Passenger${passengerCount > 1 ? 's' : ''}, ${passengerCount} Bag${passengerCount > 1 ? 's' : ''} (${groupLabel})`;
+            }
         }
 
         // Set transfer type tab
@@ -529,17 +557,16 @@ function loadEditRouteDataInner(editData) {
         }
 
         // IMPORTANT: Also create quickBookingData so it's ready when user clicks "See Prices"
-        const passengerSelectEl = document.getElementById('homePassengers');
-        const selectedOption = passengerSelectEl?.options[passengerSelectEl.selectedIndex];
-        const passengers = passengerSelectEl?.value || '2';
-        const luggage = selectedOption?.dataset.luggage || passengers;
+        // Use exact passenger count from data, not the dropdown group value
+        const exactPassengers = data.passengers || '2';
+        const exactLuggage = data.luggage || exactPassengers;
         const quickBookingData = {
             flightNumber: inputs[0]?.value || '',
             destination: inputs[1]?.value || '',
             date: inputs[2]?.value || '',
             time: inputs[3]?.value || '',
-            passengers: passengers,
-            luggage: luggage,
+            passengers: exactPassengers,
+            luggage: exactLuggage,
             transferType: data.transferType || 'arrival'
         };
         sessionStorage.setItem('quickBookingData', JSON.stringify(quickBookingData));
