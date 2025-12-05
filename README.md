@@ -4,23 +4,52 @@ Premium airport transfer service platform for Addis Ababa, Ethiopia. A full-stac
 
 ## Recent Updates (December 2025)
 
+### Live Tracking Page Improvements
+- **Collapsible Receipt Card**: Toggle button to collapse/expand booking confirmation receipt
+- **Side Panel Layout (Desktop)**: Driver section displays as left side panel on screens ≥768px
+- **Improved Bottom Sheet (Mobile)**: Enhanced touch/drag handling for the driver info sheet
+- **My Location Button**: Geolocation-powered button to zoom map to passenger's current location
+- **User Location Marker**: Pulsing blue marker shows your position on the map
+
+### Free Map Integration
+- **Leaflet + OpenStreetMap**: Replaced Mapbox with 100% free OpenStreetMap tiles
+- No API key required, no usage limits
+- Full driver tracking, route display, and location markers
+
+### Payment Page Enhancements
+- **Enhanced Visual Design**: Improved layout with better spacing, shadows, and visual hierarchy
+- **Payment Method Tabs**: Hover effects and active states for Card, Telebirr, Cash options
+- **Form Field Styling**: Better input focus states and validation feedback
+- **Price Display**: More prominent pricing section with clear breakdowns
+
 ### Booking Flow Redesign
 - **Modern Dark Theme**: Booking pages now feature a dark gradient background matching the home page hero section
 - **Simplified 3-Step Process**: Vehicle Selection → Contact Details → Confirmation
+- **Smart Navigation**: Proper handling when returning from payment page (preserves form data)
+- **State Management**: `returningFromPayment` flag prevents fresh bookings from skipping steps
 
-### Passenger & Vehicle System
-- **New Passenger Groups**: Restructured from 1-2, 3-5, 6-11 to **1-3, 4-5, 6-11** for better vehicle matching
-- **Floating Popup Form**: Interactive popup for selecting exact passenger and luggage counts with +/- controls
-- **Smart Vehicle Recommendations**:
-  - 1-3 passengers: Sedan recommended (all vehicles available)
-  - 4-5 passengers: SUV or Van recommended (sedans hidden)
-  - 6-11 passengers: Van only
-- **Luggage Matching**: Default 1 bag per passenger with flexible adjustment
+### Vehicle System Overhaul
+- **Separate Vehicle Types**: SUV and Van now distinct options (previously combined)
+- **Vehicle Classes**:
+  - Standard Sedan ($30) - Up to 3 passengers
+  - Executive Sedan ($45) - Up to 3 passengers, premium
+  - SUV ($55) - Up to 5 passengers
+  - Van/Minibus ($70) - Up to 11 passengers
+  - Luxury Class ($87) - Up to 3 passengers, Mercedes E-Class
+
+### Passenger & Luggage System
+- **Grouped Dropdown**: Single dropdown for passenger/luggage selection
+- **Smart Options**: Options filtered based on vehicle capacity
+- **Capacity Rules**:
+  - Sedans: 1-3 passengers, 1-3 bags
+  - SUV: 1-5 passengers, 1-5 bags
+  - Van: 1-11 passengers, 1-11 bags
 
 ### Technical Improvements
 - **Edit Route Flow**: Preserved extras (child seat, meet & greet) when returning from route edit
 - **State Persistence**: Session storage for booking data survives navigation
 - **Cache Busting**: Version parameters on CSS/JS files for reliable updates
+- **Error Handling**: Better error messages and fallbacks throughout booking flow
 
 ## Branch Structure
 
@@ -205,7 +234,7 @@ rideshare-website/
 - **AviationStack** - Flight tracking
 - **Twilio** - SMS & WhatsApp messaging
 - **SendGrid** - Email delivery
-- **Mapbox** - Real-time maps
+- **Leaflet + OpenStreetMap** - Real-time maps (free, no API key)
 - **Web Push** - Browser notifications
 
 ## Quick Start
@@ -299,7 +328,20 @@ Key endpoints:
 
 ## Deployment
 
-### Railway.app (Recommended)
+### Render.com (Current)
+
+The frontend is deployed as a static site on Render:
+- **Live URL**: https://shuttle-plus-1.onrender.com
+- Auto-deploys on push to `master` branch
+- Static site configuration with custom headers
+
+### Manual Deployment
+
+1. Set all environment variables
+2. Install dependencies: `cd server && npm install --production`
+3. Start server: `npm start`
+
+### Alternative: Railway.app
 
 Configuration in `railway.json`:
 ```json
@@ -311,12 +353,6 @@ Configuration in `railway.json`:
   }
 }
 ```
-
-### Manual Deployment
-
-1. Set all environment variables
-2. Install dependencies: `cd server && npm install --production`
-3. Start server: `npm start`
 
 ## PWA Features
 
