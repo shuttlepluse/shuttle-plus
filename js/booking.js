@@ -326,14 +326,28 @@
             routeTime.textContent = bookingData.time;
         }
 
-        // Update passengers
+        // Update passengers and luggage - show range labels for groups
+        // Both are tied to the same passenger group selection
+        const passengers = parseInt(bookingData.passengers) || 2;
+
         if (routePassengers) {
-            routePassengers.textContent = `${bookingData.passengers} passenger${bookingData.passengers > 1 ? 's' : ''}`;
+            if (passengers >= 6) {
+                routePassengers.textContent = '6+ passengers';
+            } else if (passengers >= 3) {
+                routePassengers.textContent = '3-5 passengers';
+            } else {
+                routePassengers.textContent = '1-2 passengers';
+            }
         }
 
-        // Update luggage
         if (routeLuggage) {
-            routeLuggage.textContent = `${bookingData.luggage} bag${bookingData.luggage > 1 ? 's' : ''}`;
+            if (passengers >= 6) {
+                routeLuggage.textContent = '6+ bags';
+            } else if (passengers >= 3) {
+                routeLuggage.textContent = '3-5 bags';
+            } else {
+                routeLuggage.textContent = '1-2 bags';
+            }
         }
     }
 
@@ -707,7 +721,7 @@
                 capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For 6 and above passengers, only Van is available';
                 capacityWarning.style.display = 'block';
             } else if (passengers >= 3) {
-                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For 3-5 passengers, SUV is recommended';
+                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For 3-5 passengers, SUV or Van is recommended';
                 capacityWarning.style.display = 'block';
             } else {
                 capacityWarning.style.display = 'none';
