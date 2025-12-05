@@ -31,6 +31,29 @@
     };
 
     // ========================================
+    // Verification Code Generator
+    // ========================================
+    function generateVerificationCode(reference) {
+        // Generate a 4-character alphanumeric code based on booking reference
+        // This ensures the same ticket always gets the same code
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excluded O, 0, I, 1 for clarity
+        let hash = 0;
+        const str = reference || Date.now().toString();
+        for (let i = 0; i < str.length; i++) {
+            hash = ((hash << 5) - hash) + str.charCodeAt(i);
+            hash = hash & hash;
+        }
+        hash = Math.abs(hash);
+
+        let code = '';
+        for (let i = 0; i < 4; i++) {
+            code += chars[hash % chars.length];
+            hash = Math.floor(hash / chars.length);
+        }
+        return code;
+    }
+
+    // ========================================
     // Initialize
     // ========================================
     async function init() {
@@ -342,7 +365,10 @@
                 <div class="qr-container">
                     <canvas id="ticketQR"></canvas>
                 </div>
-                <p class="qr-hint">Show this code to your driver</p>
+                <div class="verification-code">
+                    <span class="verification-label">Show this code to your driver</span>
+                    <span class="verification-number">${generateVerificationCode(selectedTicket.bookingReference || selectedTicket.id)}</span>
+                </div>
             </div>
 
             <div class="detail-section">

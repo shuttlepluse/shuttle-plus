@@ -609,6 +609,31 @@ body.offline .offline-banner {
     margin-top: 0.75rem;
 }
 
+.verification-code {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.verification-label {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.verification-number {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.4rem;
+    color: #1a1a2e;
+    background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    border: 2px dashed #ccc;
+    font-family: 'Courier New', monospace;
+}
+
 /* Detail Sections */
 .detail-section {
     padding: 1.25rem 1.5rem;
