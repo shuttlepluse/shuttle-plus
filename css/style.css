@@ -354,7 +354,7 @@ img {
     min-height: 100vh;
     display: flex;
     align-items: center;
-    padding: 6rem 0 4rem;
+    padding: 6rem 0 10rem;
     overflow: hidden;
 }
 
@@ -637,7 +637,7 @@ img {
 
 /* Partners Section */
 .partners {
-    padding: 3rem 0;
+    padding: 1.5rem 0;
     background: var(--gray-50);
     border-bottom: 1px solid var(--gray-200);
 }
