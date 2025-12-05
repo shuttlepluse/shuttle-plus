@@ -124,10 +124,57 @@
     }
 
     // ========================================
+    // Import Completed Booking from Payment Flow
+    // ========================================
+    async function importCompletedBooking() {
+        try {
+            const completedBookingData = sessionStorage.getItem('completedBooking');
+            if (completedBookingData && typeof OfflineStorage !== 'undefined') {
+                const completedBooking = JSON.parse(completedBookingData);
+
+                // Transform to ticket format expected by BookingStorage
+                const ticket = {
+                    bookingReference: completedBooking.bookingReference,
+                    status: 'confirmed',
+                    pickup: {
+                        location: completedBooking.pickup,
+                        scheduledTime: completedBooking.pickupTime
+                    },
+                    dropoff: {
+                        location: completedBooking.dropoff,
+                        zone: completedBooking.dropoff
+                    },
+                    vehicle: {
+                        class: completedBooking.vehicleClass
+                    },
+                    passengers: completedBooking.passengers,
+                    pricing: completedBooking.pricing,
+                    contact: completedBooking.contact,
+                    paymentMethod: completedBooking.paymentMethod,
+                    createdAt: completedBooking.confirmedAt,
+                    flight: completedBooking.flight
+                };
+
+                // Save to IndexedDB
+                await OfflineStorage.bookings.save(ticket);
+                console.log('[Tickets] Imported completed booking:', ticket.bookingReference);
+
+                // Clear from sessionStorage to prevent duplicate imports
+                sessionStorage.removeItem('completedBooking');
+            }
+        } catch (error) {
+            console.error('[Tickets] Error importing completed booking:', error);
+        }
+    }
+
+    // ========================================
     // Load Tickets
     // ========================================
     async function loadTickets() {
         showLoading(true);
+
+        // First, check for any completed booking from payment flow
+        await importCompletedBooking();
 
         try {
             // Try to fetch from API first
@@ -136,23 +183,23 @@
                 if (response.success) {
                     tickets = response.data;
                     // Cache tickets offline
-                    if (typeof BookingStorage !== 'undefined') {
+                    if (typeof OfflineStorage !== 'undefined') {
                         for (const ticket of tickets) {
-                            await BookingStorage.save(ticket);
+                            await OfflineStorage.bookings.save(ticket);
                         }
                     }
                 }
             } else {
                 // Load from offline storage
-                if (typeof BookingStorage !== 'undefined') {
-                    tickets = await BookingStorage.getAll();
+                if (typeof OfflineStorage !== 'undefined') {
+                    tickets = await OfflineStorage.bookings.getAll();
                 }
             }
         } catch (error) {
             console.error('[Tickets] Error loading tickets:', error);
             // Fallback to offline storage
-            if (typeof BookingStorage !== 'undefined') {
-                tickets = await BookingStorage.getAll();
+            if (typeof OfflineStorage !== 'undefined') {
+                tickets = await OfflineStorage.bookings.getAll();
             }
         }
 
