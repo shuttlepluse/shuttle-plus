@@ -690,11 +690,27 @@
     border-radius: 16px;
     border: 1px solid var(--gray-200);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
+    animation: summarySlideIn 0.4s ease forwards;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.summary-section:nth-child(1) { animation-delay: 0.05s; }
+.summary-section:nth-child(2) { animation-delay: 0.1s; }
+.summary-section:nth-child(3) { animation-delay: 0.15s; }
+.summary-section:nth-child(4) { animation-delay: 0.2s; }
+
+@keyframes summarySlideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .summary-section:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }
 
 .summary-section h4 {
@@ -775,12 +791,22 @@
 }
 
 .summary-section.pricing {
-    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-    border-color: #a7f3d0;
+    background: linear-gradient(135deg, rgba(24, 50, 81, 0.06) 0%, rgba(89, 123, 135, 0.04) 100%);
+    border-color: rgba(24, 50, 81, 0.15);
 }
 
 .summary-section.pricing h4 i {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #183251 0%, #2a4a66 100%);
+}
+
+/* Enhanced total row in pricing */
+.summary-section.pricing .summary-row.total {
+    background: linear-gradient(135deg, rgba(24, 50, 81, 0.08) 0%, rgba(89, 123, 135, 0.04) 100%);
+    border-top-color: rgba(24, 50, 81, 0.2);
+}
+
+.summary-section.pricing .summary-row.total span:last-child {
+    color: #183251;
 }
 
 /* Payment Section */

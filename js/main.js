@@ -324,23 +324,21 @@ function initPassengerPopup() {
 
     // Track if popup was already confirmed (to allow re-editing)
     let popupConfirmed = false;
+    let hasInteracted = false;
 
     // Show popup when dropdown changes
     passengerSelect.addEventListener('change', function() {
         popupConfirmed = false; // Reset on change
+        hasInteracted = true;
         showPopupForSelection();
     });
 
-    // Also show popup on focus (for re-editing same selection)
-    passengerSelect.addEventListener('focus', function(e) {
-        // Only show popup if user explicitly clicks to re-edit after confirming
-        if (popupConfirmed && !popup.classList.contains('active')) {
-            // Small delay to prevent immediate trigger
-            setTimeout(() => {
-                if (!popup.classList.contains('active')) {
-                    showPopupForSelection();
-                }
-            }, 200);
+    // Show popup on click (first interaction or re-editing)
+    passengerSelect.addEventListener('click', function(e) {
+        // Show popup on first interaction OR if already confirmed (re-editing)
+        if ((!hasInteracted || popupConfirmed) && !popup.classList.contains('active')) {
+            hasInteracted = true;
+            showPopupForSelection();
         }
     });
 

@@ -184,6 +184,35 @@
     // Event Listeners
     // ========================================
     function setupEventListeners() {
+        // Back button - restore booking data before navigating
+        const backBtn = document.getElementById('backBtn');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                // Restore pendingBooking to quickBookingData so booking page can load it
+                if (bookingData) {
+                    const quickData = {
+                        transferType: bookingData.type || 'arrival',
+                        flightNumber: bookingData.flight?.number || '',
+                        destination: bookingData.dropoff?.location || bookingData.dropoff || '',
+                        date: bookingData.pickup?.scheduledTime?.split('T')[0] || '',
+                        time: bookingData.pickup?.scheduledTime?.split('T')[1]?.substring(0, 5) || '',
+                        passengers: bookingData.passengers || 2,
+                        luggage: bookingData.luggage || 2
+                    };
+                    sessionStorage.setItem('quickBookingData', JSON.stringify(quickData));
+                    // Also save bookingState for extras
+                    const bookingState = {
+                        vehicleClass: bookingData.vehicleClass,
+                        childSeat: bookingData.childSeat,
+                        meetGreet: bookingData.meetGreet,
+                        step: 3
+                    };
+                    sessionStorage.setItem('bookingState', JSON.stringify(bookingState));
+                }
+                window.location.href = 'booking.html';
+            });
+        }
+
         // Payment method tabs
         document.querySelectorAll('.method-tab').forEach(tab => {
             tab.addEventListener('click', () => selectPaymentMethod(tab.dataset.method));
@@ -259,7 +288,12 @@
     // Update Summary
     // ========================================
     function updateSummary() {
-        if (!bookingData) return;
+        if (!bookingData) {
+            console.log('[Payment] No booking data available');
+            return;
+        }
+
+        console.log('[Payment] Updating summary with:', bookingData);
 
         // Handle both old format (string) and new format (object with .location)
         const pickupLoc = typeof bookingData.pickup === 'object'
@@ -272,34 +306,59 @@
             ? bookingData.pickup?.scheduledTime
             : bookingData.pickupTime;
 
-        elements.pickupLocation.textContent = pickupLoc || 'Bole International Airport';
-        elements.dropoffLocation.textContent = dropoffLoc || 'Destination';
-        elements.tripDateTime.textContent = formatDateTime(pickupTime);
-        elements.vehicleClass.textContent = getVehicleLabel(bookingData.vehicleClass);
-        elements.passengers.textContent = bookingData.passengers || 1;
+        // Update elements with null checks
+        if (elements.pickupLocation) {
+            elements.pickupLocation.textContent = pickupLoc || 'Bole International Airport';
+        }
+        if (elements.dropoffLocation) {
+            elements.dropoffLocation.textContent = dropoffLoc || 'Destination';
+        }
+        if (elements.tripDateTime) {
+            elements.tripDateTime.textContent = formatDateTime(pickupTime);
+        }
+        if (elements.vehicleClass) {
+            elements.vehicleClass.textContent = getVehicleLabel(bookingData.vehicleClass);
+        }
+        if (elements.passengers) {
+            elements.passengers.textContent = bookingData.passengers || 1;
+        }
 
         // Pricing
         const pricing = bookingData.pricing || {};
-        elements.baseFare.textContent = `$${(pricing.baseFare || 30).toFixed(2)}`;
+        const baseFare = pricing.baseFare || 30;
 
-        if (pricing.lateNightSurcharge) {
+        if (elements.baseFare) {
+            elements.baseFare.textContent = `$${baseFare.toFixed(2)}`;
+        }
+
+        if (pricing.lateNightSurcharge && elements.surchargeRow && elements.surcharge) {
             elements.surchargeRow.style.display = 'flex';
             elements.surcharge.textContent = `$${pricing.lateNightSurcharge.toFixed(2)}`;
         }
 
-        if (pricing.additionalStops) {
+        if (pricing.additionalStops && elements.stopsRow && elements.stopsCharge) {
             elements.stopsRow.style.display = 'flex';
             elements.stopsCharge.textContent = `$${pricing.additionalStops.toFixed(2)}`;
         }
 
-        const totalUSD = pricing.totalUSD || 30;
-        const totalETB = pricing.totalETB || 4740;
+        const totalUSD = pricing.totalUSD || baseFare;
+        const totalETB = pricing.totalETB || Math.round(totalUSD * 158);
 
-        elements.totalUSD.textContent = `$${totalUSD.toFixed(2)}`;
-        elements.totalETB.textContent = `(${formatNumber(totalETB)} ETB)`;
-        elements.cashAmountETB.textContent = `${formatNumber(totalETB)} ETB`;
-        elements.cashAmountUSD.textContent = `(~$${totalUSD.toFixed(2)} USD)`;
-        elements.payAmount.textContent = `$${totalUSD.toFixed(2)}`;
+        if (elements.totalUSD) {
+            elements.totalUSD.textContent = `$${totalUSD.toFixed(2)}`;
+        }
+        if (elements.totalETB) {
+            elements.totalETB.textContent = `(${formatNumber(totalETB)} ETB)`;
+        }
+        if (elements.cashAmountETB) {
+            elements.cashAmountETB.textContent = `${formatNumber(totalETB)} ETB`;
+        }
+        if (elements.cashAmountUSD) {
+            elements.cashAmountUSD.textContent = `(~$${totalUSD.toFixed(2)} USD)`;
+        }
+        if (elements.payAmount) {
+            elements.payAmount.textContent = `$${totalUSD.toFixed(2)}`;
+        }
     }
 
     // ========================================
@@ -766,7 +825,8 @@
         const labels = {
             standard: 'Standard Sedan',
             executive: 'Executive Sedan',
-            suv: 'SUV / Minivan',
+            suv: 'SUV',
+            van: 'Van',
             luxury: 'Luxury Class'
         };
         return labels[vehicleClass] || 'Standard Sedan';
