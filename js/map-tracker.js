@@ -666,6 +666,9 @@
     // ========================================
     // Draw Route
     // ========================================
+    let routingRetryCount = 0;
+    const MAX_ROUTING_RETRIES = 5;
+
     function drawRoute() {
         if (!map || !booking) return;
 
@@ -688,9 +691,16 @@
             routeLine = null;
         }
 
-        // Check if Leaflet Routing Machine is available
+        // Check if Leaflet Routing Machine is available - retry if not loaded yet
         if (typeof L.Routing === 'undefined') {
-            // Fallback to simple polyline if routing library not loaded
+            routingRetryCount++;
+            if (routingRetryCount <= MAX_ROUTING_RETRIES) {
+                console.log(`[Map] Waiting for L.Routing to load... (attempt ${routingRetryCount})`);
+                setTimeout(drawRoute, 500);
+                return;
+            }
+            // Fallback to simple polyline if routing library still not loaded
+            console.warn('[Map] L.Routing not available, using fallback polyline');
             routeLine = L.polyline([
                 [driverLocation.lat, driverLocation.lng],
                 pickupCoords,
@@ -703,6 +713,9 @@
             }).addTo(map);
             return;
         }
+
+        // Reset retry count on success
+        routingRetryCount = 0;
 
         // Create OSRM route with real roads
         try {
@@ -1021,9 +1034,90 @@
     }
 
     function showEmergencyOptions() {
-        if (confirm('Do you need emergency assistance?')) {
-            // Ethiopian emergency number
-            window.location.href = 'tel:911';
+        // Create emergency modal if it doesn't exist
+        let modal = document.getElementById('emergencyModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'emergencyModal';
+            modal.className = 'emergency-modal';
+            modal.innerHTML = `
+                <div class="emergency-modal-content">
+                    <div class="emergency-modal-header">
+                        <div class="emergency-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </div>
+                        <h3>Emergency Assistance</h3>
+                        <p>Select the type of help you need</p>
+                    </div>
+                    <div class="emergency-options">
+                        <button class="emergency-option" data-action="police">
+                            <div class="option-icon police">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                            </div>
+                            <span class="option-label">Police</span>
+                            <span class="option-number">991</span>
+                        </button>
+                        <button class="emergency-option" data-action="ambulance">
+                            <div class="option-icon ambulance">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5H15V3H9v2H6.5c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm4.5-5H8V8h3v3zm2 0V8h3v3h-3zm4.5 5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                            </div>
+                            <span class="option-label">Ambulance</span>
+                            <span class="option-number">907</span>
+                        </button>
+                        <button class="emergency-option" data-action="fire">
+                            <div class="option-icon fire">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12.9l-2.13 2.09c-.56.56-.87 1.29-.87 2.07C9 18.68 10.35 20 12 20s3-1.32 3-2.94c0-.78-.31-1.52-.87-2.07L12 12.9zM16 6l-.44.55c-.42.52-.98.75-1.54.75C13 7.3 12 6.52 12 5.3V2S4 6 4 13c0 4.42 3.58 8 8 8s8-3.58 8-8c0-2.96-1.61-5.62-4-7z"/></svg>
+                            </div>
+                            <span class="option-label">Fire</span>
+                            <span class="option-number">939</span>
+                        </button>
+                        <button class="emergency-option" data-action="support">
+                            <div class="option-icon support">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.02.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z"/></svg>
+                            </div>
+                            <span class="option-label">Shuttle Plus Support</span>
+                            <span class="option-number">+251 11 123 4567</span>
+                        </button>
+                    </div>
+                    <button class="emergency-cancel" id="emergencyCancel">Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Add event listeners
+            modal.querySelectorAll('.emergency-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const action = btn.dataset.action;
+                    const numbers = {
+                        police: '991',
+                        ambulance: '907',
+                        fire: '939',
+                        support: '+251111234567'
+                    };
+                    closeEmergencyModal();
+                    window.location.href = `tel:${numbers[action]}`;
+                });
+            });
+
+            modal.querySelector('#emergencyCancel').addEventListener('click', closeEmergencyModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeEmergencyModal();
+            });
+        }
+
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEmergencyModal() {
+        const modal = document.getElementById('emergencyModal');
+        if (modal) {
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
         }
     }
 

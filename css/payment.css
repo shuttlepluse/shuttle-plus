@@ -88,7 +88,7 @@ body {
 .payment-main {
     max-width: 600px;
     margin: 0 auto;
-    padding: 1.25rem 1rem;
+    padding: 0.75rem 1rem;
 }
 
 .payment-main h2 {
@@ -104,7 +104,7 @@ body {
    Order Summary
    ======================================== */
 .order-summary {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .summary-card {
@@ -116,9 +116,9 @@ body {
 }
 
 .trip-info {
-    padding: 1.5rem;
+    padding: 1rem 1.25rem;
     border-bottom: 1px dashed #e5e7eb;
-    background: linear-gradient(180deg, rgba(89, 123, 135, 0.03) 0%, transparent 100%);
+    background: #fff;
 }
 
 .trip-route {
@@ -168,7 +168,7 @@ body {
 .trip-details {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .detail-item {
@@ -178,39 +178,44 @@ body {
 .detail-label {
     display: block;
     font-size: 0.7rem;
-    color: #888;
+    color: #666;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.2rem;
 }
 
 .detail-value {
     font-weight: 600;
     font-size: 0.85rem;
-    color: var(--primary-navy, #183251);
+    color: #1a1a1a;
 }
 
 /* Price Breakdown */
 .price-breakdown {
-    padding: 1.25rem 1.5rem;
-    background: linear-gradient(135deg, rgba(24, 50, 81, 0.04) 0%, rgba(89, 123, 135, 0.02) 100%);
+    padding: 1rem 1.25rem;
+    background: #f8f9fa;
 }
 
 .price-row {
     display: flex;
     justify-content: space-between;
-    padding: 0.625rem 0;
+    padding: 0.5rem 0;
     font-size: 0.9rem;
-    color: #666;
+    color: #333;
+}
+
+.price-row span:last-child {
+    font-weight: 600;
+    color: #1a1a1a;
 }
 
 .price-row.total {
-    border-top: 2px solid rgba(24, 50, 81, 0.1);
-    margin-top: 0.75rem;
-    padding-top: 1rem;
+    border-top: 2px solid #e0e0e0;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
     font-weight: 700;
-    font-size: 1.125rem;
-    color: var(--primary-navy, #183251);
+    font-size: 1.1rem;
+    color: #1a1a1a;
 }
 
 .total-amount {
@@ -228,14 +233,14 @@ body {
    Payment Methods
    ======================================== */
 .payment-methods {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .method-tabs {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-    margin-bottom: 1.25rem;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .method-tab {
@@ -1134,8 +1139,41 @@ body {
         background: #252540;
     }
 
+    .trip-info {
+        background: #252540;
+    }
+
     .price-breakdown {
         background: #2d2d4a;
+    }
+
+    .detail-label {
+        color: #a0a0b0;
+    }
+
+    .detail-value {
+        color: #ffffff;
+    }
+
+    .point-text {
+        color: #e8e8e8;
+    }
+
+    .price-row {
+        color: #c0c0d0;
+    }
+
+    .price-row span:last-child {
+        color: #ffffff;
+    }
+
+    .price-row.total {
+        color: #ffffff;
+        border-top-color: #4a4a6c;
+    }
+
+    .etb-amount {
+        color: #a0a0b0;
     }
 
     .method-tab {
@@ -1159,14 +1197,39 @@ body {
         color: white;
     }
 
+    .form-group label {
+        color: #c0c0d0;
+    }
+
     .country-code {
         background: #3a3a5c;
         border-color: #4a4a6c;
+        color: #e0e0e0;
     }
 
     .telebirr-steps,
     .cash-amount {
         background: #2d2d4a;
+    }
+
+    .telebirr-steps h4 {
+        color: #e0e0e0;
+    }
+
+    .telebirr-steps li {
+        color: #b0b0c0;
+    }
+
+    .cash-info h3 {
+        color: #ffffff;
+    }
+
+    .cash-info p {
+        color: #b0b0c0;
+    }
+
+    .cash-amount .amount {
+        color: #ffffff;
     }
 
     .payment-footer {
@@ -1183,6 +1246,10 @@ body {
         color: white;
     }
 
+    .modal-content p {
+        color: #b0b0c0;
+    }
+
     .booking-reference,
     .pending-timer {
         background: #2d2d4a;
@@ -1192,7 +1259,15 @@ body {
         color: #b0c4ce;
     }
 
+    .terms-text {
+        color: #b0b0c0;
+    }
+
     .input-hint {
+        color: #9090a0;
+    }
+
+    .secure-note {
         color: #9090a0;
     }
 }

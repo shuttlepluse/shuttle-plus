@@ -1334,3 +1334,219 @@ body {
         background: #121212;
     }
 }
+
+/* ========================================
+   Emergency Modal
+   ======================================== */
+.emergency-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+.emergency-modal.open {
+    display: flex;
+}
+
+.emergency-modal-content {
+    background: white;
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    max-width: 480px;
+    padding: 1.5rem;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+.emergency-modal-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.emergency-modal-header .emergency-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.emergency-modal-header .emergency-icon svg {
+    width: 32px;
+    height: 32px;
+    stroke: white;
+}
+
+.emergency-modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #183251;
+    margin-bottom: 0.25rem;
+}
+
+.emergency-modal-header p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.emergency-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.emergency-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border: 2px solid #e5e7eb;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.emergency-option:hover {
+    border-color: #597B87;
+    background: #f0f4f5;
+}
+
+.emergency-option:active {
+    transform: scale(0.98);
+}
+
+.emergency-option .option-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emergency-option .option-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.emergency-option .option-icon.police {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.emergency-option .option-icon.police svg {
+    fill: white;
+}
+
+.emergency-option .option-icon.ambulance {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.emergency-option .option-icon.ambulance svg {
+    fill: white;
+}
+
+.emergency-option .option-icon.fire {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.emergency-option .option-icon.fire svg {
+    fill: white;
+}
+
+.emergency-option .option-icon.support {
+    background: linear-gradient(135deg, #597B87 0%, #183251 100%);
+}
+
+.emergency-option .option-icon.support svg {
+    fill: white;
+}
+
+.emergency-option .option-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #183251;
+}
+
+.emergency-option .option-number {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.emergency-cancel {
+    width: 100%;
+    padding: 1rem;
+    background: #f3f4f6;
+    border: none;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.emergency-cancel:hover {
+    background: #e5e7eb;
+    color: #333;
+}
+
+@media (prefers-color-scheme: dark) {
+    .emergency-modal-content {
+        background: #1e1e2e;
+    }
+
+    .emergency-modal-header h3 {
+        color: white;
+    }
+
+    .emergency-modal-header p {
+        color: #a0a0b0;
+    }
+
+    .emergency-option {
+        background: #2a2a3e;
+        border-color: #3a3a5c;
+    }
+
+    .emergency-option:hover {
+        background: #353550;
+        border-color: #597B87;
+    }
+
+    .emergency-option .option-label {
+        color: white;
+    }
+
+    .emergency-option .option-number {
+        color: #a0a0b0;
+    }
+
+    .emergency-cancel {
+        background: #2a2a3e;
+        color: #a0a0b0;
+    }
+
+    .emergency-cancel:hover {
+        background: #353550;
+        color: white;
+    }
+}
