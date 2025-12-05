@@ -178,9 +178,10 @@
                     <label for="telebirrPhone">Phone Number</label>
                     <div class="phone-input">
                         <span class="country-code">+251</span>
-                        <input type="tel" id="telebirrPhone" placeholder="9XX XXX XXXX" maxlength="12" autocomplete="tel">
+                        <input type="tel" id="telebirrPhone" placeholder="9XX XXX XXX" maxlength="9" autocomplete="tel">
                     </div>
-                    <p class="input-hint">Enter your Telebirr registered phone number</p>
+                    <span class="field-error" id="telebirrPhoneError"></span>
+                    <p class="input-hint">Enter your Telebirr registered phone number (9 digits starting with 9 or 7)</p>
                 </div>
 
                 <div class="telebirr-steps">

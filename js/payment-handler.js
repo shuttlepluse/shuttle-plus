@@ -13,6 +13,7 @@
     let selectedMethod = 'card';
     let bookingData = null;
     let pendingTimerInterval = null;
+    let paymentCancelled = false;
 
     // ========================================
     // DOM Elements
@@ -81,8 +82,11 @@
         setupEventListeners();
         await initStripe();
         updateSummary();
-        applyPreselectedPaymentMethod();
-        updatePayButton();
+        // Use requestAnimationFrame to ensure DOM is fully ready before reordering tabs
+        requestAnimationFrame(() => {
+            applyPreselectedPaymentMethod();
+            updatePayButton();
+        });
     }
 
     // ========================================
@@ -238,12 +242,27 @@
         // Cardholder name
         elements.cardholderName.addEventListener('input', updatePayButton);
 
-        // Telebirr phone
+        // Telebirr phone - 9 digits, must start with 9 or 7
         elements.telebirrPhone.addEventListener('input', (e) => {
-            // Format phone number
+            // Only allow digits, max 9
             let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 10) value = value.slice(0, 10);
+            if (value.length > 9) value = value.slice(0, 9);
             e.target.value = value;
+
+            // Validate and show/hide error
+            const errorEl = document.getElementById('telebirrPhoneError');
+            if (errorEl) {
+                if (value.length > 0 && !/^[97]/.test(value)) {
+                    errorEl.textContent = 'Phone number must start with 9 or 7';
+                    errorEl.classList.add('active');
+                } else if (value.length > 0 && value.length < 9) {
+                    errorEl.textContent = 'Enter 9 digits';
+                    errorEl.classList.add('active');
+                } else {
+                    errorEl.textContent = '';
+                    errorEl.classList.remove('active');
+                }
+            }
             updatePayButton();
         });
 
@@ -435,7 +454,8 @@
             // Card element validation handled by Stripe
         } else if (selectedMethod === 'telebirr') {
             const phone = elements.telebirrPhone.value.replace(/\D/g, '');
-            isValid = isValid && phone.length >= 9;
+            // Must be exactly 9 digits and start with 9 or 7
+            isValid = isValid && phone.length === 9 && /^[97]/.test(phone);
         }
         // Cash always valid if terms accepted
 
@@ -483,7 +503,8 @@
 
             if (result.success) {
                 showSuccess(result.bookingReference);
-            } else {
+            } else if (!result.cancelled) {
+                // Only show error if not cancelled by user (toast already shown for cancel)
                 showError(result.error || 'Payment failed. Please try again.');
             }
 
@@ -568,6 +589,9 @@
     async function processTelebirrPayment() {
         const phone = '+251' + elements.telebirrPhone.value.replace(/\D/g, '');
 
+        // Reset cancellation flag
+        paymentCancelled = false;
+
         try {
             // Show pending modal
             elements.pendingModal.classList.add('open');
@@ -609,6 +633,12 @@
 
             // Demo mode - simulate payment approval
             await simulateDelay(5000);
+
+            // Check if payment was cancelled during the wait
+            if (paymentCancelled) {
+                return { success: false, error: 'Payment cancelled by user', cancelled: true };
+            }
+
             elements.pendingModal.classList.remove('open');
             stopPendingTimer();
 
@@ -809,6 +839,7 @@
     }
 
     function cancelPendingPayment() {
+        paymentCancelled = true;
         stopPendingTimer();
         elements.pendingModal.classList.remove('open');
         showToast('Payment cancelled');

@@ -74,6 +74,16 @@
         // Refresh button
         elements.refreshBtn.addEventListener('click', refreshTickets);
 
+        // Ticket card clicks - use event delegation for reliability after hard refresh
+        if (elements.ticketsList) {
+            elements.ticketsList.addEventListener('click', (e) => {
+                const card = e.target.closest('.ticket-card');
+                if (card) {
+                    openTicketDetail(card.dataset.id);
+                }
+            });
+        }
+
         // Modal close
         elements.closeModal.addEventListener('click', closeModal);
         elements.ticketModal.querySelector('.modal-overlay').addEventListener('click', closeModal);
@@ -292,11 +302,7 @@
             elements.ticketsEmpty.style.display = 'none';
             elements.ticketsList.style.display = 'flex';
             elements.ticketsList.innerHTML = filteredTickets.map(ticket => renderTicketCard(ticket)).join('');
-
-            // Add click listeners
-            elements.ticketsList.querySelectorAll('.ticket-card').forEach(card => {
-                card.addEventListener('click', () => openTicketDetail(card.dataset.id));
-            });
+            // Click listeners handled via event delegation in setupEventListeners()
         }
     }
 

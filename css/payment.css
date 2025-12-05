@@ -13,7 +13,7 @@ body {
     background: #f5f7fa;
     min-height: 100vh;
     color: var(--dark-text, #183251);
-    padding-bottom: 140px;
+    padding-bottom: 100px;
 }
 
 /* ========================================
@@ -104,7 +104,7 @@ body {
    Order Summary
    ======================================== */
 .order-summary {
-    margin-bottom: 1.75rem;
+    margin-bottom: 1rem;
 }
 
 .summary-card {
@@ -228,7 +228,7 @@ body {
    Payment Methods
    ======================================== */
 .payment-methods {
-    margin-bottom: 1.75rem;
+    margin-bottom: 1rem;
 }
 
 .method-tabs {
@@ -380,6 +380,18 @@ body {
     font-size: 0.75rem;
     color: #888;
     margin-top: 0.35rem;
+}
+
+/* Field Error Message */
+.field-error {
+    display: none;
+    font-size: 0.8rem;
+    color: #ef4444;
+    margin-top: 0.35rem;
+}
+
+.field-error.active {
+    display: block;
 }
 
 /* Stripe Element */
@@ -603,7 +615,7 @@ body {
    Promo Section
    ======================================== */
 .promo-section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
 }
 
 .promo-toggle {
@@ -1112,56 +1124,58 @@ body {
    ======================================== */
 @media (prefers-color-scheme: dark) {
     body {
-        background: #121212;
-        color: #e0e0e0;
+        background: #1a1a2e;
+        color: #e8e8e8;
     }
 
     .summary-card,
     .payment-form,
     .promo-toggle {
-        background: #1e1e1e;
+        background: #252540;
     }
 
     .price-breakdown {
-        background: #252525;
+        background: #2d2d4a;
     }
 
     .method-tab {
-        background: #1e1e1e;
-        border-color: #333;
-        color: #aaa;
+        background: #252540;
+        border-color: #3a3a5c;
+        color: #b0b0c0;
     }
 
     .method-tab.active {
-        background: rgba(89, 123, 135, 0.2);
+        background: rgba(89, 123, 135, 0.3);
         color: white;
+        border-color: var(--accent-teal, #597B87);
     }
 
     .form-group input,
     .stripe-element,
     .phone-input,
     .promo-input-wrapper input {
-        background: #252525;
-        border-color: #333;
+        background: #2d2d4a;
+        border-color: #3a3a5c;
         color: white;
     }
 
     .country-code {
-        background: #333;
-        border-color: #444;
+        background: #3a3a5c;
+        border-color: #4a4a6c;
     }
 
     .telebirr-steps,
     .cash-amount {
-        background: #252525;
+        background: #2d2d4a;
     }
 
     .payment-footer {
-        background: #1e1e1e;
+        background: #252540;
+        border-top-color: #3a3a5c;
     }
 
     .modal-content {
-        background: #1e1e1e;
+        background: #252540;
     }
 
     .modal-content h2,
@@ -1171,6 +1185,14 @@ body {
 
     .booking-reference,
     .pending-timer {
-        background: #252525;
+        background: #2d2d4a;
+    }
+
+    .payment-main h2 {
+        color: #b0c4ce;
+    }
+
+    .input-hint {
+        color: #9090a0;
     }
 }
