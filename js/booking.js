@@ -151,8 +151,10 @@
             const dataLoaded = loadQuickBookingData();
             if (dataLoaded) {
                 filterVehiclesByCapacity(bookingData.passengers);
-                // Now restore the saved state (contact details, step)
+                // Now restore the saved state (contact details)
                 restoreBookingState();
+                // Go to step 3 immediately (don't wait for setTimeout in restoreBookingState)
+                goToStep(3);
             }
         } else if (quickData) {
             // Fresh data from home page - clear any old state to start fresh
