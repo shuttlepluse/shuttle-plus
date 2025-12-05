@@ -612,6 +612,182 @@ img {
     color: var(--success);
 }
 
+/* Flight Number Input with Lookup */
+.flight-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.flight-input-wrapper input {
+    flex: 1;
+}
+
+.flight-lookup-btn {
+    padding: 0 1rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.875rem;
+}
+
+.flight-lookup-btn:hover {
+    background: var(--primary-dark);
+}
+
+.flight-lookup-btn:disabled {
+    background: var(--gray-400);
+    cursor: not-allowed;
+}
+
+.flight-lookup-btn .fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+.optional-label {
+    font-weight: 400;
+    color: var(--gray-400);
+    font-size: 0.75rem;
+}
+
+/* Flight Info Card */
+.flight-info-card {
+    margin-top: 0.75rem;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, rgba(89,123,135,0.08) 0%, rgba(24,50,81,0.04) 100%);
+    border-radius: var(--radius-lg);
+    border-left: 3px solid var(--primary);
+}
+
+.flight-info-card.error {
+    background: #fef2f2;
+    border-left-color: #ef4444;
+}
+
+.flight-info-card.error .flight-error-msg {
+    color: #dc2626;
+    font-size: 0.8125rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flight-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.flight-info-airline {
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.9rem;
+}
+
+.flight-info-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+.flight-info-status.scheduled { background: #e5e7eb; color: #4b5563; }
+.flight-info-status.active { background: #dbeafe; color: #1d4ed8; }
+.flight-info-status.landed { background: #d1fae5; color: #059669; }
+.flight-info-status.delayed { background: #fef3c7; color: #d97706; }
+.flight-info-status.cancelled { background: #fee2e2; color: #dc2626; }
+
+.flight-info-route {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--gray-600);
+    margin-bottom: 0.5rem;
+}
+
+.flight-info-route i {
+    color: var(--primary);
+}
+
+.flight-info-times {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8125rem;
+}
+
+.flight-info-times .time-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.flight-info-times .time-label {
+    font-size: 0.6875rem;
+    color: var(--gray-500);
+    text-transform: uppercase;
+}
+
+.flight-info-times .time-value {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.flight-info-times .time-value.delayed {
+    color: #d97706;
+    text-decoration: line-through;
+}
+
+.flight-info-times .time-value.updated {
+    color: #059669;
+}
+
+.flight-info-autofill {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--gray-300);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flight-info-autofill span {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+}
+
+.flight-info-autofill button {
+    padding: 0.35rem 0.75rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.flight-info-autofill button:hover {
+    background: var(--primary-dark);
+}
+
+.flight-info-mock {
+    margin-top: 0.5rem;
+    font-size: 0.6875rem;
+    color: var(--gray-400);
+    font-style: italic;
+}
+
 /* Hero Scroll */
 .hero-scroll {
     position: absolute;

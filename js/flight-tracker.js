@@ -8,7 +8,12 @@
     // ========================================
     // Configuration
     // ========================================
-    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+    const CONFIG = {
+        AVIATIONSTACK_KEY: 'ad6f37e8b8864161e7214aeccde139fb',
+        AVIATIONSTACK_URL: 'https://api.aviationstack.com/v1/flights',
+        CACHE_DURATION: 30 * 60 * 1000, // 30 minutes (to conserve API calls)
+        DEMO_MODE: true // Set to false for production (uses real API)
+    };
     const BOLE_AIRPORT_IATA = 'ADD';
 
     // ========================================
@@ -31,6 +36,17 @@
     };
 
     // ========================================
+    // Check Demo Mode
+    // ========================================
+    function isDemoMode() {
+        const override = localStorage.getItem('flightDemoMode');
+        if (override !== null) {
+            return override !== 'false';
+        }
+        return CONFIG.DEMO_MODE;
+    }
+
+    // ========================================
     // Lookup Flight
     // ========================================
     async function lookupFlight(flightNumber, date = null) {
@@ -40,37 +56,100 @@
         // Check cache first
         const cacheKey = `${normalizedFlight}-${date || 'today'}`;
         const cached = flightCache.get(cacheKey);
-        if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        if (cached && Date.now() - cached.timestamp < CONFIG.CACHE_DURATION) {
             console.log('[Flight] Returning cached data for', normalizedFlight);
             return cached.data;
         }
 
+        // Demo mode - use mock data (0 API calls)
+        if (isDemoMode()) {
+            console.log('[Flight] Demo mode - using mock data for', normalizedFlight);
+            const mockData = getMockFlightData(normalizedFlight, date);
+            flightCache.set(cacheKey, { timestamp: Date.now(), data: mockData });
+            return mockData;
+        }
+
         try {
-            // Try API endpoint
-            const response = await fetch(`/api/flights/${normalizedFlight}${date ? `?date=${date}` : ''}`);
+            // Try AviationStack API
+            const url = `${CONFIG.AVIATIONSTACK_URL}?access_key=${CONFIG.AVIATIONSTACK_KEY}&flight_iata=${normalizedFlight}`;
+            console.log('[Flight] Calling AviationStack API for', normalizedFlight);
+
+            const response = await fetch(url);
 
             if (response.ok) {
                 const result = await response.json();
 
-                if (result.success && result.data) {
+                if (result.error) {
+                    console.error('[Flight] API error:', result.error);
+                    return getMockFlightData(normalizedFlight, date);
+                }
+
+                if (result.data && result.data.length > 0) {
+                    // Find flight arriving at Addis Ababa
+                    const addFlight = result.data.find(f =>
+                        f.arrival?.iata === BOLE_AIRPORT_IATA
+                    ) || result.data[0];
+
+                    // Transform to our format
+                    const flightData = transformAviationStackData(addFlight, normalizedFlight);
+
                     // Cache the result
                     flightCache.set(cacheKey, {
                         timestamp: Date.now(),
-                        data: result.data
+                        data: flightData
                     });
 
-                    return result.data;
+                    return flightData;
                 }
             }
 
-            // If API fails, return mock data for development
-            console.log('[Flight] API unavailable, using mock data');
+            // If API fails, return mock data
+            console.log('[Flight] API returned no data, using mock');
             return getMockFlightData(normalizedFlight, date);
 
         } catch (error) {
             console.error('[Flight] Lookup failed:', error);
             return getMockFlightData(normalizedFlight, date);
         }
+    }
+
+    // ========================================
+    // Transform AviationStack Response
+    // ========================================
+    function transformAviationStackData(apiData, flightNumber) {
+        const parsed = parseFlightNumber(flightNumber);
+        const scheduledArrival = apiData.arrival?.scheduled || new Date().toISOString();
+        const actualArrival = apiData.arrival?.actual || apiData.arrival?.estimated;
+        const delay = apiData.arrival?.delay || 0;
+
+        let status = FlightStatus.SCHEDULED;
+        if (apiData.flight_status === 'landed') status = FlightStatus.LANDED;
+        else if (apiData.flight_status === 'active') status = FlightStatus.ACTIVE;
+        else if (apiData.flight_status === 'cancelled') status = FlightStatus.CANCELLED;
+        else if (delay > 0) status = FlightStatus.DELAYED;
+
+        return {
+            flightNumber: flightNumber,
+            airline: {
+                code: parsed?.airlineCode || apiData.airline?.iata || 'XX',
+                name: apiData.airline?.name || getAirlineName(parsed?.airlineCode)
+            },
+            departure: {
+                airport: `${apiData.departure?.airport || 'Unknown'} (${apiData.departure?.iata || '---'})`,
+                scheduled: apiData.departure?.scheduled
+            },
+            arrival: {
+                airport: `${apiData.arrival?.airport || 'Addis Ababa'} (${apiData.arrival?.iata || BOLE_AIRPORT_IATA})`,
+                scheduled: scheduledArrival,
+                actual: actualArrival,
+                terminal: apiData.arrival?.terminal || 'Terminal 2',
+                gate: apiData.arrival?.gate || 'TBD'
+            },
+            status: status,
+            delay: delay,
+            suggestedPickupTime: calculatePickupTime(actualArrival || scheduledArrival).toISOString(),
+            isMockData: false
+        };
     }
 
     // ========================================

@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSmoothScroll();
     initFormHandlers();
     initPassengerPopup();
+    initFlightLookup();
     initContactForm();
     initScrollAnimations();
 });
@@ -447,6 +448,204 @@ function initPassengerPopup() {
         currentValue = value;
         e.target.value = currentValue;
         updateLuggage();
+    });
+}
+
+// ----------------------------------------
+// Flight Lookup Handler
+// ----------------------------------------
+function initFlightLookup() {
+    const flightInput = document.getElementById('homeFlightNumber');
+    const lookupBtn = document.getElementById('flightLookupBtn');
+    const flightInfoCard = document.getElementById('flightInfoCard');
+    const flightNumberGroup = document.getElementById('flightNumberGroup');
+    const dateInput = document.getElementById('homeDate');
+    const timeInput = document.getElementById('homeTime');
+
+    if (!flightInput || !lookupBtn || !flightInfoCard) return;
+
+    // Track current flight data for autofill
+    let currentFlightData = null;
+
+    // Lookup button click handler
+    lookupBtn.addEventListener('click', async () => {
+        const flightNumber = flightInput.value.trim().toUpperCase().replace(/\s/g, '');
+
+        if (!flightNumber || flightNumber.length < 4) {
+            showFlightError('Enter a valid flight number (e.g., ET302)');
+            return;
+        }
+
+        // Show loading state
+        lookupBtn.disabled = true;
+        lookupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        flightInfoCard.style.display = 'none';
+
+        try {
+            // Check if FlightTracker is available
+            if (!window.FlightTracker) {
+                throw new Error('Flight tracker not loaded');
+            }
+
+            const flight = await window.FlightTracker.lookup(flightNumber);
+
+            if (flight) {
+                currentFlightData = flight;
+                displayFlightInfo(flight);
+            } else {
+                showFlightError('Flight not found. Check the flight number and try again.');
+            }
+        } catch (error) {
+            console.error('[Flight] Lookup error:', error);
+            showFlightError('Unable to look up flight. Please try again.');
+        } finally {
+            lookupBtn.disabled = false;
+            lookupBtn.innerHTML = '<i class="fas fa-search"></i>';
+        }
+    });
+
+    // Also trigger lookup on Enter key in flight input
+    flightInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            lookupBtn.click();
+        }
+    });
+
+    // Display flight info card
+    function displayFlightInfo(flight) {
+        const statusDisplay = window.FlightTracker.getStatusDisplay(flight.status);
+        const arrivalTime = flight.arrival.actual || flight.arrival.scheduled;
+        const arrivalDate = new Date(arrivalTime);
+        const suggestedPickup = new Date(flight.suggestedPickupTime);
+
+        flightInfoCard.className = 'flight-info-card';
+        flightInfoCard.innerHTML = `
+            <div class="flight-info-header">
+                <span class="flight-info-airline">${flight.airline.name} ${flight.flightNumber}</span>
+                <span class="flight-info-status ${flight.status}">${statusDisplay.label}</span>
+            </div>
+            <div class="flight-info-route">
+                <i class="fas fa-plane"></i>
+                <span>${flight.departure.airport} → ${flight.arrival.airport}</span>
+            </div>
+            <div class="flight-info-times">
+                <div class="time-item">
+                    <span class="time-label">Scheduled</span>
+                    <span class="time-value ${flight.delay > 0 ? 'delayed' : ''}">${formatTime(flight.arrival.scheduled)}</span>
+                </div>
+                ${flight.delay > 0 ? `
+                <div class="time-item">
+                    <span class="time-label">Delay</span>
+                    <span class="time-value" style="color: #d97706;">+${flight.delay} min</span>
+                </div>
+                <div class="time-item">
+                    <span class="time-label">New Arrival</span>
+                    <span class="time-value updated">${formatTime(arrivalTime)}</span>
+                </div>
+                ` : ''}
+            </div>
+            <div class="flight-info-autofill">
+                <span><i class="fas fa-clock"></i> Suggested pickup: ${formatTime(suggestedPickup)}</span>
+                <button type="button" id="autofillFlightBtn">Use This Time</button>
+            </div>
+            ${flight.isMockData ? '<div class="flight-info-mock">Demo data - actual times may vary</div>' : ''}
+        `;
+
+        flightInfoCard.style.display = 'block';
+
+        // Autofill button handler
+        document.getElementById('autofillFlightBtn')?.addEventListener('click', () => {
+            autofillFromFlight(flight);
+        });
+    }
+
+    // Show error in flight info card
+    function showFlightError(message) {
+        flightInfoCard.className = 'flight-info-card error';
+        flightInfoCard.innerHTML = `
+            <div class="flight-error-msg">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        flightInfoCard.style.display = 'block';
+
+        // Auto-hide error after 5 seconds
+        setTimeout(() => {
+            if (flightInfoCard.classList.contains('error')) {
+                flightInfoCard.style.display = 'none';
+            }
+        }, 5000);
+    }
+
+    // Auto-fill date and time from flight data
+    function autofillFromFlight(flight) {
+        const suggestedPickup = new Date(flight.suggestedPickupTime);
+
+        // Set date (YYYY-MM-DD format for input[type="date"])
+        const dateStr = suggestedPickup.toISOString().split('T')[0];
+        if (dateInput) {
+            dateInput.value = dateStr;
+        }
+
+        // Set time (HH:MM format for input[type="time"])
+        const hours = String(suggestedPickup.getHours()).padStart(2, '0');
+        const minutes = String(suggestedPickup.getMinutes()).padStart(2, '0');
+        if (timeInput) {
+            timeInput.value = `${hours}:${minutes}`;
+        }
+
+        // Show confirmation
+        const autofillBtn = document.getElementById('autofillFlightBtn');
+        if (autofillBtn) {
+            autofillBtn.innerHTML = '<i class="fas fa-check"></i> Applied!';
+            autofillBtn.style.background = '#059669';
+            setTimeout(() => {
+                autofillBtn.innerHTML = 'Use This Time';
+                autofillBtn.style.background = '';
+            }, 2000);
+        }
+
+        console.log('[Flight] Autofilled date:', dateStr, 'time:', `${hours}:${minutes}`);
+    }
+
+    // Format time for display
+    function formatTime(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+
+    // Update flight lookup visibility based on tab (arrival vs departure)
+    function updateFlightLookupVisibility(isArrival) {
+        if (flightNumberGroup) {
+            // Always show flight input, but emphasize it more for arrivals
+            const label = flightNumberGroup.querySelector('label');
+            if (label) {
+                if (isArrival) {
+                    label.innerHTML = '<i class="fas fa-plane-arrival"></i> Flight Number <span class="optional-label">(optional)</span>';
+                } else {
+                    label.innerHTML = '<i class="fas fa-plane-departure"></i> Flight Number <span class="optional-label">(optional)</span>';
+                }
+            }
+        }
+
+        // Hide flight info card when switching tabs
+        if (flightInfoCard) {
+            flightInfoCard.style.display = 'none';
+        }
+    }
+
+    // Listen for tab changes
+    document.querySelectorAll('.booking-tabs .tab-btn').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const isArrival = tab.dataset.tab === 'arrival';
+            updateFlightLookupVisibility(isArrival);
+        });
     });
 }
 
