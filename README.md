@@ -4,6 +4,26 @@ Premium airport transfer service platform for Addis Ababa, Ethiopia. A full-stac
 
 ## Recent Updates (December 2025)
 
+### Flight Tracker Integration
+- **AviationStack API**: Look up flight arrivals with real-time status and delays
+- **Demo Mode**: Enabled by default to conserve API quota (100 free requests/month)
+- **Auto-fill Booking**: Click "Use This Time" to auto-fill date/time from flight arrival (+60 min buffer)
+- **30-Minute Cache**: Responses cached to minimize API calls
+- **Flight Info Card**: Shows airline, route, scheduled time, delays, and status
+
+### Real Road Routing
+- **OSRM Integration**: Routes now follow actual roads via Leaflet Routing Machine
+- **Accurate ETAs**: Distance and time calculated from real driving routes
+- **Free & Unlimited**: Uses Open Source Routing Machine (no API key required)
+
+### Bug Fixes & Improvements
+- **Tickets Page**: Click handlers fixed with event delegation (works after hard refresh)
+- **Payment Auto-Select**: Payment method chosen in review page now auto-selected
+- **Telebirr Validation**: Ethiopian phone numbers validated (9 digits, starts with 9 or 7)
+- **Payment Cancellation**: Cancel button now properly aborts payment processing
+- **Driver Verification Code**: 4-digit code displayed on ticket for passenger verification
+- **Tracking Route Display**: Fixed [object Object] issue - now shows proper location names
+
 ### Live Tracking Page Improvements
 - **Collapsible Receipt Card**: Toggle button to collapse/expand booking confirmation receipt
 - **Side Panel Layout (Desktop)**: Driver section displays as left side panel on screens ≥768px
