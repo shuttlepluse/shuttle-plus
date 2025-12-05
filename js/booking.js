@@ -534,19 +534,44 @@
     }
 
     // ========================================
+    // Inline Field Errors (Microcopy)
+    // ========================================
+    function showFieldError(fieldId, message) {
+        const errorSpan = document.getElementById(fieldId + 'Error');
+        const formGroup = document.getElementById(fieldId)?.closest('.form-group');
+
+        if (errorSpan) {
+            errorSpan.textContent = message;
+            errorSpan.classList.add('active');
+        }
+        if (formGroup) {
+            formGroup.classList.add('has-error');
+        }
+    }
+
+    function clearFieldError(fieldId) {
+        const errorSpan = document.getElementById(fieldId + 'Error');
+        const formGroup = document.getElementById(fieldId)?.closest('.form-group');
+
+        if (errorSpan) {
+            errorSpan.textContent = '';
+            errorSpan.classList.remove('active');
+        }
+        if (formGroup) {
+            formGroup.classList.remove('has-error');
+        }
+    }
+
+    function clearAllFieldErrors() {
+        ['contactName', 'contactPhone', 'contactEmail'].forEach(clearFieldError);
+    }
+
+    // ========================================
     // Validation
     // ========================================
     function validateStep(step) {
         const stepElement = document.querySelector(`.booking-step[data-step="${step}"]`);
-        const inputs = stepElement.querySelectorAll('input[required], select[required]');
         let isValid = true;
-
-        inputs.forEach(input => {
-            if (!input.checkValidity()) {
-                input.reportValidity();
-                isValid = false;
-            }
-        });
 
         // Custom validations per step
         if (step === 1) {
@@ -559,33 +584,20 @@
         }
 
         if (step === 2) {
+            // Clear previous errors first
+            clearAllFieldErrors();
+            let firstErrorField = null;
+
             // Validate name
             const nameInput = document.getElementById('contactName');
             const name = nameInput?.value?.trim() || '';
             if (!name) {
-                showError('Please enter your full name');
-                if (nameInput) nameInput.focus();
+                showFieldError('contactName', 'Please enter your full name');
+                if (!firstErrorField) firstErrorField = nameInput;
                 isValid = false;
             } else {
-                // Store contact name
                 bookingData.contact = bookingData.contact || {};
                 bookingData.contact.name = name;
-            }
-
-            // Validate email (optional, but if provided must be valid format)
-            const emailInput = document.getElementById('contactEmail');
-            const email = emailInput?.value?.trim() || '';
-            if (email) {
-                // Check for valid email format (must have @ and a domain)
-                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-                if (!emailRegex.test(email)) {
-                    showError('Please enter a valid email address (e.g., name@gmail.com)');
-                    if (emailInput) emailInput.focus();
-                    isValid = false;
-                } else {
-                    bookingData.contact = bookingData.contact || {};
-                    bookingData.contact.email = email;
-                }
             }
 
             // Validate Ethiopian phone number (9 digits starting with 9 or 7)
@@ -593,16 +605,36 @@
             const phone = phoneInput?.value?.trim() || '';
             const cleanPhone = phone.replace(/[\s-]/g, '');
             if (!cleanPhone) {
-                showError('Please enter your phone number');
-                if (phoneInput) phoneInput.focus();
+                showFieldError('contactPhone', 'Please enter your phone number');
+                if (!firstErrorField) firstErrorField = phoneInput;
                 isValid = false;
             } else if (!/^[97]\d{8}$/.test(cleanPhone)) {
-                showError('Please enter a valid Ethiopian phone number (9 digits starting with 9 or 7)');
-                if (phoneInput) phoneInput.focus();
+                showFieldError('contactPhone', 'Enter 9 digits starting with 9 or 7');
+                if (!firstErrorField) firstErrorField = phoneInput;
                 isValid = false;
             } else {
                 bookingData.contact = bookingData.contact || {};
                 bookingData.contact.phone = cleanPhone;
+            }
+
+            // Validate email (optional, but if provided must be valid format)
+            const emailInput = document.getElementById('contactEmail');
+            const email = emailInput?.value?.trim() || '';
+            if (email) {
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                if (!emailRegex.test(email)) {
+                    showFieldError('contactEmail', 'Enter a valid email (e.g. name@gmail.com)');
+                    if (!firstErrorField) firstErrorField = emailInput;
+                    isValid = false;
+                } else {
+                    bookingData.contact = bookingData.contact || {};
+                    bookingData.contact.email = email;
+                }
+            }
+
+            // Focus the first error field
+            if (firstErrorField) {
+                firstErrorField.focus();
             }
         }
 
@@ -879,7 +911,19 @@
         }
         const summaryPhone = document.getElementById('summaryPhone');
         if (summaryPhone) {
-            summaryPhone.textContent = document.getElementById('contactPhone')?.value || '-';
+            const phoneVal = document.getElementById('contactPhone')?.value || '';
+            summaryPhone.textContent = phoneVal ? `+251 ${phoneVal}` : '-';
+        }
+
+        // Email (optional - show only if provided)
+        const emailVal = document.getElementById('contactEmail')?.value?.trim();
+        const emailRow = document.getElementById('summaryEmailRow');
+        const summaryEmail = document.getElementById('summaryEmail');
+        if (emailVal && emailRow && summaryEmail) {
+            emailRow.style.display = 'flex';
+            summaryEmail.textContent = emailVal;
+        } else if (emailRow) {
+            emailRow.style.display = 'none';
         }
 
         // Special Requests

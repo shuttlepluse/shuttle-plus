@@ -261,9 +261,20 @@
     function updateSummary() {
         if (!bookingData) return;
 
-        elements.pickupLocation.textContent = bookingData.pickup || 'Bole International Airport';
-        elements.dropoffLocation.textContent = bookingData.dropoff || 'Destination';
-        elements.tripDateTime.textContent = formatDateTime(bookingData.pickupTime);
+        // Handle both old format (string) and new format (object with .location)
+        const pickupLoc = typeof bookingData.pickup === 'object'
+            ? bookingData.pickup?.location
+            : bookingData.pickup;
+        const dropoffLoc = typeof bookingData.dropoff === 'object'
+            ? bookingData.dropoff?.location
+            : bookingData.dropoff;
+        const pickupTime = typeof bookingData.pickup === 'object'
+            ? bookingData.pickup?.scheduledTime
+            : bookingData.pickupTime;
+
+        elements.pickupLocation.textContent = pickupLoc || 'Bole International Airport';
+        elements.dropoffLocation.textContent = dropoffLoc || 'Destination';
+        elements.tripDateTime.textContent = formatDateTime(pickupTime);
         elements.vehicleClass.textContent = getVehicleLabel(bookingData.vehicleClass);
         elements.passengers.textContent = bookingData.passengers || 1;
 
