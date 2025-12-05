@@ -133,11 +133,28 @@
         setupFormListeners();
         fetchExchangeRate();
 
-        // PRIORITY: If quickBookingData exists, use it (fresh from home page)
-        // Only use bookingState for hard refresh recovery (when no quickBookingData)
+        // Check if returning from payment page (bookingState with step 3)
+        const savedState = sessionStorage.getItem('bookingState');
         const quickData = sessionStorage.getItem('quickBookingData');
+        let returningFromPayment = false;
 
-        if (quickData) {
+        if (savedState) {
+            try {
+                const state = JSON.parse(savedState);
+                returningFromPayment = state.currentStep === 3;
+            } catch (e) {}
+        }
+
+        if (returningFromPayment && quickData) {
+            // Returning from payment - use bookingState to restore to Step 3
+            console.log('[Booking] Returning from payment - restoring to Step 3');
+            const dataLoaded = loadQuickBookingData();
+            if (dataLoaded) {
+                filterVehiclesByCapacity(bookingData.passengers);
+                // Now restore the saved state (contact details, step)
+                restoreBookingState();
+            }
+        } else if (quickData) {
             // Fresh data from home page - clear any old state to start fresh
             console.log('[Booking] Fresh booking data detected - using it');
             sessionStorage.removeItem('bookingState');
@@ -855,9 +872,8 @@
     // Summary
     // ========================================
     function updateSummary() {
-        if (!bookingData.pricing) {
-            updateFallbackPricing();
-        }
+        // Always recalculate pricing to ensure it reflects current vehicle selection
+        updateFallbackPricing();
 
         // Transfer details - with null checks
         const summaryType = document.getElementById('summaryType');

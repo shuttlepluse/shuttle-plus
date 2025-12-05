@@ -184,11 +184,11 @@
     // Event Listeners
     // ========================================
     function setupEventListeners() {
-        // Back button - restore booking data before navigating
+        // Back button - restore booking data and go to Step 3 (Review)
         const backBtn = document.getElementById('backBtn');
         if (backBtn) {
             backBtn.addEventListener('click', () => {
-                // Restore pendingBooking to quickBookingData so booking page can load it
+                // Restore all booking data so user returns to Step 3 with everything intact
                 if (bookingData) {
                     const quickData = {
                         transferType: bookingData.type || 'arrival',
@@ -200,12 +200,24 @@
                         luggage: bookingData.luggage || 2
                     };
                     sessionStorage.setItem('quickBookingData', JSON.stringify(quickData));
-                    // Also save bookingState for extras
+
+                    // Save booking state in the format booking.js expects
                     const bookingState = {
-                        vehicleClass: bookingData.vehicleClass,
-                        childSeat: bookingData.childSeat,
-                        meetGreet: bookingData.meetGreet,
-                        step: 3
+                        currentStep: 3,  // Return to Review & Confirm step
+                        bookingData: {
+                            vehicleClass: bookingData.vehicleClass,
+                            childSeat: bookingData.childSeat,
+                            meetGreet: bookingData.meetGreet
+                        },
+                        formValues: {
+                            vehicleClass: bookingData.vehicleClass,
+                            childSeat: bookingData.childSeat,
+                            meetGreet: bookingData.meetGreet,
+                            contactName: bookingData.contact?.name || '',
+                            contactPhone: bookingData.contact?.phone || '',
+                            contactEmail: bookingData.contact?.email || '',
+                            specialRequests: bookingData.specialRequests || ''
+                        }
                     };
                     sessionStorage.setItem('bookingState', JSON.stringify(bookingState));
                 }
