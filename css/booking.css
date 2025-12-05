@@ -27,7 +27,17 @@
 .booking-container {
     min-height: 100vh;
     padding: 7rem 1rem 2rem;
-    background: var(--gray-50);
+    background: linear-gradient(135deg, #111827 0%, #2a4a66 100%);
+    position: relative;
+}
+
+.booking-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(0, 180, 216, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(89, 123, 135, 0.1) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 /* Progress Steps - Light Background */
@@ -41,6 +51,8 @@
     background: #F5F5F5;
     border-radius: var(--radius-xl);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: relative;
+    z-index: 1;
 }
 
 .progress-step {
@@ -124,6 +136,8 @@
 .booking-form {
     max-width: 800px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 
 .booking-step {

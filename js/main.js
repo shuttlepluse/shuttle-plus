@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCounterAnimation();
     initSmoothScroll();
     initFormHandlers();
+    initPassengerPopup();
     initContactForm();
     initScrollAnimations();
 });
@@ -232,10 +233,13 @@ function initFormHandlers() {
             // Get form data and store in sessionStorage for the booking page
             const inputs = bookingForm.querySelectorAll('input, select');
             const passengerSelect = document.getElementById('homePassengers');
-            const selectedOption = passengerSelect?.options[passengerSelect.selectedIndex];
 
-            const passengers = passengerSelect?.value || '2';
-            const luggage = selectedOption?.dataset.luggage || passengers;
+            // Use exact passenger count from popup if available, otherwise use dropdown value
+            const exactPassengers = passengerSelect?.dataset.exactPassengers;
+            const exactLuggage = passengerSelect?.dataset.exactLuggage;
+
+            const passengers = exactPassengers || passengerSelect?.value || '2';
+            const luggage = exactLuggage || passengers;
 
             const quickBookingData = {
                 flightNumber: inputs[0]?.value || '',
@@ -253,6 +257,165 @@ function initFormHandlers() {
             window.location.href = 'pages/booking.html';
         });
     }
+}
+
+// ----------------------------------------
+// Passenger Popup Handler
+// ----------------------------------------
+function initPassengerPopup() {
+    const passengerSelect = document.getElementById('homePassengers');
+    const popup = document.getElementById('passengerPopup');
+    const popupClose = document.getElementById('popupClose');
+    const passengerMinus = document.getElementById('passengerMinus');
+    const passengerPlus = document.getElementById('passengerPlus');
+    const exactPassengers = document.getElementById('exactPassengers');
+    const luggageCount = document.getElementById('luggageCount');
+    const popupHint = document.getElementById('popupHint');
+    const popupError = document.getElementById('popupError');
+    const popupTitle = document.getElementById('popupTitle');
+    const confirmBtn = document.getElementById('confirmPassengers');
+
+    if (!passengerSelect || !popup) return;
+
+    let currentMin = 1;
+    let currentMax = 3;
+    let currentValue = 1;
+
+    // Group configuration
+    const groupConfig = {
+        '3': { min: 1, max: 3, hint: 'Recommended for solo travelers or couples', title: '1-3 Passengers' },
+        '5': { min: 4, max: 5, hint: 'Recommended for small groups', title: '4-5 Passengers' },
+        '11': { min: 6, max: 11, hint: 'Recommended for large groups', title: '6-11 Passengers' }
+    };
+
+    // Show popup when dropdown changes
+    passengerSelect.addEventListener('change', function() {
+        const selectedValue = this.value;
+        const config = groupConfig[selectedValue];
+
+        if (config) {
+            currentMin = config.min;
+            currentMax = config.max;
+            currentValue = currentMin;
+
+            // Update popup
+            popupTitle.textContent = config.title;
+            popupHint.textContent = config.hint;
+            exactPassengers.value = currentValue;
+            exactPassengers.min = currentMin;
+            exactPassengers.max = currentMax;
+            updateLuggage();
+            hideError();
+
+            // Show popup
+            popup.classList.add('active');
+        }
+    });
+
+    // Close popup
+    popupClose?.addEventListener('click', () => {
+        popup.classList.remove('active');
+    });
+
+    // Minus button
+    passengerMinus?.addEventListener('click', () => {
+        if (currentValue > currentMin) {
+            currentValue--;
+            exactPassengers.value = currentValue;
+            updateLuggage();
+            hideError();
+        } else {
+            showError(`Minimum ${currentMin} passenger${currentMin > 1 ? 's' : ''} for this group`);
+        }
+    });
+
+    // Plus button
+    passengerPlus?.addEventListener('click', () => {
+        if (currentValue < currentMax) {
+            currentValue++;
+            exactPassengers.value = currentValue;
+            updateLuggage();
+            hideError();
+        } else {
+            showError(`Maximum ${currentMax} passengers for this group`);
+        }
+    });
+
+    // Update luggage display
+    function updateLuggage() {
+        if (luggageCount) {
+            luggageCount.textContent = `${currentValue} bag${currentValue > 1 ? 's' : ''}`;
+        }
+    }
+
+    // Show error message
+    function showError(message) {
+        if (popupError) {
+            popupError.textContent = message;
+            popupError.classList.add('active');
+            setTimeout(() => hideError(), 2000);
+        }
+    }
+
+    // Hide error message
+    function hideError() {
+        if (popupError) {
+            popupError.classList.remove('active');
+        }
+    }
+
+    // Confirm button
+    confirmBtn?.addEventListener('click', () => {
+        // Store the exact passenger count
+        passengerSelect.dataset.exactPassengers = currentValue;
+        passengerSelect.dataset.exactLuggage = currentValue;
+
+        // Update the select display text (optional visual feedback)
+        const selectedOption = passengerSelect.options[passengerSelect.selectedIndex];
+        if (selectedOption) {
+            // Store original text if not already stored
+            if (!selectedOption.dataset.originalText) {
+                selectedOption.dataset.originalText = selectedOption.textContent;
+            }
+            // Show selected count in dropdown
+            const groupLabel = currentMax <= 3 ? 'Solo/Couples' : currentMax <= 5 ? 'Small Groups' : 'Large Groups';
+            selectedOption.textContent = `${currentValue} Passenger${currentValue > 1 ? 's' : ''}, ${currentValue} Bag${currentValue > 1 ? 's' : ''} (${groupLabel})`;
+        }
+
+        popup.classList.remove('active');
+    });
+
+    // Close popup when clicking outside
+    document.addEventListener('click', (e) => {
+        if (popup.classList.contains('active') &&
+            !popup.contains(e.target) &&
+            !passengerSelect.contains(e.target)) {
+            popup.classList.remove('active');
+        }
+    });
+
+    // Prevent invalid input in number field
+    exactPassengers?.addEventListener('input', (e) => {
+        let value = parseInt(e.target.value) || currentMin;
+
+        // Remove any non-numeric characters
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+
+        if (value < currentMin) {
+            showError(`Minimum ${currentMin} passenger${currentMin > 1 ? 's' : ''} allowed`);
+            value = currentMin;
+        } else if (value > currentMax) {
+            showError(`Maximum ${currentMax} passengers allowed`);
+            value = currentMax;
+        } else if (value <= 0) {
+            showError('Passengers cannot be zero or negative');
+            value = currentMin;
+        }
+
+        currentValue = value;
+        e.target.value = currentValue;
+        updateLuggage();
+    });
 }
 
 // ----------------------------------------
@@ -312,19 +475,22 @@ function loadEditRouteDataInner(editData) {
             inputs[3].value = data.time;
         }
 
-        // Set passengers using grouped dropdown
+        // Set passengers using grouped dropdown (new groups: 1-3, 4-5, 6-11)
         const passengerSelect = document.getElementById('homePassengers');
 
         if (passengerSelect && data.passengers) {
             const passengerCount = parseInt(data.passengers) || 2;
             // Select the appropriate group based on passenger count
-            if (passengerCount <= 2) {
-                passengerSelect.value = '2';
+            if (passengerCount <= 3) {
+                passengerSelect.value = '3';
             } else if (passengerCount <= 5) {
                 passengerSelect.value = '5';
             } else {
                 passengerSelect.value = '11';
             }
+            // Store exact values for popup
+            passengerSelect.dataset.exactPassengers = passengerCount;
+            passengerSelect.dataset.exactLuggage = passengerCount;
         }
 
         // Set transfer type tab

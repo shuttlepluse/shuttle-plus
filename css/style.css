@@ -2304,3 +2304,198 @@ body.offline .booking-card::after {
         text-align: center;
     }
 }
+
+/* ========================================
+   Passenger Input Popup
+   ======================================== */
+.form-group {
+    position: relative;
+}
+
+.passenger-input-popup {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin-top: 0.5rem;
+    animation: popupSlide 0.2s ease;
+}
+
+.passenger-input-popup.active {
+    display: block;
+}
+
+@keyframes popupSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.popup-content {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+}
+
+.popup-header span {
+    font-weight: 600;
+    font-size: 0.9375rem;
+}
+
+.popup-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.popup-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.popup-body {
+    padding: 1.25rem;
+}
+
+.passenger-input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.passenger-input-row .input-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.number-input {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--gray-50);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid var(--gray-200);
+}
+
+.number-input .num-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: var(--gray-100);
+    color: var(--primary-dark);
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.number-input .num-btn:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.number-input .num-btn:active {
+    transform: scale(0.95);
+}
+
+.number-input input {
+    flex: 1;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    padding: 0.5rem;
+    width: 60px;
+}
+
+.number-input input:focus {
+    outline: none;
+}
+
+.luggage-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 48px;
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 2px solid #a7f3d0;
+    border-radius: 12px;
+    color: #065f46;
+    font-weight: 600;
+}
+
+.luggage-display i {
+    color: #10b981;
+}
+
+.popup-hint {
+    font-size: 0.8125rem;
+    color: var(--gray-500);
+    text-align: center;
+    margin: 0;
+    padding: 0.75rem;
+    background: var(--gray-50);
+    border-radius: 8px;
+}
+
+.popup-error {
+    font-size: 0.8125rem;
+    color: #dc2626;
+    text-align: center;
+    margin: 0.75rem 0 0;
+    padding: 0.5rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    display: none;
+}
+
+.popup-error.active {
+    display: block;
+}
+
+.popup-footer {
+    padding: 0 1.25rem 1.25rem;
+}
+
+.popup-footer .btn {
+    font-weight: 600;
+}

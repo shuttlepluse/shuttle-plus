@@ -326,28 +326,16 @@
             routeTime.textContent = bookingData.time;
         }
 
-        // Update passengers and luggage - show range labels for groups
-        // Both are tied to the same passenger group selection
+        // Update passengers and luggage - show exact counts
         const passengers = parseInt(bookingData.passengers) || 2;
+        const luggage = parseInt(bookingData.luggage) || passengers;
 
         if (routePassengers) {
-            if (passengers >= 6) {
-                routePassengers.textContent = '6+ passengers';
-            } else if (passengers >= 3) {
-                routePassengers.textContent = '3-5 passengers';
-            } else {
-                routePassengers.textContent = '1-2 passengers';
-            }
+            routePassengers.textContent = `${passengers} passenger${passengers > 1 ? 's' : ''}`;
         }
 
         if (routeLuggage) {
-            if (passengers >= 6) {
-                routeLuggage.textContent = '6+ bags';
-            } else if (passengers >= 3) {
-                routeLuggage.textContent = '3-5 bags';
-            } else {
-                routeLuggage.textContent = '1-2 bags';
-            }
+            routeLuggage.textContent = `${luggage} bag${luggage > 1 ? 's' : ''}`;
         }
     }
 
@@ -607,7 +595,7 @@
         const luggage = bookingData.luggage || passengers;
         console.log('[Booking] Filtering vehicles for', passengers, 'passengers,', luggage, 'luggage');
 
-        // Vehicle capacities:
+        // Vehicle capacities (NEW GROUPS: 1-3, 4-5, 6-11):
         // Sedan (standard, executive, luxury): 1-3 passengers max
         // SUV: 1-5 passengers max
         // Van: 1-11 passengers max
@@ -619,12 +607,12 @@
             luxury: 3       // Sedan - max 3 passengers
         };
 
-        // Preferred vehicles by passenger count:
-        // 1-2: Sedan preferred (standard, executive, luxury), but can use SUV or Van
-        // 3-5: SUV preferred, can use Van
-        // 6+: Van only
+        // Preferred vehicles by passenger count (NEW LOGIC):
+        // 1-3: Sedan preferred (all vehicles available)
+        // 4-5: SUV preferred, can use Van (sedans hidden)
+        // 6-11: Van only
         const getPreferredVehicle = (count) => {
-            if (count <= 2) return 'standard';
+            if (count <= 3) return 'standard';
             if (count <= 5) return 'suv';
             return 'van';
         };
@@ -679,7 +667,7 @@
         }
 
         // Reset to preferred vehicle when passenger count changes
-        if (passengers <= 2) {
+        if (passengers <= 3) {
             const standardOption = document.querySelector('input[name="vehicleClass"][value="standard"]');
             const suvOption = document.querySelector('input[name="vehicleClass"][value="suv"]');
             const vanOption = document.querySelector('input[name="vehicleClass"][value="van"]');
@@ -691,17 +679,16 @@
                 updatePricing();
                 console.log('[Booking] Reset vehicle to standard for', passengers, 'passengers');
             }
-        } else if (passengers >= 3 && passengers <= 5) {
+        } else if (passengers >= 4 && passengers <= 5) {
             const suvOption = document.querySelector('input[name="vehicleClass"][value="suv"]');
-            const standardOption = document.querySelector('input[name="vehicleClass"][value="standard"]');
             const vanOption = document.querySelector('input[name="vehicleClass"][value="van"]');
 
-            // If standard is selected but SUV is preferred
-            if (standardOption?.checked && suvOption && !suvOption.disabled) {
+            // Auto-select SUV for 4-5 passengers
+            if (suvOption && !suvOption.disabled && !suvOption.checked && !vanOption?.checked) {
                 suvOption.checked = true;
                 bookingData.vehicleClass = 'suv';
                 updatePricing();
-                console.log('[Booking] Switched to SUV for', passengers, 'passengers');
+                console.log('[Booking] Selected SUV for', passengers, 'passengers');
             }
         }
 
@@ -718,10 +705,10 @@
             }
 
             if (passengers >= 6) {
-                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For 6 and above passengers, only Van is available';
+                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For 6-11 passengers, only Van is available';
                 capacityWarning.style.display = 'block';
-            } else if (passengers >= 3) {
-                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For 3-5 passengers, SUV or Van is recommended';
+            } else if (passengers >= 4) {
+                capacityWarning.innerHTML = '<i class="fas fa-info-circle"></i> For 4-5 passengers, SUV or Van is recommended';
                 capacityWarning.style.display = 'block';
             } else {
                 capacityWarning.style.display = 'none';

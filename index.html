@@ -163,10 +163,43 @@
                         <div class="form-group">
                             <label><i class="fas fa-users"></i> Passengers & Luggage</label>
                             <select id="homePassengers">
-                                <option value="2" data-luggage="2">1-2 Passengers, 1-2 Bags</option>
-                                <option value="5" data-luggage="5">3-5 Passengers, 3-5 Bags</option>
-                                <option value="11" data-luggage="11">6-11 Passengers, 6-11 Bags</option>
+                                <option value="3" data-luggage="3" data-min="1" data-max="3">1-3 Passengers (Solo/Couples)</option>
+                                <option value="5" data-luggage="5" data-min="4" data-max="5">4-5 Passengers (Small Groups)</option>
+                                <option value="11" data-luggage="11" data-min="6" data-max="11">6-11 Passengers (Large Groups)</option>
                             </select>
+                            <!-- Floating form for exact passenger count -->
+                            <div class="passenger-input-popup" id="passengerPopup">
+                                <div class="popup-content">
+                                    <div class="popup-header">
+                                        <span id="popupTitle">Enter exact passengers</span>
+                                        <button type="button" class="popup-close" id="popupClose">&times;</button>
+                                    </div>
+                                    <div class="popup-body">
+                                        <div class="passenger-input-row">
+                                            <div class="input-group">
+                                                <label>Passengers</label>
+                                                <div class="number-input">
+                                                    <button type="button" class="num-btn minus" id="passengerMinus">-</button>
+                                                    <input type="number" id="exactPassengers" min="1" max="11" value="1" readonly>
+                                                    <button type="button" class="num-btn plus" id="passengerPlus">+</button>
+                                                </div>
+                                            </div>
+                                            <div class="input-group">
+                                                <label>Luggage</label>
+                                                <div class="luggage-display" id="luggageDisplay">
+                                                    <i class="fas fa-suitcase"></i>
+                                                    <span id="luggageCount">1 bag</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="popup-hint" id="popupHint">Recommended for solo travelers or couples</p>
+                                        <p class="popup-error" id="popupError"></p>
+                                    </div>
+                                    <div class="popup-footer">
+                                        <button type="button" class="btn btn-primary btn-block" id="confirmPassengers">Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary btn-block">
                             <span>See Prices</span>
