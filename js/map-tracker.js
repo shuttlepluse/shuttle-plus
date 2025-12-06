@@ -338,6 +338,9 @@
         // Update UI
         updateUI();
 
+        // Calculate trip ETA
+        calculateTripETA();
+
         // Add markers now that driver is assigned
         addMarkers();
 
@@ -803,7 +806,58 @@
                 el.textContent = `${minutes} min`;
             }
         });
+
+        // Update trip ETA (pickup to dropoff estimate)
+        const tripEtaEl = document.getElementById('tripEta');
+        const tripDistanceEl = document.getElementById('tripDistance');
+        if (tripEtaEl) {
+            // Estimate trip time based on distance (assume avg 25 km/h in city)
+            const tripDistKm = parseFloat(distanceKm) || 8;
+            const tripMinutes = Math.round((tripDistKm / 25) * 60) + 5; // Add 5 min buffer
+            tripEtaEl.textContent = `~${tripMinutes} min`;
+        }
+        if (tripDistanceEl) {
+            tripDistanceEl.textContent = `~${distanceKm} km`;
+        }
+
         console.log(`[Map] Route: ${distanceKm} km, ETA: ${minutes} min`);
+    }
+
+    // ========================================
+    // Calculate Trip ETA (Pickup to Dropoff)
+    // ========================================
+    function calculateTripETA() {
+        if (!booking) return;
+
+        const pickupCoords = booking.pickup?.coordinates || BOLE_AIRPORT;
+        const dropoffCoords = booking.dropoff?.coordinates || [9.0107, 38.7467];
+
+        // Calculate straight-line distance (Haversine formula)
+        const R = 6371; // Earth's radius in km
+        const dLat = (dropoffCoords[0] - pickupCoords[0]) * Math.PI / 180;
+        const dLon = (dropoffCoords[1] - pickupCoords[1]) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(pickupCoords[0] * Math.PI / 180) * Math.cos(dropoffCoords[0] * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const straightDistance = R * c;
+
+        // Road distance is typically 1.3-1.5x straight line distance
+        const roadDistance = (straightDistance * 1.4).toFixed(1);
+
+        // Estimate time at 25 km/h average city speed
+        const tripMinutes = Math.round((roadDistance / 25) * 60) + 5;
+
+        // Update UI
+        const tripEtaEl = document.getElementById('tripEta');
+        const tripDistanceEl = document.getElementById('tripDistance');
+
+        if (tripEtaEl) {
+            tripEtaEl.textContent = `~${tripMinutes} min`;
+        }
+        if (tripDistanceEl) {
+            tripDistanceEl.textContent = `~${roadDistance} km`;
+        }
     }
 
     // ========================================

@@ -31,7 +31,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/tracking.css?v=4">
+    <link rel="stylesheet" href="../css/tracking.css?v=5">
 </head>
 <body>
     <!-- Header -->
@@ -207,7 +207,12 @@
                         <span class="point-time" id="pickupTime">Today, 2:30 PM</span>
                     </div>
                 </div>
-                <div class="route-line"></div>
+                <div class="route-line">
+                    <div class="trip-eta-badge" id="tripEtaBadge">
+                        <i class="fas fa-clock"></i>
+                        <span id="tripEta">~25 min</span>
+                    </div>
+                </div>
                 <div class="route-point dropoff">
                     <div class="point-marker">
                         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -218,6 +223,7 @@
                     <div class="point-details">
                         <span class="point-label">Drop-off</span>
                         <span class="point-address" id="dropoffAddress">Sheraton Addis</span>
+                        <span class="point-distance" id="tripDistance">~8 km</span>
                     </div>
                 </div>
             </div>
@@ -309,6 +315,6 @@
     <!-- Scripts -->
     <script src="../js/offline-storage.js?v=6"></script>
     <script src="../js/api-client.js?v=6"></script>
-    <script src="../js/map-tracker.js?v=8"></script>
+    <script src="../js/map-tracker.js?v=9"></script>
 </body>
 </html>

@@ -1072,89 +1072,82 @@ body.offline .offline-banner {
 }
 
 /* ========================================
-   Dark Mode Support
+   Force Light Theme (override dark mode)
    ======================================== */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --tickets-bg: #121212;
-        --dark-text: #e0e0e0;
-    }
+body {
+    background: var(--tickets-bg) !important;
+    color: var(--dark-text, #183251) !important;
+}
 
-    body {
-        background: var(--tickets-bg);
-        color: var(--dark-text);
-    }
+.tickets-tabs {
+    background: white !important;
+    border-color: #e0e0e0 !important;
+}
 
-    .tickets-tabs {
-        background: #1e1e1e;
-        border-color: #333;
-    }
+.tab-btn {
+    color: #666 !important;
+}
 
-    .tab-btn {
-        color: #888;
-    }
+.tab-btn.active {
+    color: var(--primary-navy, #183251) !important;
+}
 
-    .tab-btn.active {
-        color: white;
-    }
+.ticket-card {
+    background: white !important;
+}
 
-    .ticket-card {
-        background: #1e1e1e;
-    }
+.ticket-footer {
+    background: #f8f9fa !important;
+    border-color: #e8e8e8 !important;
+}
 
-    .ticket-footer {
-        background: #252525;
-        border-color: #333;
-    }
+.ticket-info {
+    border-color: #e0e0e0 !important;
+}
 
-    .ticket-info {
-        border-color: #333;
-    }
+.point-value,
+.info-value,
+.ticket-price {
+    color: var(--primary-navy, #183251) !important;
+}
 
-    .point-value,
-    .info-value,
-    .ticket-price {
-        color: white;
-    }
+.modal-content {
+    background: white !important;
+}
 
-    .modal-content {
-        background: #1e1e1e;
-    }
+.detail-info-item,
+.driver-card,
+.payment-summary,
+.no-driver {
+    background: #f8f9fa !important;
+}
 
-    .detail-info-item,
-    .driver-card,
-    .payment-summary,
-    .no-driver {
-        background: #252525;
-    }
+.detail-actions {
+    background: white !important;
+    border-color: #e8e8e8 !important;
+}
 
-    .detail-actions {
-        background: #1e1e1e;
-        border-color: #333;
-    }
+.action-btn.secondary {
+    background: white !important;
+    border-color: #e0e0e0 !important;
+    color: var(--primary-navy, #183251) !important;
+}
 
-    .action-btn.secondary {
-        background: #252525;
-        border-color: #444;
-        color: white;
-    }
+.action-sheet-content {
+    background: #f0f0f0 !important;
+}
 
-    .action-sheet-content {
-        background: #1e1e1e;
-    }
+.action-sheet-body {
+    background: white !important;
+}
 
-    .action-sheet-body {
-        background: #252525;
-    }
+.action-item {
+    color: var(--primary-navy, #183251) !important;
+    border-color: #f0f0f0 !important;
+}
 
-    .action-item {
-        color: white;
-        border-color: #333;
-    }
-
-    .action-sheet-cancel {
-        background: #252525;
-    }
+.action-sheet-cancel {
+    background: white !important;
 }
 
 /* ========================================

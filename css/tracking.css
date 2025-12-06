@@ -903,6 +903,37 @@ body {
     );
 }
 
+/* Trip ETA Badge */
+.trip-eta-badge {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, var(--accent-teal, #597B87) 0%, var(--primary-navy, #183251) 100%);
+    color: white;
+    padding: 0.4rem 0.75rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1;
+}
+
+.trip-eta-badge i {
+    font-size: 0.7rem;
+}
+
+.point-distance {
+    font-size: 0.75rem;
+    color: var(--accent-teal, #597B87);
+    margin-top: 0.15rem;
+    font-weight: 500;
+}
+
 /* Progress Section */
 .progress-section {
     padding: 1rem 1.25rem;
