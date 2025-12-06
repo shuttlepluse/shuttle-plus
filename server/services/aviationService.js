@@ -154,7 +154,7 @@ function formatFlightData(flight, type) {
         delay: leg?.delay || 0,
         terminal: leg?.terminal,
         gate: leg?.gate,
-        // Calculate suggested pickup time (arrival + 60 min buffer)
+        // Calculate suggested pickup time (arrival + 30 min buffer)
         suggestedPickupTime: isArrival
             ? calculatePickupTime(leg?.estimated || leg?.scheduled)
             : null
@@ -180,7 +180,7 @@ function mapFlightStatus(status) {
 // ========================================
 // Calculate Pickup Time
 // ========================================
-function calculatePickupTime(arrivalTime, bufferMinutes = 60) {
+function calculatePickupTime(arrivalTime, bufferMinutes = 30) {
     if (!arrivalTime) return null;
 
     const arrival = new Date(arrivalTime);

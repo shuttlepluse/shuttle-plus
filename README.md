@@ -2,12 +2,16 @@
 
 Premium airport transfer service platform for Addis Ababa, Ethiopia. A full-stack Progressive Web Application (PWA) built with Express.js, MongoDB, and vanilla JavaScript.
 
+## Design Philosophy
+
+At ShuttlePlus, we appreciate the small and subtle details that elevate user experience. From using distinct plane departure (✈️↗) and arrival (✈️↘) icons to thoughtful micro-interactions, we believe these touches make the difference between a good product and a great one.
+
 ## Recent Updates (December 2025)
 
 ### Flight Tracker Integration
 - **AviationStack API**: Look up flight arrivals with real-time status and delays
 - **Demo Mode**: Enabled by default to conserve API quota (100 free requests/month)
-- **Auto-fill Booking**: Click "Use This Time" to auto-fill date/time from flight arrival (+60 min buffer)
+- **Auto-fill Booking**: Click "Use This Time" to auto-fill date/time from flight arrival (+30 min buffer)
 - **30-Minute Cache**: Responses cached to minimize API calls
 - **Flight Info Card**: Shows airline, route, scheduled time, delays, and status
 

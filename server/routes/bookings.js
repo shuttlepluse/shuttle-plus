@@ -26,6 +26,42 @@ const handleValidation = (req, res, next) => {
 };
 
 // ========================================
+// GET /api/bookings/stats/completed-count - Get completed transfer count
+// ========================================
+router.get('/stats/completed-count', async (req, res) => {
+    try {
+        // Base count starts at 1000 (as of Dec 6, 2025)
+        const BASE_COUNT = 1000;
+        const COUNT_START_DATE = new Date('2025-12-06T00:00:00Z');
+
+        // Count completed transfers from the start date onwards
+        const completedCount = await Booking.countDocuments({
+            status: 'completed',
+            createdAt: { $gte: COUNT_START_DATE }
+        });
+
+        const totalCount = BASE_COUNT + completedCount;
+
+        res.json({
+            success: true,
+            data: {
+                count: totalCount,
+                baseCount: BASE_COUNT,
+                completedSinceStart: completedCount,
+                startDate: COUNT_START_DATE
+            }
+        });
+    } catch (error) {
+        console.error('Get completed count error:', error);
+        // Return base count on error so the UI still works
+        res.json({
+            success: true,
+            data: { count: 1000 }
+        });
+    }
+});
+
+// ========================================
 // POST /api/bookings - Create new booking
 // ========================================
 router.post('/',

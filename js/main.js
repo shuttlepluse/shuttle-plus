@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initFormHandlers();
     initPassengerPopup();
     initFlightLookup();
+    initFleetSelection();
     initContactForm();
     initScrollAnimations();
 });
@@ -141,6 +142,9 @@ function initBookingTabs() {
 function initCounterAnimation() {
     const counters = document.querySelectorAll('.stat-number');
 
+    // Fetch dynamic transfer count from API
+    fetchTransferCount();
+
     const animateCounter = (counter) => {
         const target = parseInt(counter.getAttribute('data-count'));
         const duration = 2000;
@@ -173,6 +177,28 @@ function initCounterAnimation() {
     counters.forEach(counter => observer.observe(counter));
 }
 
+// Fetch completed transfer count from API
+async function fetchTransferCount() {
+    const transferCountEl = document.getElementById('transferCount');
+    if (!transferCountEl) return;
+
+    try {
+        const response = await fetch('/api/bookings/stats/completed-count');
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.data?.count) {
+                // Convert to K format (e.g., 1234 -> 1.2)
+                const count = data.data.count;
+                const kValue = count >= 1000 ? (count / 1000).toFixed(count >= 10000 ? 0 : 1) : count;
+                transferCountEl.setAttribute('data-count', kValue);
+            }
+        }
+    } catch (error) {
+        // Silently fail - will use default value of 1
+        console.log('[Stats] Using default transfer count');
+    }
+}
+
 // ----------------------------------------
 // Smooth Scrolling
 // ----------------------------------------
@@ -191,6 +217,17 @@ function initSmoothScroll() {
                     top: offsetPosition,
                     behavior: 'smooth'
                 });
+
+                // Check if this link should auto-select a booking tab
+                const selectTab = this.getAttribute('data-select-tab');
+                if (selectTab) {
+                    setTimeout(() => {
+                        const tabBtn = document.querySelector(`.tab-btn[data-tab="${selectTab}"]`);
+                        if (tabBtn) {
+                            tabBtn.click();
+                        }
+                    }, 300);
+                }
             }
         });
     });
@@ -645,6 +682,24 @@ function initFlightLookup() {
         tab.addEventListener('click', () => {
             const isArrival = tab.dataset.tab === 'arrival';
             updateFlightLookupVisibility(isArrival);
+        });
+    });
+}
+
+// ----------------------------------------
+// Fleet Vehicle Selection Handler
+// ----------------------------------------
+function initFleetSelection() {
+    const fleetButtons = document.querySelectorAll('.fleet-select-btn');
+
+    fleetButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const vehicleClass = btn.getAttribute('data-vehicle');
+            if (vehicleClass) {
+                // Store the vehicle preference
+                sessionStorage.setItem('fleetVehiclePreference', vehicleClass);
+                console.log('[Fleet] Vehicle preference saved:', vehicleClass);
+            }
         });
     });
 }

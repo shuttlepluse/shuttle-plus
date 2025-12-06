@@ -691,6 +691,23 @@
             luxury: 3       // Sedan - max 3 passengers
         };
 
+        // Check for fleet vehicle preference from home page
+        const fleetPreference = sessionStorage.getItem('fleetVehiclePreference');
+        let useFleetPreference = false;
+
+        if (fleetPreference) {
+            const preferenceCapacity = vehicleCapacities[fleetPreference] || 3;
+            // Only use preference if it can accommodate the passenger count
+            if (passengers <= preferenceCapacity) {
+                useFleetPreference = true;
+                console.log('[Booking] Applying fleet preference:', fleetPreference);
+            } else {
+                console.log('[Booking] Fleet preference', fleetPreference, 'incompatible with', passengers, 'passengers');
+            }
+            // Clear the preference after checking (one-time use)
+            sessionStorage.removeItem('fleetVehiclePreference');
+        }
+
         // Preferred vehicles by passenger count (NEW LOGIC):
         // 1-3: Sedan preferred (all vehicles available)
         // 4-5: SUV preferred, can use Van (sedans hidden)
@@ -701,7 +718,8 @@
             return 'van';
         };
 
-        const preferredVehicle = getPreferredVehicle(passengers);
+        // Use fleet preference if compatible, otherwise use default logic
+        const preferredVehicle = useFleetPreference ? fleetPreference : getPreferredVehicle(passengers);
 
         const vehicleOptions = document.querySelectorAll('.vehicle-option');
         let firstAvailable = null;
@@ -750,8 +768,15 @@
             }
         }
 
-        // Reset to preferred vehicle when passenger count changes
-        if (passengers <= 3) {
+        // If fleet preference was applied, force select it (even if another option was previously selected)
+        if (useFleetPreference && preferredOption && !preferredOption.disabled) {
+            preferredOption.checked = true;
+            bookingData.vehicleClass = preferredOption.value;
+            updatePricing();
+            console.log('[Booking] Fleet preference applied:', preferredOption.value);
+        }
+        // Reset to preferred vehicle when passenger count changes (only if no fleet preference)
+        else if (passengers <= 3 && !useFleetPreference) {
             const standardOption = document.querySelector('input[name="vehicleClass"][value="standard"]');
             const suvOption = document.querySelector('input[name="vehicleClass"][value="suv"]');
             const vanOption = document.querySelector('input[name="vehicleClass"][value="van"]');
@@ -763,7 +788,7 @@
                 updatePricing();
                 console.log('[Booking] Reset vehicle to standard for', passengers, 'passengers');
             }
-        } else if (passengers >= 4 && passengers <= 5) {
+        } else if (passengers >= 4 && passengers <= 5 && !useFleetPreference) {
             const suvOption = document.querySelector('input[name="vehicleClass"][value="suv"]');
             const vanOption = document.querySelector('input[name="vehicleClass"][value="van"]');
 
@@ -1040,7 +1065,7 @@
         const flightDateTime = new Date(`${date}T${time}`);
 
         const pickupTime = bookingData.type === 'arrival'
-            ? new Date(flightDateTime.getTime() + 60 * 60 * 1000)
+            ? new Date(flightDateTime.getTime() + 30 * 60 * 1000)
             : flightDateTime;
 
         const destination = bookingData.customAddress || bookingData.destination;

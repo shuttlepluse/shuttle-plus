@@ -99,11 +99,11 @@
                 </p>
                 <div class="hero-stats">
                     <div class="stat">
-                        <span class="stat-number" data-count="15">0</span><span class="stat-suffix">K+</span>
+                        <span class="stat-number" id="transferCount" data-count="1">0</span><span class="stat-suffix">K+</span>
                         <span class="stat-label">Transfers Completed</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-number" data-count="60">0</span><span class="stat-suffix">min</span>
+                        <span class="stat-number" data-count="30">0</span><span class="stat-suffix">min</span>
                         <span class="stat-label">Free Waiting Time</span>
                     </div>
                     <div class="stat">
@@ -260,9 +260,9 @@
                         <li><i class="fas fa-check"></i> Driver waiting at arrivals hall</li>
                         <li><i class="fas fa-check"></i> Personalized name sign</li>
                         <li><i class="fas fa-check"></i> Luggage assistance included</li>
-                        <li><i class="fas fa-check"></i> 60 minutes free waiting</li>
+                        <li><i class="fas fa-check"></i> 30 minutes free waiting</li>
                     </ul>
-                    <a href="pages/booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
+                    <a href="#home" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">
@@ -276,7 +276,7 @@
                         <li><i class="fas fa-check"></i> Traffic monitoring</li>
                         <li><i class="fas fa-check"></i> Help with check-in luggage</li>
                     </ul>
-                    <a href="pages/booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
+                    <a href="#home" class="service-link" data-select-tab="departure">Book Now <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">
@@ -304,7 +304,7 @@
                         <li><i class="fas fa-check"></i> English-speaking drivers</li>
                         <li><i class="fas fa-check"></i> City tours available</li>
                     </ul>
-                    <a href="pages/booking.html" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
+                    <a href="#home" class="service-link">Book Now <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
@@ -442,7 +442,7 @@
             <p class="destinations-note">
                 <i class="fas fa-info-circle"></i>
                 Prices shown are for Standard Sedan (up to 3 passengers, 2 bags).
-                All prices include meet & greet, 60 min waiting time, and flight tracking.
+                All prices include meet & greet, 30 min waiting time, and flight tracking.
             </p>
         </div>
     </section>
@@ -458,9 +458,7 @@
             <div class="fleet-grid">
                 <div class="fleet-card">
                     <div class="fleet-image">
-                        <div class="fleet-placeholder">
-                            <i class="fas fa-car"></i>
-                        </div>
+                        <img src="images/external sources/2018-Hyundai-Elantra.jpg" alt="Standard Sedan - Hyundai Elantra">
                         <span class="fleet-badge">Popular</span>
                     </div>
                     <div class="fleet-info">
@@ -474,14 +472,12 @@
                             <span class="price-from">Bole to City Center</span>
                             <span class="price-amount">1,560 ETB</span>
                         </div>
-                        <a href="#home" class="btn btn-outline btn-block">Select</a>
+                        <a href="#home" class="btn btn-outline btn-block fleet-select-btn" data-vehicle="standard">Select</a>
                     </div>
                 </div>
                 <div class="fleet-card featured">
                     <div class="fleet-image">
-                        <div class="fleet-placeholder">
-                            <i class="fas fa-car-side"></i>
-                        </div>
+                        <img src="images/external sources/2018-toyota-camry.jpg" alt="Executive Sedan - Toyota Camry">
                         <span class="fleet-badge">Best Value</span>
                     </div>
                     <div class="fleet-info">
@@ -495,14 +491,12 @@
                             <span class="price-from">Bole to City Center</span>
                             <span class="price-amount">2,340 ETB</span>
                         </div>
-                        <a href="#home" class="btn btn-primary btn-block">Select</a>
+                        <a href="#home" class="btn btn-primary btn-block fleet-select-btn" data-vehicle="executive">Select</a>
                     </div>
                 </div>
                 <div class="fleet-card">
                     <div class="fleet-image">
-                        <div class="fleet-placeholder">
-                            <i class="fas fa-shuttle-van"></i>
-                        </div>
+                        <img src="images/external sources/Volkswagen-ID.4.jpg" alt="SUV - Volkswagen ID.4">
                         <span class="fleet-badge">Families</span>
                     </div>
                     <div class="fleet-info">
@@ -516,14 +510,12 @@
                             <span class="price-from">Bole to City Center</span>
                             <span class="price-amount">3,250 ETB</span>
                         </div>
-                        <a href="#home" class="btn btn-outline btn-block">Select</a>
+                        <a href="#home" class="btn btn-outline btn-block fleet-select-btn" data-vehicle="suv">Select</a>
                     </div>
                 </div>
                 <div class="fleet-card">
                     <div class="fleet-image">
-                        <div class="fleet-placeholder">
-                            <i class="fas fa-gem"></i>
-                        </div>
+                        <img src="images/external sources/bmw-5-series-sedan-cars.jpg" alt="Luxury Class - BMW 5 Series">
                         <span class="fleet-badge luxury">VIP</span>
                     </div>
                     <div class="fleet-info">
@@ -537,7 +529,7 @@
                             <span class="price-from">Bole to City Center</span>
                             <span class="price-amount">4,550 ETB</span>
                         </div>
-                        <a href="#home" class="btn btn-outline btn-block">Select</a>
+                        <a href="#home" class="btn btn-outline btn-block fleet-select-btn" data-vehicle="luxury">Select</a>
                     </div>
                 </div>
             </div>
@@ -566,8 +558,8 @@
                     <div class="feature-icon">
                         <i class="fas fa-clock"></i>
                     </div>
-                    <h3>60 Min Free Wait</h3>
-                    <p>One hour complimentary waiting after landing. Plenty of time for immigration and baggage.</p>
+                    <h3>30 Min Free Wait</h3>
+                    <p>30 minutes complimentary waiting after landing. Time for immigration and baggage.</p>
                 </div>
                 <div class="feature">
                     <div class="feature-icon">
