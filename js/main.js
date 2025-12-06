@@ -275,6 +275,16 @@ function initFormHandlers() {
             const timeInput = document.getElementById('homeTime');
             const passengerSelect = document.getElementById('homePassengers');
 
+            const flightNumber = flightInput?.value?.trim() || '';
+            const flightTime = timeInput?.value || '';
+
+            // Validate: if flight number is provided, time is required
+            if (flightNumber && !flightTime) {
+                timeInput?.focus();
+                alert('Please enter the flight time');
+                return;
+            }
+
             // Use exact passenger count from popup if available, otherwise use dropdown value
             const exactPassengers = passengerSelect?.dataset.exactPassengers;
             const exactLuggage = passengerSelect?.dataset.exactLuggage;
@@ -283,10 +293,10 @@ function initFormHandlers() {
             const luggage = exactLuggage || passengers;
 
             const quickBookingData = {
-                flightNumber: flightInput?.value || '',
+                flightNumber: flightNumber,
                 destination: destinationSelect?.value || '',
                 date: dateInput?.value || '',
-                time: timeInput?.value || '',
+                time: flightTime,
                 passengers: passengers,
                 luggage: luggage,
                 transferType: document.querySelector('.tab-btn.active')?.dataset.tab || 'arrival'
@@ -492,6 +502,10 @@ function initPassengerPopup() {
 // Flight Lookup Handler
 // ----------------------------------------
 function initFlightLookup() {
+    // Use event delegation to handle dynamically loaded elements
+    const bookingSection = document.getElementById('home');
+    if (!bookingSection) return;
+
     const flightInput = document.getElementById('homeFlightNumber');
     const lookupBtn = document.getElementById('flightLookupBtn');
     const flightInfoCard = document.getElementById('flightInfoCard');
@@ -499,7 +513,11 @@ function initFlightLookup() {
     const dateInput = document.getElementById('homeDate');
     const timeInput = document.getElementById('homeTime');
 
-    if (!flightInput || !lookupBtn || !flightInfoCard) return;
+    if (!flightInput || !lookupBtn || !flightInfoCard) {
+        // Retry after a short delay if elements not found (handles race conditions)
+        setTimeout(initFlightLookup, 100);
+        return;
+    }
 
     // Track current flight data for autofill
     let currentFlightData = null;
